@@ -1,0 +1,26 @@
+PODS:
+  - Alamofire (4.7.0)
+  - FSCalendar (2.7.9)
+  - SDWebImage (4.3.3):
+    - SDWebImage/Core (= 4.3.3)
+  - SDWebImage/Core (4.3.3)
+  - SnapKit (4.0.0)
+  - SwiftMessages (4.1.0)
+
+DEPENDENCIES:
+  - Alamofire
+  - FSCalendar
+  - SDWebImage
+  - SnapKit
+  - SwiftMessages
+
+SPEC CHECKSUMS:
+  Alamofire: 907e0a98eb68cdb7f9d1f541a563d6ac5dc77b25
+  FSCalendar: a04b09f16f811bc92e82f3cf852a15225233b9d5
+  SDWebImage: de4d90b5bff3571eae7bd16202b1f43135409fa5
+  SnapKit: a42d492c16e80209130a3379f73596c3454b7694
+  SwiftMessages: 1bacc783c8f10bdfdc57c14860cae8a1f1fa6591
+
+PODFILE CHECKSUM: eb1ffb2da83e0f5d0ee81875699e718143c5f69f
+
+COCOAPODS: 1.4.0

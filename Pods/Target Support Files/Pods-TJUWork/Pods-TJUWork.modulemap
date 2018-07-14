@@ -1,0 +1,6 @@
+framework module Pods_TJUWork {
+  umbrella header "Pods-TJUWork-umbrella.h"
+
+  export *
+  module * { export * }
+}
