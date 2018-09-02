@@ -8,9 +8,11 @@
 
 import UIKit
 import SnapKit
+import Photos
 
 class SetInfoViewController: UIViewController {
     
+    fileprivate var offY: CGFloat = 0
     fileprivate let imgHeight = UIScreen.main.bounds.width*3/10
     fileprivate let tagArrs = ["用户名：","姓名：", "公职号：", "工资号：", "手机：", "微信：", "邮箱"]
     
@@ -43,7 +45,7 @@ class SetInfoViewController: UIViewController {
     
     fileprivate let cancelBtn: UIButton = {
         let btn = UIButton(type: .custom)
-        btn.setTitle("保存更改", for: .normal)
+        btn.setTitle("取消更改", for: .normal)
         btn.titleLabel?.font = UIFont.systemFont(ofSize: 14, weight: UIFont.Weight.regular)
         btn.setTitleColor(.white, for: .normal)
         btn.titleLabel?.textAlignment = .center
@@ -63,14 +65,16 @@ class SetInfoViewController: UIViewController {
         tableView.separatorStyle = .none
         tableView.estimatedRowHeight = 44
         
+        
         tableView.register(InfoTableViewCell.self, forCellReuseIdentifier: "InfoTableViewCell")
         tableView.register(SetInfoTableViewCell.self, forCellReuseIdentifier: "SetInfoTableViewCell")
         
         self.view.backgroundColor = .gray
         self.view.addSubview(tableView)
 
+        
         let tableViewGesture = UITapGestureRecognizer(target: self, action: #selector(receiveGesture(_:)))
-        tableViewGesture.cancelsTouchesInView = false
+        //tableViewGesture.cancelsTouchesInView = false
         self.tableView.addGestureRecognizer(tableViewGesture)
         
         uploadImageBtn.addTarget(self, action: #selector(uploadImage(_:)), for: .touchUpInside)
@@ -87,10 +91,8 @@ class SetInfoViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         self.navigationItem.title = "个人资料"
-        
         self.navigationController?.navigationBar.barTintColor = UIColor(hex6: 0x00518e)
         self.navigationController?.navigationBar.titleTextAttributes = [NSAttributedStringKey.foregroundColor: UIColor.white]
-        
     }
     
     deinit {
@@ -101,27 +103,38 @@ class SetInfoViewController: UIViewController {
         self.view.endEditing(true)
     }
     
-    @objc func uploadImage(_ sender: UIButton) {
-        self.view.endEditing(true)
-    }
-    
     @objc func keyboardWillShow(_ notification: Notification) {
-        
         self.view.frame.origin.y = -180
+        self.view.layoutIfNeeded()
     }
     
     @objc func keyboardWillHide(_ notification: Notification) {
         self.view.frame.origin.y = 0
+        self.view.layoutIfNeeded()
     }
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         self.view.endEditing(true)
     }
     
+    override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
+        self.view.endEditing(true)
+    }
+    
     
 }
 
+extension SetInfoViewController: UIScrollViewDelegate {
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        if scrollView.isDragging && scrollView.contentOffset.y < offY {
+            self.view.endEditing(true)
+        }
+        offY = scrollView.contentOffset.y
+    }
+}
+
 extension SetInfoViewController: UITableViewDelegate {
+    
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 44
@@ -214,8 +227,6 @@ extension SetInfoViewController: UITableViewDelegate {
 
 extension SetInfoViewController: UITableViewDataSource {
     
-    
-    
     func numberOfSections(in tableView: UITableView) -> Int {
         return 1
     }
@@ -233,8 +244,91 @@ extension SetInfoViewController: UITableViewDataSource {
         }
         let cell = tableView.dequeueReusableCell(withIdentifier: "SetInfoTableViewCell") as! SetInfoTableViewCell
         cell.nameLabel.text = tagArrs[indexPath.row]
+        cell.selectionStyle = .none
         return cell
         
     }
+    
+}
+
+extension SetInfoViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+    
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
+        let image: UIImage = info[UIImagePickerControllerEditedImage] as! UIImage
+        imgView.image = image
+        picker.dismiss(animated: true, completion: nil)
+    }
+    
+    @objc func uploadImage(_ sender: UIButton) {
+        self.view.endEditing(true)
+        
+        let alertVC = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
+        
+        let pictureAction = UIAlertAction(title: "从相册中选择照片", style: .default) { _ in
+            
+            let authStatus = PHPhotoLibrary.authorizationStatus()
+            guard authStatus == . authorized else {
+                let rvc = UIAlertController(title: nil, message: "相册不可用，请在设置中打开 TJUWork 的相册权限", preferredStyle: .alert)
+                self.present(rvc, animated: true, completion: nil)
+                DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 1.5, execute: {
+                    self.presentedViewController?.dismiss(animated: true, completion: nil)
+                })
+                return
+            }
+            
+            if UIImagePickerController.isSourceTypeAvailable(.savedPhotosAlbum) {
+                let imagePicker = UIImagePickerController()
+                imagePicker.delegate = self
+                imagePicker.allowsEditing = true
+                imagePicker.sourceType = .photoLibrary
+                self.present(imagePicker, animated: true, completion: nil)
+            } else {
+                let rvc = UIAlertController(title: nil, message: "相册不可用，请在设置中打开 TJUWork 的相册权限", preferredStyle: .alert)
+                self.present(rvc, animated: true, completion: nil)
+                DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 1.5, execute: {
+                    self.presentedViewController?.dismiss(animated: true, completion: nil)
+                })
+            }
+        }
+        
+        let photoAction = UIAlertAction(title: "拍照", style: .default) { _ in
+            
+            let authStatus = AVCaptureDevice.authorizationStatus(for: .video)
+            guard authStatus == .authorized else {
+                let rvc = UIAlertController(title: nil, message: "相机不可用，请在设置中打开 TJUWork 的相机权限", preferredStyle: .alert)
+                self.present(rvc, animated: true, completion: nil)
+                DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 1.5, execute: {
+                    self.presentedViewController?.dismiss(animated: true, completion: nil)
+                })
+                return
+            }
+            
+            if UIImagePickerController.isSourceTypeAvailable(.camera) {
+                let imagePicker = UIImagePickerController()
+                imagePicker.delegate = self
+                imagePicker.allowsEditing = true
+                imagePicker.sourceType = .camera
+                self.present(imagePicker, animated: true, completion: nil)
+            } else {
+                let rvc = UIAlertController(title: nil, message: "相机不可用，请在设置中打开 TJUWork 的相机权限", preferredStyle: .alert)
+                self.present(rvc, animated: true, completion: nil)
+                DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 1.5, execute: {
+                    self.presentedViewController?.dismiss(animated: true, completion: nil)
+                })
+            }
+        }
+        
+        let cancelAction = UIAlertAction(title: "取消", style: .cancel, handler: nil)
+        
+        alertVC.addAction(pictureAction)
+        alertVC.addAction(photoAction)
+        alertVC.addAction(cancelAction)
+        self.present(alertVC, animated: true, completion: nil)
+        
+    }
+    
+    
+    
+    
     
 }

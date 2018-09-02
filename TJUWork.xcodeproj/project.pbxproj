@@ -21,6 +21,31 @@
 		DD0AA78420F9B9F40011F1EE /* SetInfoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD0AA78320F9B9F40011F1EE /* SetInfoViewController.swift */; };
 		DD0AA78620F9C8470011F1EE /* InfoTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD0AA78520F9C8470011F1EE /* InfoTableViewCell.swift */; };
 		DD0AA78820F9CF250011F1EE /* SetInfoTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD0AA78720F9CF250011F1EE /* SetInfoTableViewCell.swift */; };
+		DD796D2621383FB10042D058 /* NetworkManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD796D2521383FB10042D058 /* NetworkManager.swift */; };
+		DD796D282138F8840042D058 /* WorkUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD796D272138F8840042D058 /* WorkUser.swift */; };
+		DD796D2A2138F9FB0042D058 /* AccountManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD796D292138F9FB0042D058 /* AccountManager.swift */; };
+		DD796D2C21391D380042D058 /* CacheManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD796D2B21391D370042D058 /* CacheManager.swift */; };
+		DD796D2E21391D880042D058 /* Storage.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD796D2D21391D880042D058 /* Storage.swift */; };
+		DD81CB3420FB45ED00EB5843 /* MessageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD81CB3320FB45ED00EB5843 /* MessageViewController.swift */; };
+		DD81CB3620FB47AD00EB5843 /* MessageTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD81CB3520FB47AD00EB5843 /* MessageTableViewCell.swift */; };
+		DD81CB3820FCCE5100EB5843 /* DownMenuView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD81CB3720FCCE5100EB5843 /* DownMenuView.swift */; };
+		DD81CB3C21007BEB00EB5843 /* ScheduleViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD81CB3B21007BEB00EB5843 /* ScheduleViewController.swift */; };
+		DDB9CE4B2106133400E63211 /* DetailMessageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDB9CE4A2106133400E63211 /* DetailMessageViewController.swift */; };
+		DDB9CE4D21061E7C00E63211 /* SenderTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDB9CE4C21061E7C00E63211 /* SenderTableViewCell.swift */; };
+		DDB9CE4F21061EA300E63211 /* SenderMultiLinesTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDB9CE4E21061EA300E63211 /* SenderMultiLinesTableViewCell.swift */; };
+		DDB9CE51210702CF00E63211 /* BodyContentsTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDB9CE50210702CF00E63211 /* BodyContentsTableViewCell.swift */; };
+		DDB9CE542109EB7000E63211 /* TreeNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDB9CE532109EB7000E63211 /* TreeNode.swift */; };
+		DDB9CE562109ED2700E63211 /* CreateMessageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDB9CE552109ED2700E63211 /* CreateMessageViewController.swift */; };
+		DDB9CE582109ED4100E63211 /* TreeTableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDB9CE572109ED4100E63211 /* TreeTableView.swift */; };
+		DDB9CE5A210D836300E63211 /* ContactTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDB9CE59210D836300E63211 /* ContactTableViewCell.swift */; };
+		DDB9CE5C2110116100E63211 /* TitleTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDB9CE5B2110116100E63211 /* TitleTableViewCell.swift */; };
+		DDB9CE5E21102FD600E63211 /* MessageNameTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDB9CE5D21102FD600E63211 /* MessageNameTableViewCell.swift */; };
+		DDB9CE602110584500E63211 /* PickerViewLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDB9CE5F2110584500E63211 /* PickerViewLabel.swift */; };
+		DDB9CE622110610800E63211 /* MessageCategoryTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDB9CE612110610800E63211 /* MessageCategoryTableViewCell.swift */; };
+		DDB9CE6421119EB100E63211 /* ReceiverTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDB9CE6321119EB100E63211 /* ReceiverTableViewCell.swift */; };
+		DDB9CE662111AFF600E63211 /* ReceiverCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDB9CE652111AFF600E63211 /* ReceiverCollectionViewCell.swift */; };
+		DDB9CE682112FD7900E63211 /* AddReceiverCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDB9CE672112FD7900E63211 /* AddReceiverCollectionViewCell.swift */; };
+		DDBBEE9321019AB300244E40 /* ScheduleMessageTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDBBEE9221019AB300244E40 /* ScheduleMessageTableViewCell.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -63,6 +88,31 @@
 		DD0AA78320F9B9F40011F1EE /* SetInfoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetInfoViewController.swift; sourceTree = "<group>"; };
 		DD0AA78520F9C8470011F1EE /* InfoTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InfoTableViewCell.swift; sourceTree = "<group>"; };
 		DD0AA78720F9CF250011F1EE /* SetInfoTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetInfoTableViewCell.swift; sourceTree = "<group>"; };
+		DD796D2521383FB10042D058 /* NetworkManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkManager.swift; sourceTree = "<group>"; };
+		DD796D272138F8840042D058 /* WorkUser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkUser.swift; sourceTree = "<group>"; };
+		DD796D292138F9FB0042D058 /* AccountManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountManager.swift; sourceTree = "<group>"; };
+		DD796D2B21391D370042D058 /* CacheManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CacheManager.swift; sourceTree = "<group>"; };
+		DD796D2D21391D880042D058 /* Storage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Storage.swift; sourceTree = "<group>"; };
+		DD81CB3320FB45ED00EB5843 /* MessageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageViewController.swift; sourceTree = "<group>"; };
+		DD81CB3520FB47AD00EB5843 /* MessageTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageTableViewCell.swift; sourceTree = "<group>"; };
+		DD81CB3720FCCE5100EB5843 /* DownMenuView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DownMenuView.swift; sourceTree = "<group>"; };
+		DD81CB3B21007BEB00EB5843 /* ScheduleViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduleViewController.swift; sourceTree = "<group>"; };
+		DDB9CE4A2106133400E63211 /* DetailMessageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailMessageViewController.swift; sourceTree = "<group>"; };
+		DDB9CE4C21061E7C00E63211 /* SenderTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SenderTableViewCell.swift; sourceTree = "<group>"; };
+		DDB9CE4E21061EA300E63211 /* SenderMultiLinesTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SenderMultiLinesTableViewCell.swift; sourceTree = "<group>"; };
+		DDB9CE50210702CF00E63211 /* BodyContentsTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BodyContentsTableViewCell.swift; sourceTree = "<group>"; };
+		DDB9CE532109EB7000E63211 /* TreeNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TreeNode.swift; sourceTree = "<group>"; };
+		DDB9CE552109ED2700E63211 /* CreateMessageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateMessageViewController.swift; sourceTree = "<group>"; };
+		DDB9CE572109ED4100E63211 /* TreeTableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TreeTableView.swift; sourceTree = "<group>"; };
+		DDB9CE59210D836300E63211 /* ContactTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactTableViewCell.swift; sourceTree = "<group>"; };
+		DDB9CE5B2110116100E63211 /* TitleTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TitleTableViewCell.swift; sourceTree = "<group>"; };
+		DDB9CE5D21102FD600E63211 /* MessageNameTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageNameTableViewCell.swift; sourceTree = "<group>"; };
+		DDB9CE5F2110584500E63211 /* PickerViewLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PickerViewLabel.swift; sourceTree = "<group>"; };
+		DDB9CE612110610800E63211 /* MessageCategoryTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageCategoryTableViewCell.swift; sourceTree = "<group>"; };
+		DDB9CE6321119EB100E63211 /* ReceiverTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReceiverTableViewCell.swift; sourceTree = "<group>"; };
+		DDB9CE652111AFF600E63211 /* ReceiverCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReceiverCollectionViewCell.swift; sourceTree = "<group>"; };
+		DDB9CE672112FD7900E63211 /* AddReceiverCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddReceiverCollectionViewCell.swift; sourceTree = "<group>"; };
+		DDBBEE9221019AB300244E40 /* ScheduleMessageTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduleMessageTableViewCell.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -133,6 +183,9 @@
 		DD0AA74220F8B6200011F1EE /* TJUWork */ = {
 			isa = PBXGroup;
 			children = (
+				DD796D2421383F7F0042D058 /* Network */,
+				DD81CB3921007B9B00EB5843 /* Schedule */,
+				DD81CB3020FB45A700EB5843 /* Message */,
 				DD0AA77620F8CC170011F1EE /* main */,
 				DD0AA77120F8C4CE0011F1EE /* User */,
 				DD0AA74320F8B6200011F1EE /* AppDelegate.swift */,
@@ -243,6 +296,92 @@
 			children = (
 				DD0AA78520F9C8470011F1EE /* InfoTableViewCell.swift */,
 				DD0AA78720F9CF250011F1EE /* SetInfoTableViewCell.swift */,
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
+		DD796D2421383F7F0042D058 /* Network */ = {
+			isa = PBXGroup;
+			children = (
+				DD796D2521383FB10042D058 /* NetworkManager.swift */,
+				DD796D272138F8840042D058 /* WorkUser.swift */,
+				DD796D292138F9FB0042D058 /* AccountManager.swift */,
+				DD796D2B21391D370042D058 /* CacheManager.swift */,
+				DD796D2D21391D880042D058 /* Storage.swift */,
+			);
+			path = Network;
+			sourceTree = "<group>";
+		};
+		DD81CB3020FB45A700EB5843 /* Message */ = {
+			isa = PBXGroup;
+			children = (
+				DDB9CE522109EB4400E63211 /* Model */,
+				DD81CB3220FB45BF00EB5843 /* View */,
+				DD81CB3120FB45B600EB5843 /* Controller */,
+			);
+			path = Message;
+			sourceTree = "<group>";
+		};
+		DD81CB3120FB45B600EB5843 /* Controller */ = {
+			isa = PBXGroup;
+			children = (
+				DD81CB3320FB45ED00EB5843 /* MessageViewController.swift */,
+				DDB9CE4A2106133400E63211 /* DetailMessageViewController.swift */,
+				DDB9CE552109ED2700E63211 /* CreateMessageViewController.swift */,
+			);
+			path = Controller;
+			sourceTree = "<group>";
+		};
+		DD81CB3220FB45BF00EB5843 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				DD81CB3520FB47AD00EB5843 /* MessageTableViewCell.swift */,
+				DD81CB3720FCCE5100EB5843 /* DownMenuView.swift */,
+				DDB9CE4C21061E7C00E63211 /* SenderTableViewCell.swift */,
+				DDB9CE4E21061EA300E63211 /* SenderMultiLinesTableViewCell.swift */,
+				DDB9CE50210702CF00E63211 /* BodyContentsTableViewCell.swift */,
+				DDB9CE572109ED4100E63211 /* TreeTableView.swift */,
+				DDB9CE59210D836300E63211 /* ContactTableViewCell.swift */,
+				DDB9CE5B2110116100E63211 /* TitleTableViewCell.swift */,
+				DDB9CE5D21102FD600E63211 /* MessageNameTableViewCell.swift */,
+				DDB9CE612110610800E63211 /* MessageCategoryTableViewCell.swift */,
+				DDB9CE5F2110584500E63211 /* PickerViewLabel.swift */,
+				DDB9CE652111AFF600E63211 /* ReceiverCollectionViewCell.swift */,
+				DDB9CE672112FD7900E63211 /* AddReceiverCollectionViewCell.swift */,
+				DDB9CE6321119EB100E63211 /* ReceiverTableViewCell.swift */,
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
+		DD81CB3921007B9B00EB5843 /* Schedule */ = {
+			isa = PBXGroup;
+			children = (
+				DDBBEE9121019A6400244E40 /* View */,
+				DD81CB3A21007BCC00EB5843 /* Controller */,
+			);
+			path = Schedule;
+			sourceTree = "<group>";
+		};
+		DD81CB3A21007BCC00EB5843 /* Controller */ = {
+			isa = PBXGroup;
+			children = (
+				DD81CB3B21007BEB00EB5843 /* ScheduleViewController.swift */,
+			);
+			path = Controller;
+			sourceTree = "<group>";
+		};
+		DDB9CE522109EB4400E63211 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				DDB9CE532109EB7000E63211 /* TreeNode.swift */,
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
+		DDBBEE9121019A6400244E40 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				DDBBEE9221019AB300244E40 /* ScheduleMessageTableViewCell.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -443,13 +582,38 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DDBBEE9321019AB300244E40 /* ScheduleMessageTableViewCell.swift in Sources */,
+				DDB9CE662111AFF600E63211 /* ReceiverCollectionViewCell.swift in Sources */,
+				DDB9CE602110584500E63211 /* PickerViewLabel.swift in Sources */,
+				DD796D2A2138F9FB0042D058 /* AccountManager.swift in Sources */,
 				DD0AA78820F9CF250011F1EE /* SetInfoTableViewCell.swift in Sources */,
+				DD81CB3420FB45ED00EB5843 /* MessageViewController.swift in Sources */,
+				DDB9CE4D21061E7C00E63211 /* SenderTableViewCell.swift in Sources */,
 				DD0AA77520F8C5010011F1EE /* LoginViewController.swift in Sources */,
+				DDB9CE582109ED4100E63211 /* TreeTableView.swift in Sources */,
+				DD81CB3C21007BEB00EB5843 /* ScheduleViewController.swift in Sources */,
+				DDB9CE622110610800E63211 /* MessageCategoryTableViewCell.swift in Sources */,
+				DD81CB3620FB47AD00EB5843 /* MessageTableViewCell.swift in Sources */,
+				DDB9CE682112FD7900E63211 /* AddReceiverCollectionViewCell.swift in Sources */,
 				DD0AA74620F8B6200011F1EE /* ViewController.swift in Sources */,
+				DDB9CE4F21061EA300E63211 /* SenderMultiLinesTableViewCell.swift in Sources */,
+				DD796D2621383FB10042D058 /* NetworkManager.swift in Sources */,
+				DD796D282138F8840042D058 /* WorkUser.swift in Sources */,
 				DD0AA77F20F917B90011F1EE /* MainTabBarController.swift in Sources */,
 				DD0AA78420F9B9F40011F1EE /* SetInfoViewController.swift in Sources */,
+				DDB9CE542109EB7000E63211 /* TreeNode.swift in Sources */,
 				DD0AA78620F9C8470011F1EE /* InfoTableViewCell.swift in Sources */,
+				DDB9CE5C2110116100E63211 /* TitleTableViewCell.swift in Sources */,
+				DDB9CE51210702CF00E63211 /* BodyContentsTableViewCell.swift in Sources */,
+				DD796D2E21391D880042D058 /* Storage.swift in Sources */,
+				DDB9CE5E21102FD600E63211 /* MessageNameTableViewCell.swift in Sources */,
+				DDB9CE562109ED2700E63211 /* CreateMessageViewController.swift in Sources */,
 				DD0AA77820F8CC2B0011F1EE /* ClassExtensions.swift in Sources */,
+				DDB9CE4B2106133400E63211 /* DetailMessageViewController.swift in Sources */,
+				DDB9CE5A210D836300E63211 /* ContactTableViewCell.swift in Sources */,
+				DD796D2C21391D380042D058 /* CacheManager.swift in Sources */,
+				DD81CB3820FCCE5100EB5843 /* DownMenuView.swift in Sources */,
+				DDB9CE6421119EB100E63211 /* ReceiverTableViewCell.swift in Sources */,
 				DD0AA74420F8B6200011F1EE /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

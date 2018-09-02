@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import SwiftMessages
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -16,7 +17,43 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
-        self.window?.rootViewController = MainTanBarController()
+        //self.window?.rootViewController = LoginViewController()
+        
+        
+        //WorkUser.shared.delete()
+        WorkUser.shared.load(success: {
+            
+            AccountManager.getToken(username: WorkUser.shared.name, password: WorkUser.shared.password, success: { token in
+                WorkUser.shared.token = token
+                
+                WorkUser.shared.save()
+                print("xixi")
+                print(token)
+                self.window?.rootViewController = MainTanBarController()
+                
+                SwiftMessages.show {
+                    let view = MessageView.viewFromNib(layout: .cardView)
+                    view.configureContent(title: "登录成功", body: "")
+                    view.button?.isHidden = true
+                    view.configureTheme(.success)
+                    return view
+                }
+                
+            }, failure: { errorMsg in
+                self.window?.rootViewController = LoginViewController()
+                SwiftMessages.show {
+                    let view = MessageView.viewFromNib(layout: .cardView)
+                    view.configureContent(title: "请重新登录", body: "")
+                    view.button?.isHidden = true
+                    view.configureTheme(Theme.error)
+                    return view
+                }
+            })
+        }, failure: {
+            self.window?.rootViewController = LoginViewController()
+        })
+        
+        
         return true
     }
 

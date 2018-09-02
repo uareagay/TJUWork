@@ -8,6 +8,7 @@
 
 import UIKit
 import SnapKit
+import SwiftMessages
 
 class LoginViewController: UIViewController {
     
@@ -91,6 +92,15 @@ class LoginViewController: UIViewController {
         usernameTextField.delegate = self
         passwordTextField.delegate = self
         
+//        let view = UIView(frame: CGRect(x: 0, y: 0, width: 20, height: 20))
+//        let aview = UIView(frame: CGRect(x: 0, y: 0, width: 20, height: 20))
+//        view.backgroundColor = .red
+//        aview.backgroundColor = .yellow
+//        usernameTextField.leftViewMode = .always
+//        usernameTextField.rightViewMode = .always
+//        usernameTextField.leftView = view
+//        usernameTextField.rightView = aview
+//        //usernameTextField.leftViewRect(forBounds: CGRect(x: 0, y: 0, width: 20, height: 20))
     
         tjuImageView.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
@@ -136,7 +146,6 @@ class LoginViewController: UIViewController {
         
         
         
-        
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow(_:)), name: .UIKeyboardWillShow, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide(_:)), name: .UIKeyboardWillHide, object: nil)
         
@@ -144,12 +153,79 @@ class LoginViewController: UIViewController {
         
     }
     
-    deinit {
-        NotificationCenter.default.removeObserver(self)
-    }
-    
+
     @objc func login(_ sender: UIButton) {
         self.view.endEditing(true)
+        
+        guard let username = usernameTextField.text, !username.isEmpty else {
+            SwiftMessages.show {
+                let view = MessageView.viewFromNib(layout: .cardView)
+                view.configureContent(title: "", body: "请填写用户名")
+                view.button?.isHidden = true
+                view.configureTheme(Theme.error)
+                return view
+            }
+            return
+        }
+        
+        guard let password = passwordTextField.text, !password.isEmpty else {
+            SwiftMessages.show {
+                let view = MessageView.viewFromNib(layout: .cardView)
+                view.configureContent(title: "请填写密码", body: "")
+                view.button?.isHidden = true
+                view.configureTheme(Theme.error)
+                return view
+            }
+            return
+        }
+        
+        loginBtn.isEnabled = false
+        
+        
+        AccountManager.getToken(username: username, password: password, success: { token in
+            WorkUser.shared.token = token
+            WorkUser.shared.name = username
+            WorkUser.shared.password = password
+            print("成功 \(WorkUser.shared.name)")
+            print(WorkUser.shared.token)
+            WorkUser.shared.save()
+            
+            self.loginBtn.isEnabled = true
+            self.present(MainTanBarController(), animated: true, completion: {
+                SwiftMessages.show {
+                    let view = MessageView.viewFromNib(layout: .cardView)
+                    view.configureContent(title: "登录成功", body: "")
+                    view.button?.isHidden = true
+                    view.configureTheme(.success)
+                    return view
+                }
+            })
+//            SwiftMessages.show {
+//                let view = MessageView.viewFromNib(layout: .cardView)
+//                view.configureContent(title: "登录成功", body: "")
+//                view.button?.isHidden = true
+//                view.configureTheme(.success)
+//                return view
+//            }
+
+            
+        }, failure: { errorMeg in
+            SwiftMessages.show {
+                let view = MessageView.viewFromNib(layout: .cardView)
+                view.configureContent(title: "登录失败", body: "")
+                view.button?.isHidden = true
+                view.configureTheme(Theme.error)
+                return view
+            }
+            self.loginBtn.isEnabled = true
+        })
+        
+        
+        //self.present(MainTanBarController(), animated: true, completion: nil)
+    }
+    
+    deinit {
+        NotificationCenter.default.removeObserver(self)
     }
     
 }

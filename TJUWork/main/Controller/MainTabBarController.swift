@@ -14,12 +14,12 @@ class MainTanBarController: UITabBarController {
         super.viewDidLoad()
         
         
-        let one = UIViewController()
+        let one = DetailMessageViewController()
         one.tabBarItem.image = self.resizedTabBarItemImage(img: UIImage(named: "日历")!)
         one.tabBarItem.selectedImage = self.resizedTabBarItemImage(img: UIImage(named: "日历选中")!)
         one.tabBarItem.imageInsets = UIEdgeInsets(top: 6, left: 0, bottom: -6, right: 0)
         
-        let two = UIViewController()
+        let two = CreateMessageViewController()
         two.tabBarItem.image = self.resizedTabBarItemImage(img: UIImage(named: "任务")!)
         two.tabBarItem.selectedImage = self.resizedTabBarItemImage(img: UIImage(named: "任务选中")!)
         two.tabBarItem.imageInsets = UIEdgeInsets(top: 6, left: 0, bottom: -6, right: 0)
@@ -29,7 +29,7 @@ class MainTanBarController: UITabBarController {
         three.tabBarItem.selectedImage = self.resizedTabBarItemImage(img: UIImage(named: "人选中")!)
         three.tabBarItem.imageInsets = UIEdgeInsets(top: 6, left: 0, bottom: -6, right: 0)
         
-        self.setViewControllers([one, two, UINavigationController(rootViewController: three)], animated: true)
+        self.setViewControllers([UINavigationController(rootViewController: one), UINavigationController(rootViewController: two), UINavigationController(rootViewController: three)], animated: true)
         
     }
     
