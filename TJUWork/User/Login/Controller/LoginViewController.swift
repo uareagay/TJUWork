@@ -200,15 +200,6 @@ class LoginViewController: UIViewController {
                     return view
                 }
             })
-//            SwiftMessages.show {
-//                let view = MessageView.viewFromNib(layout: .cardView)
-//                view.configureContent(title: "登录成功", body: "")
-//                view.button?.isHidden = true
-//                view.configureTheme(.success)
-//                return view
-//            }
-
-            
         }, failure: { errorMeg in
             SwiftMessages.show {
                 let view = MessageView.viewFromNib(layout: .cardView)

@@ -10,7 +10,7 @@ import UIKit
 
 
 fileprivate let unSelectedImg = UIImage.resizedImage(image: UIImage(named: "类别未选中")!, scaledToWidth: 15.0)
-fileprivate let selectedImg = UIImage.resizedImage(image: UIImage(named: "类别选中")!, scaledToWidth: 15.0)
+fileprivate let selectedImg = UIImage.resizedImage(image: UIImage(named: "类别选中")!, scaledToWidth: 17.0)
 
 class MessageNameTableViewCell: UITableViewCell {
     
@@ -48,7 +48,7 @@ class MessageNameTableViewCell: UITableViewCell {
         let label = PickerViewLabel()
         label.textAlignment = .left
         label.textColor = UIColor(hex6: 0x8b8b8b)
-        label.text = "软件学院"
+        label.text = "请选择学院"
         label.font = UIFont.systemFont(ofSize: 15, weight: UIFont.Weight.regular)
         return label
     }()
@@ -56,6 +56,12 @@ class MessageNameTableViewCell: UITableViewCell {
     let collegeBtn: UIButton = {
         let btn = UIButton()
         btn.setImage(unSelectedImg, for: .normal)
+        return btn
+    }()
+    
+    let pickerBtn: UIButton = {
+        let btn = UIButton()
+        btn.setImage(UIImage.resizedImage(image: UIImage(named: "向下")!, scaledToWidth: 10.0), for: .normal)
         return btn
     }()
     
@@ -85,6 +91,7 @@ class MessageNameTableViewCell: UITableViewCell {
         contentView.addSubview(personalLabel)
         contentView.addSubview(collegeBtn)
         contentView.addSubview(collegeLabel)
+        contentView.addSubview(pickerBtn)
         
         titleLabel.snp.makeConstraints { make in
             make.left.equalToSuperview().inset(15)
@@ -110,10 +117,16 @@ class MessageNameTableViewCell: UITableViewCell {
             make.width.equalTo(25)
         }
         
-        collegeLabel.snp.makeConstraints { make in
+        pickerBtn.snp.makeConstraints { make in
             make.left.equalTo(collegeBtn.snp.right)
             make.top.bottom.equalToSuperview().inset(15)
-            make.width.equalTo(70)
+            make.width.equalTo(10)
+        }
+        
+        collegeLabel.snp.makeConstraints { make in
+            make.left.equalTo(pickerBtn.snp.right).offset(1.0)
+            make.top.bottom.equalToSuperview().inset(15)
+            make.right.equalToSuperview()
         }
         
         personalBtn.tag = 101

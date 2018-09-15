@@ -13,7 +13,7 @@ struct AccountManager {
     static func getToken(username: String, password: String, success: ((String) -> ())?, failure: ((String) -> ())?) {
         let para: [String: String] = ["username": username, "password": password]
         
-        NetworkManager.getInformation(url: "/login", parameters: para, success: { dic in
+        NetworkManager.postInformation(url: "/login", parameters: para, success: { dic in
             if let data = dic["data"] as? [String: Any], let token = data["token"] as? String {
                 success?(token)
             } else {
@@ -22,6 +22,7 @@ struct AccountManager {
         }, failure: { error in
             failure?(error.localizedDescription)
         })
+        
     }
     
 }

@@ -18,8 +18,9 @@ class TreeNode {
     var isExpand: Bool
     let isChild: Bool
     var isSelected: Bool
+    let uid: String
     
-    init(name: String, ID: Int, parentID: Int, depth: Int, isVisible: Bool, isExpand: Bool, isChild: Bool, isSelected: Bool) {
+    init(name: String, ID: Int, parentID: Int, depth: Int, isVisible: Bool, isExpand: Bool, isChild: Bool, isSelected: Bool, uid: String) {
         self.name = name
         self.ID = ID
         self.parentID = parentID
@@ -28,5 +29,6 @@ class TreeNode {
         self.isExpand = isExpand
         self.isChild = isChild
         self.isSelected = isSelected
+        self.uid = uid
     }
 }

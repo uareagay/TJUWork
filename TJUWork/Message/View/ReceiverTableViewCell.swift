@@ -12,13 +12,12 @@ import os_object
 
 @objc protocol AddAndDeleteReceiverProtocol: class {
     @objc optional func deleteReceiverCell(_ indexPath: IndexPath)
-    @objc optional func addReceiverCell()
+    @objc optional func addReceiverCell(uids: [String:String])
     @objc optional func presentTreeTableView()
 }
 
 class ReceiverTableViewCell: UITableViewCell {
     
- 
     let titleLabel: UILabel = {
         let label = UILabel()
         label.textAlignment = .left
@@ -32,7 +31,8 @@ class ReceiverTableViewCell: UITableViewCell {
     
     weak var delegate: AddAndDeleteReceiverProtocol?
     
-    var datas: [String] = ["赵三", "学工部", "校长办公室", "张思", "赵四", "旺财", "天外天", "新闻中心", "王主任", "校医院", "食堂经理"]
+    var selectedDatas: [String] = []
+    var selectedUsers: [String:String] = [:]
     
     override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
@@ -58,9 +58,10 @@ class ReceiverTableViewCell: UITableViewCell {
         
         collectionView.showsVerticalScrollIndicator = false
         collectionView.alwaysBounceHorizontal = true
-        collectionView.backgroundColor = .green
+        collectionView.backgroundColor = .white
         collectionView.delegate = self
         collectionView.dataSource = self
+        collectionView.bounces = false
         
         collectionView.register(ReceiverCollectionViewCell.self, forCellWithReuseIdentifier: "ReceiverCollectionViewCell")
         collectionView.register(AddReceiverCollectionViewCell.self, forCellWithReuseIdentifier: "AddReceiverCollectionViewCell")
@@ -71,7 +72,6 @@ class ReceiverTableViewCell: UITableViewCell {
             make.top.bottom.equalToSuperview().inset(7)
             make.right.equalToSuperview().inset(3)
         }
-        
     }
     
     override var frame: CGRect {
@@ -95,23 +95,23 @@ class ReceiverTableViewCell: UITableViewCell {
         
         if let cell = sender.superview?.superview?.superview as? ReceiverCollectionViewCell {
             if let indexPath = self.collectionView.indexPath(for: cell) {
-                print(self.datas.remove(at: indexPath.row))
-                print(indexPath)
+                let uid = self.selectedDatas[indexPath.row]
+                self.selectedDatas.remove(at: indexPath.row)
+                self.selectedUsers[uid] = nil
                 self.collectionView.deleteItems(at: [indexPath])
-                print("okay \(indexPath)")
             }
         }
     }
     
     @objc func addCell(_ sender: UIButton) {
-        //delegate?.presentTreeTableView!()
-        collectionView.performBatchUpdates({
-            datas.append("嘿嘿嘿")
-            collectionView.insertItems(at: [IndexPath(item: datas.count - 1, section: 0)])
-        }, completion: { _ in
-            self.collectionView.reloadData()
-            self.collectionView.scrollToItem(at: IndexPath(item: 0, section: 1), at: .left, animated: true)
-        })
+        delegate?.presentTreeTableView!()
+//        collectionView.performBatchUpdates({
+//            datas.append("嘿嘿嘿")
+//            collectionView.insertItems(at: [IndexPath(item: datas.count - 1, section: 0)])
+//        }, completion: { _ in
+//            self.collectionView.reloadData()
+//            self.collectionView.scrollToItem(at: IndexPath(item: 0, section: 1), at: .left, animated: true)
+//        })
     }
     
 }
@@ -133,12 +133,11 @@ extension ReceiverTableViewCell: UICollectionViewDataSource {
         guard section == 0 else {
             return 1
         }
-        return datas.count
+        return selectedDatas.count
     }
     
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        
         guard indexPath.section == 0 else {
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "AddReceiverCollectionViewCell", for: indexPath) as! AddReceiverCollectionViewCell
             cell.addBtn.addTarget(self, action: #selector(addCell(_:)), for: .touchUpInside)
@@ -147,18 +146,49 @@ extension ReceiverTableViewCell: UICollectionViewDataSource {
         
         
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "ReceiverCollectionViewCell", for: indexPath) as! ReceiverCollectionViewCell
-        //cell = ReceiverCollectionViewCell()
-        //collectionView.de
+
         
-        cell.nameLabel.text = datas[indexPath.row]
+        //cell.nameLabel.text = selectedDatas[indexPath.row]
+        cell.nameLabel.text = selectedUsers[selectedDatas[indexPath.row]]
         
         //objc_setAssociatedObject(cell.deleteBtn, &AssociatedKeys.btnKey, indexPath, .OBJC_ASSOCIATION_COPY_NONATOMIC )
         
-        print("fuck\(cell.nameLabel.text)")
+        
         cell.deleteBtn.addTarget(self, action: #selector(deleteCell(_:)), for: .touchUpInside)
         
-        
         return cell
+    }
+    
+}
+
+extension ReceiverTableViewCell: AddAndDeleteReceiverProtocol {
+    
+    func addReceiverCell(uids: [String:String]) {
+        print(uids)
+        var addedArrs: [String] = []
+        var endPos = selectedDatas.count
+        
+        for uid in uids.keys {
+            selectedUsers[uid] = uids[uid]
+            if !selectedDatas.contains(uid) {
+                selectedDatas.append(uid)
+                addedArrs.append(uid)
+            }
+        }
+        
+        collectionView.performBatchUpdates({
+            
+            var indexPaths: [IndexPath] = []
+            for i in 0..<addedArrs.count {
+                indexPaths.append(IndexPath(item: endPos, section: 0))
+                endPos += 1
+            }
+            collectionView.insertItems(at: indexPaths)
+        }, completion: { _ in
+            self.collectionView.reloadData()
+            self.collectionView.scrollToItem(at: IndexPath(item: 0, section: 1), at: .left, animated: true)
+        })
+
     }
     
 }

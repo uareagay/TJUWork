@@ -16,7 +16,6 @@ class SenderTableViewCell: UITableViewCell {
         label.textColor = UIColor(hex6: 0x00518e)
         label.text = "发送单位："
         label.font = UIFont.systemFont(ofSize: 16, weight: UIFont.Weight.regular)
-        
         return label
     }()
     
@@ -26,7 +25,6 @@ class SenderTableViewCell: UITableViewCell {
         label.textColor = .lightGray
         label.text = "校团委"
         label.font = UIFont.systemFont(ofSize: 14, weight: UIFont.Weight.regular)
-        
         return label
     }()
     

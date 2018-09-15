@@ -47,6 +47,7 @@ class TitleTableViewCell: UITableViewCell {
             make.right.equalToSuperview()
         }
         
+        textField.delegate = self
     }
     
     override var frame: CGRect {
@@ -60,6 +61,15 @@ class TitleTableViewCell: UITableViewCell {
     
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+}
+
+extension TitleTableViewCell: UITextFieldDelegate {
+    
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        self.textField.resignFirstResponder()
+        return false
     }
     
 }

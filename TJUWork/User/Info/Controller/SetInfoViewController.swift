@@ -9,15 +9,24 @@
 import UIKit
 import SnapKit
 import Photos
+import SDWebImage
 
 class SetInfoViewController: UIViewController {
     
     fileprivate var offY: CGFloat = 0
     fileprivate let imgHeight = UIScreen.main.bounds.width*3/10
-    fileprivate let tagArrs = ["用户名：","姓名：", "公职号：", "工资号：", "手机：", "微信：", "邮箱"]
+    fileprivate let tagArrs = ["用户名：","姓名：", "工资号：", "手机：", "微信：", "邮箱"]
     
-    var imgView: UIImageView!
     var tableView: UITableView!
+    var userInfoModel: UserInfoModel!
+    
+    fileprivate var imgView: UIImageView = {
+        let imgView = UIImageView()
+        imgView.backgroundColor = .white
+        imgView.layer.masksToBounds = true
+        imgView.layer.cornerRadius = UIScreen.main.bounds.width*3/10/2
+        return imgView
+    }()
     
     fileprivate let uploadImageBtn: UIButton = {
         let btn = UIButton(type: .custom)
@@ -40,6 +49,7 @@ class SetInfoViewController: UIViewController {
         btn.backgroundColor = UIColor(hex6: 0x00518e)
         btn.layer.masksToBounds = true
         btn.layer.cornerRadius = 13
+        btn.isHidden = true
         return btn
     }()
     
@@ -52,8 +62,8 @@ class SetInfoViewController: UIViewController {
         btn.backgroundColor = UIColor(hex6: 0x00518e)
         btn.layer.masksToBounds = true
         btn.layer.cornerRadius = 13
+        btn.isHidden = true
         return btn
-        
     }()
     
     override func viewDidLoad() {
@@ -79,13 +89,14 @@ class SetInfoViewController: UIViewController {
         
         uploadImageBtn.addTarget(self, action: #selector(uploadImage(_:)), for: .touchUpInside)
         
-        imgView = UIImageView()
-        imgView.backgroundColor = .red
-        imgView.layer.masksToBounds = true
-        imgView.layer.cornerRadius = imgHeight/2
-        
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow(_:)), name: .UIKeyboardWillShow, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide(_:)), name: .UIKeyboardWillHide, object: nil)
+        
+        cancelBtn.addTarget(self, action: #selector(cancelChangement(_:)), for: .touchUpInside)
+        saveBtn.addTarget(self, action: #selector(saveChangement(_:)), for: .touchUpInside)
+        
+        self.GetUserInfo()
+        
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -104,11 +115,19 @@ class SetInfoViewController: UIViewController {
     }
     
     @objc func keyboardWillShow(_ notification: Notification) {
-        self.view.frame.origin.y = -180
+        self.view.frame.origin.y = -150
         self.view.layoutIfNeeded()
     }
     
     @objc func keyboardWillHide(_ notification: Notification) {
+        if CheckEditStatus() {
+            saveBtn.isHidden = false
+            cancelBtn.isHidden = false
+        } else {
+            saveBtn.isHidden = true
+            cancelBtn.isHidden = true
+        }
+        
         self.view.frame.origin.y = 0
         self.view.layoutIfNeeded()
     }
@@ -240,11 +259,44 @@ extension SetInfoViewController: UITableViewDataSource {
         guard indexPath.row > 1 else {
             let cell = tableView.dequeueReusableCell(withIdentifier: "InfoTableViewCell") as! InfoTableViewCell
             cell.nameLabel.text = tagArrs[indexPath.row]
+            
+            guard userInfoModel != nil else {
+                return cell
+            }
+            
+            switch indexPath.row {
+            case 0:
+                cell.infoLabel.text = String(userInfoModel.data.id)
+            case 1:
+                cell.infoLabel.text = userInfoModel.data.name
+            default:
+                return cell
+            }
+            
             return cell
         }
+        
         let cell = tableView.dequeueReusableCell(withIdentifier: "SetInfoTableViewCell") as! SetInfoTableViewCell
         cell.nameLabel.text = tagArrs[indexPath.row]
         cell.selectionStyle = .none
+        
+        guard userInfoModel != nil else {
+            return cell
+        }
+        
+        switch indexPath.row {
+        case 2:
+            cell.infoTextField.text = userInfoModel.data.payNumber
+        case 3:
+            cell.infoTextField.text = userInfoModel.data.phone
+        case 4:
+            cell.infoTextField.text = userInfoModel.data.wechat
+        case 5:
+            cell.infoTextField.text = userInfoModel.data.email
+        default:
+            return cell
+        }
+        
         return cell
         
     }
@@ -255,7 +307,18 @@ extension SetInfoViewController: UIImagePickerControllerDelegate, UINavigationCo
     
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
         let image: UIImage = info[UIImagePickerControllerEditedImage] as! UIImage
-        imgView.image = image
+        
+        var uid: Int = 0
+        if let model = userInfoModel {
+            uid = model.data.id
+        }
+        
+        UserInfoHelper.uploadAvatar(dictionary: ["avatar":image, "uid": uid], success: {
+            self.imgView.image = image
+        }, failure: {
+            
+        })
+        
         picker.dismiss(animated: true, completion: nil)
     }
     
@@ -328,7 +391,119 @@ extension SetInfoViewController: UIImagePickerControllerDelegate, UINavigationCo
     }
     
     
+}
+
+extension SetInfoViewController {
     
+    func GetUserInfo() {
+        
+        NetworkManager.getInformation(url: "/user/info", token: WorkUser.shared.token, success: { dic in
+            
+            if let data = try? JSONSerialization.data(withJSONObject: dic, options: JSONSerialization.WritingOptions.init(rawValue: 0)), let userInfo = try? UserInfoModel(data: data) {
+                
+                self.userInfoModel = userInfo
+                self.tableView.reloadData()
+                
+                if let picurl =  userInfo.data.picture {
+                    self.imgView.sd_setImage(with: URL(string: "https://work-alpha.twtstudio.com"+picurl), placeholderImage: UIImage(named: "头像"), options: SDWebImageOptions.retryFailed, completed: nil)
+                }
+                
+            }
+        }, failure: { error in
+            
+        })
+        
+    }
     
+    func CheckEditStatus() -> Bool {
+        
+        if let cell = tableView.cellForRow(at: IndexPath(row: 2, section: 0)) as? SetInfoTableViewCell {
+            if cell.infoTextField.text != userInfoModel.data.payNumber ?? ""{
+                return true
+            }
+        }
+        if let cell = tableView.cellForRow(at: IndexPath(row: 3, section: 0)) as? SetInfoTableViewCell {
+            if cell.infoTextField.text != userInfoModel.data.phone  ?? ""{
+                return true
+            }
+        }
+        if let cell = tableView.cellForRow(at: IndexPath(row: 4, section: 0)) as? SetInfoTableViewCell {
+            if cell.infoTextField.text != userInfoModel.data.wechat  ?? "" {
+                return true
+            }
+        }
+        if let cell = tableView.cellForRow(at: IndexPath(row: 5, section: 0)) as? SetInfoTableViewCell {
+            if cell.infoTextField.text != userInfoModel.data.email  ?? "" {
+                return true
+            }
+        }
+        
+        return false
+        
+    }
+    
+    @objc func cancelChangement(_ sender: UIButton) {
+        
+        if let cell = tableView.cellForRow(at: IndexPath(row: 2, section: 0)) as? SetInfoTableViewCell {
+            cell.infoTextField.text = userInfoModel.data.payNumber
+        }
+        if let cell = tableView.cellForRow(at: IndexPath(row: 3, section: 0)) as? SetInfoTableViewCell {
+            cell.infoTextField.text = userInfoModel.data.phone  ?? ""
+        }
+        if let cell = tableView.cellForRow(at: IndexPath(row: 4, section: 0)) as? SetInfoTableViewCell {
+            cell.infoTextField.text = userInfoModel.data.wechat  ?? ""
+        }
+        if let cell = tableView.cellForRow(at: IndexPath(row: 5, section: 0)) as? SetInfoTableViewCell {
+            cell.infoTextField.text = userInfoModel.data.email  ?? ""
+        }
+        
+        self.view.endEditing(true)
+        self.cancelBtn.isHidden = true
+        self.saveBtn.isHidden = true
+        
+    }
+    
+    @objc func saveChangement(_ sender: UIButton) {
+        
+        var dic: [String:String] = [:]
+        
+        if let cell = tableView.cellForRow(at: IndexPath(row: 2, section: 0)) as? SetInfoTableViewCell {
+            if cell.infoTextField.text != userInfoModel.data.payNumber ?? ""{
+                dic["pay_number"] = cell.infoTextField.text
+            }
+        }
+        if let cell = tableView.cellForRow(at: IndexPath(row: 3, section: 0)) as? SetInfoTableViewCell {
+            if cell.infoTextField.text != userInfoModel.data.phone  ?? ""{
+                dic["phone"] = cell.infoTextField.text
+            }
+        }
+        if let cell = tableView.cellForRow(at: IndexPath(row: 4, section: 0)) as? SetInfoTableViewCell {
+            if cell.infoTextField.text != userInfoModel.data.wechat  ?? "" {
+                dic["wechat"] = cell.infoTextField.text
+            }
+        }
+        if let cell = tableView.cellForRow(at: IndexPath(row: 5, section: 0)) as? SetInfoTableViewCell {
+            if cell.infoTextField.text != userInfoModel.data.email  ?? "" {
+                dic["email"] = cell.infoTextField.text
+            }
+        }
+        
+        UserInfoHelper.uploadUserInfo(dictionary: dic, success: {
+            
+            self.userInfoModel.data.payNumber = dic["pay_number"] ?? self.userInfoModel.data.payNumber
+            self.userInfoModel.data.phone = dic["phone"] ?? self.userInfoModel.data.phone
+            self.userInfoModel.data.wechat = dic["wechat"] ?? self.userInfoModel.data.wechat
+            self.userInfoModel.data.email = dic["email"] ?? self.userInfoModel.data.email
+            
+            self.cancelBtn.isHidden = true
+            self.saveBtn.isHidden = true
+            
+            
+            
+        }, failure: {
+            
+        })
+        
+    }
     
 }

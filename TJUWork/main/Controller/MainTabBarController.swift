@@ -14,12 +14,12 @@ class MainTanBarController: UITabBarController {
         super.viewDidLoad()
         
         
-        let one = DetailMessageViewController()
+        let one = ScheduleViewController()
         one.tabBarItem.image = self.resizedTabBarItemImage(img: UIImage(named: "日历")!)
         one.tabBarItem.selectedImage = self.resizedTabBarItemImage(img: UIImage(named: "日历选中")!)
         one.tabBarItem.imageInsets = UIEdgeInsets(top: 6, left: 0, bottom: -6, right: 0)
         
-        let two = CreateMessageViewController()
+        let two = MessageViewController()
         two.tabBarItem.image = self.resizedTabBarItemImage(img: UIImage(named: "任务")!)
         two.tabBarItem.selectedImage = self.resizedTabBarItemImage(img: UIImage(named: "任务选中")!)
         two.tabBarItem.imageInsets = UIEdgeInsets(top: 6, left: 0, bottom: -6, right: 0)

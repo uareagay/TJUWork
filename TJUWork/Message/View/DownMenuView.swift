@@ -10,7 +10,7 @@ import UIKit
 
 protocol DropDownDelegate: class {
     
-    func didSelectCell(_ number: Int);
+    func didSelectCell(_ typr: DownMenuView.MenuType);
     
     
 }
@@ -18,9 +18,22 @@ protocol DropDownDelegate: class {
 class DownMenuView: UIView {
     
     var tableView: UITableView!
-    fileprivate var titleArr: [String] = []
+    fileprivate var titleArrs: [String] = ["发件箱", "草稿箱"]
     
     weak var delegate: DropDownDelegate?
+    
+    var selectedType: DownMenuView.MenuType = .inbox {
+        didSet {
+            switch selectedType {
+            case .inbox:
+                self.titleArrs = ["发件箱", "草稿箱"]
+            case .outbox:
+                self.titleArrs = ["收件箱", "草稿箱"]
+            case .draft:
+                self.titleArrs = ["收件箱", "发件箱"]
+            }
+        }
+    }
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -32,7 +45,6 @@ class DownMenuView: UIView {
         tableView.dataSource = self
         tableView.separatorStyle = .none
         tableView.bounces = false
-        
         
         self.addSubview(tableView)
         
@@ -49,38 +61,29 @@ class DownMenuView: UIView {
     }
     
     
-    func showMenuView() {
-        
-        self.bringSubview(toFront: tableView)
-        UIView.animate(withDuration: 0.25, animations: {
-            self.tableView.frame = CGRect(x: 0, y: 0, width: self.frame.size.width, height: 32.5*3)
-        })
-        
-    }
-    
-    func hideMenuView() {
-        
-        UIView.animate(withDuration: 0.25, animations: {
-            self.tableView.frame = CGRect(x: 0, y: 0, width: self.frame.size.width, height: 0)
-        })
-        
-    }
-    
-    
 }
 
 extension DownMenuView: UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         hideMenuView()
-        delegate?.didSelectCell(indexPath.row)
         tableView.deselectRow(at: indexPath, animated: false)
+        
+        let menuString = self.titleArrs[indexPath.row]
+        switch menuString {
+        case "收件箱":
+            self.selectedType = .inbox
+            delegate?.didSelectCell(.inbox)
+        case "发件箱":
+            self.selectedType = .outbox
+            delegate?.didSelectCell(.outbox)
+        case "草稿箱":
+            self.selectedType = .draft
+            delegate?.didSelectCell(.draft)
+        default:
+            return
+        }
     }
-    
-//    func tableView(_ tableView: UITableView, didDeselectRowAt indexPath: IndexPath) {
-//        tableView.deselectRow(at: indexPath, animated: false)
-//    }
-    
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 32.5
@@ -91,7 +94,7 @@ extension DownMenuView: UITableViewDelegate {
 extension DownMenuView: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 3
+        return 2
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -108,7 +111,7 @@ extension DownMenuView: UITableViewDataSource {
         lineView.alpha = 0.6
         lineView.backgroundColor = UIColor.gray
         
-        if indexPath.row ==  2 {
+        if indexPath.row ==  1 {
             lineView.backgroundColor = .clear
         }
         
@@ -117,16 +120,38 @@ extension DownMenuView: UITableViewDataSource {
         
         switch indexPath.row {
         case 0:
-            label.text = "发件箱"
+            label.text = self.titleArrs[0]
         case 1:
-            label.text = "草稿箱"
-        case 2:
-            label.text = "垃圾箱"
+            label.text = self.titleArrs[1]
         default:
             label.text = ""
         }
         
         return cell
+    }
+    
+}
+
+extension DownMenuView {
+    
+    func showMenuView() {
+        self.tableView.reloadData()
+        self.bringSubview(toFront: tableView)
+        UIView.animate(withDuration: 0.25, animations: {
+            self.tableView.frame = CGRect(x: 0, y: 0, width: self.frame.size.width, height: 32.5*2)
+        })
+    }
+    
+    func hideMenuView() {
+        UIView.animate(withDuration: 0.25, animations: {
+            self.tableView.frame = CGRect(x: 0, y: 0, width: self.frame.size.width, height: 0)
+        })
+    }
+    
+    enum MenuType {
+        case inbox   //收件列表
+        case outbox  //发件列表
+        case draft   //草稿列表
     }
     
 }

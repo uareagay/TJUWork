@@ -21,7 +21,7 @@ class ReceiverCollectionViewCell: UICollectionViewCell {
     
     let backView: UIView = {
         let view = UIView()
-        view.backgroundColor = .blue
+        view.backgroundColor = UIColor(hex6: 0x00518e)
         view.layer.masksToBounds = true
         view.layer.cornerRadius = 8.0
         return view
@@ -29,7 +29,7 @@ class ReceiverCollectionViewCell: UICollectionViewCell {
     
     let deleteBtn: UIButton = {
         let btn = UIButton()
-        btn.backgroundColor = .blue
+        btn.backgroundColor = UIColor(hex6: 0x00518e)
         btn.setImage(UIImage.resizedImage(image: UIImage(named: "关闭")!, scaledToWidth: 16.0), for: .normal)
         return btn
     }()

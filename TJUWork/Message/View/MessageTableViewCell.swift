@@ -47,7 +47,7 @@ class MessageTableViewCell: UITableViewCell {
     
     let imgView: UIImageView = {
         let imgView = UIImageView()
-        imgView.backgroundColor = .white
+        imgView.alpha = 0.0
         return imgView
     }()
     

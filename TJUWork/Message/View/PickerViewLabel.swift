@@ -8,7 +8,10 @@
 
 import UIKit
 
+
 class PickerViewLabel: UILabel {
+    
+    var limitAction: () -> Void = {}
     
     private var _inputView: UIView = {
         let picker = UIPickerView()
@@ -23,7 +26,7 @@ class PickerViewLabel: UILabel {
     
     override var isUserInteractionEnabled: Bool {
         set {
-            
+
         } get {
             return true
         }
@@ -62,6 +65,7 @@ class PickerViewLabel: UILabel {
     }
     
     @objc func showPickerView(_ gesture: UITapGestureRecognizer) {
+        limitAction()
         self.becomeFirstResponder()
     }
     

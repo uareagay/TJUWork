@@ -9,6 +9,7 @@ target 'TJUWork' do
   pod 'SDWebImage'
   pod 'SwiftMessages'
   pod 'FSCalendar'
+  pod 'MJRefresh'
 end
 
 

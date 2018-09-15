@@ -9,21 +9,27 @@
 import UIKit
 
 
-fileprivate let unSelectedImg = UIImage.resizedImage(image: UIImage(named: "类别未选中")!, scaledToWidth: 12.0)
-fileprivate let selectedImg = UIImage.resizedImage(image: UIImage(named: "类别选中")!, scaledToWidth: 12.0)
+protocol InformAndReplyProtocol: class {
+    func foldTableView(_ isFold: Bool);
+}
 
-fileprivate var fontFloat: CGFloat {
+fileprivate let unSelectedImg = UIImage.resizedImage(image: UIImage(named: "类别未选中")!, scaledToWidth: 15.0)
+fileprivate let selectedImg = UIImage.resizedImage(image: UIImage(named: "类别选中")!, scaledToWidth: 17.0)
+
+fileprivate var gapWidth: CGFloat {
     guard UIScreen.main.bounds.size.width == 320 else {
-        return 13
+        return 10
     }
-    return 11
+    return 1
 }
 
 class MessageCategoryTableViewCell: UITableViewCell {
     
+    weak var delegate: InformAndReplyProtocol?
+    
     enum MessageCategoryName {
         case inform//通知信息
-        case conference//会议信息
+        //case conference//会议信息
         case work//工作信息
     }
     
@@ -41,7 +47,7 @@ class MessageCategoryTableViewCell: UITableViewCell {
         label.textAlignment = .left
         label.textColor = UIColor(hex6: 0x8b8b8b)
         label.text = "通知信息"
-        label.font = UIFont.systemFont(ofSize: fontFloat, weight: UIFont.Weight.regular)
+        label.font = UIFont.systemFont(ofSize: 15, weight: UIFont.Weight.regular)
         return label
     }()
     
@@ -52,27 +58,27 @@ class MessageCategoryTableViewCell: UITableViewCell {
         return btn
     }()
     
-    let conferenceLabel: UILabel = {
-        let label = UILabel()
-        label.textAlignment = .left
-        label.textColor = UIColor(hex6: 0x8b8b8b)
-        label.text = "会议信息"
-        label.font = UIFont.systemFont(ofSize: fontFloat, weight: UIFont.Weight.regular)
-        return label
-    }()
-    
-    let conferenceBtn: UIButton = {
-        let btn = UIButton()
-        btn.setImage(unSelectedImg, for: .normal)
-        return btn
-    }()
+//    let conferenceLabel: UILabel = {
+//        let label = UILabel()
+//        label.textAlignment = .left
+//        label.textColor = UIColor(hex6: 0x8b8b8b)
+//        label.text = "会议信息"
+//        label.font = UIFont.systemFont(ofSize: fontFloat, weight: UIFont.Weight.regular)
+//        return label
+//    }()
+//
+//    let conferenceBtn: UIButton = {
+//        let btn = UIButton()
+//        btn.setImage(unSelectedImg, for: .normal)
+//        return btn
+//    }()
     
     let workLabel: UILabel = {
         let label = UILabel()
         label.textAlignment = .left
         label.textColor = UIColor(hex6: 0x8b8b8b)
         label.text = "工作信息"
-        label.font = UIFont.systemFont(ofSize: fontFloat, weight: UIFont.Weight.regular)
+        label.font = UIFont.systemFont(ofSize: 15, weight: UIFont.Weight.regular)
         return label
     }()
     
@@ -82,33 +88,51 @@ class MessageCategoryTableViewCell: UITableViewCell {
         return btn
     }()
     
-    fileprivate let pieceWidth: CGFloat = (UIScreen.main.bounds.size.width-10-10-15-90-10)/3
+//    fileprivate let pieceWidth: CGFloat = (UIScreen.main.bounds.size.width-10-10-15-90-10)/3
     
-    var categoryStatus: MessageCategoryName = .inform {
+    var categoryStatus: MessageCategoryName? = nil {
         didSet {
-            switch categoryStatus {
-            case .inform:
-                informBtn.setImage(selectedImg, for: .normal)
-                conferenceBtn.setImage(unSelectedImg, for: .normal)
-                workBtn.setImage(unSelectedImg, for: .normal)
-                informLabel.textColor = UIColor(hex6: 0x5874b1)
-                conferenceLabel.textColor = UIColor(hex6: 0x8b8b8b)
-                workLabel.textColor = UIColor(hex6: 0x8b8b8b)
-            case .conference:
-                informBtn.setImage(unSelectedImg, for: .normal)
-                conferenceBtn.setImage(selectedImg, for: .normal)
-                workBtn.setImage(unSelectedImg, for: .normal)
-                informLabel.textColor = UIColor(hex6: 0x8b8b8b)
-                conferenceLabel.textColor = UIColor(hex6: 0x5874b1)
-                workLabel.textColor = UIColor(hex6: 0x8b8b8b)
-            case .work:
-                informBtn.setImage(unSelectedImg, for: .normal)
-                conferenceBtn.setImage(unSelectedImg, for: .normal)
-                workBtn.setImage(selectedImg, for: .normal)
-                informLabel.textColor = UIColor(hex6: 0x8b8b8b)
-                conferenceLabel.textColor = UIColor(hex6: 0x8b8b8b)
-                workLabel.textColor = UIColor(hex6: 0x5874b1)
+            
+            if let status = categoryStatus {
+                switch status {
+                case .inform:
+                    informBtn.setImage(selectedImg, for: .normal)
+                    workBtn.setImage(unSelectedImg, for: .normal)
+                    informLabel.textColor = UIColor(hex6: 0x5874b1)
+                    workLabel.textColor = UIColor(hex6: 0x8b8b8b)
+                    delegate?.foldTableView(true)
+                case .work:
+                    informBtn.setImage(unSelectedImg, for: .normal)
+                    workBtn.setImage(selectedImg, for: .normal)
+                    informLabel.textColor = UIColor(hex6: 0x8b8b8b)
+                    workLabel.textColor = UIColor(hex6: 0x5874b1)
+                    delegate?.foldTableView(false)
+                }
             }
+            
+//            switch categoryStatus {
+//            case .inform?:
+//                informBtn.setImage(selectedImg, for: .normal)
+////                conferenceBtn.setImage(unSelectedImg, for: .normal)
+//                workBtn.setImage(unSelectedImg, for: .normal)
+//                informLabel.textColor = UIColor(hex6: 0x5874b1)
+////                conferenceLabel.textColor = UIColor(hex6: 0x8b8b8b)
+//                workLabel.textColor = UIColor(hex6: 0x8b8b8b)
+////            case .conference:
+////                informBtn.setImage(unSelectedImg, for: .normal)
+////                conferenceBtn.setImage(selectedImg, for: .normal)
+////                workBtn.setImage(unSelectedImg, for: .normal)
+////                informLabel.textColor = UIColor(hex6: 0x8b8b8b)
+////                conferenceLabel.textColor = UIColor(hex6: 0x5874b1)
+////                workLabel.textColor = UIColor(hex6: 0x8b8b8b)
+//            case .work:
+//                informBtn.setImage(unSelectedImg, for: .normal)
+////                conferenceBtn.setImage(unSelectedImg, for: .normal)
+//                workBtn.setImage(selectedImg, for: .normal)
+//                informLabel.textColor = UIColor(hex6: 0x8b8b8b)
+////                conferenceLabel.textColor = UIColor(hex6: 0x8b8b8b)
+//                workLabel.textColor = UIColor(hex6: 0x5874b1)
+//            }
         }
     }
     
@@ -130,8 +154,8 @@ class MessageCategoryTableViewCell: UITableViewCell {
         contentView.addSubview(titleLabel)
         contentView.addSubview(informBtn)
         contentView.addSubview(informLabel)
-        contentView.addSubview(conferenceBtn)
-        contentView.addSubview(conferenceLabel)
+//        contentView.addSubview(conferenceBtn)
+//        contentView.addSubview(conferenceLabel)
         contentView.addSubview(workBtn)
         contentView.addSubview(workLabel)
         
@@ -144,45 +168,45 @@ class MessageCategoryTableViewCell: UITableViewCell {
         informBtn.snp.makeConstraints { make in
             make.left.equalTo(titleLabel.snp.right)
             make.top.bottom.equalToSuperview().inset(5)
-            make.width.equalTo(15)
+            make.width.equalTo(25)
         }
         
         informLabel.snp.makeConstraints { make in
             make.left.equalTo(informBtn.snp.right)
             make.top.bottom.equalToSuperview().inset(15)
-            make.width.equalTo(pieceWidth-15)
+            make.width.equalTo(70)
         }
         
-        conferenceBtn.snp.makeConstraints { make in
-            make.left.equalTo(informLabel.snp.right)
-            make.top.bottom.equalToSuperview().inset(5)
-            make.width.equalTo(15)
-        }
-        
-        conferenceLabel.snp.makeConstraints { make in
-            make.left.equalTo(conferenceBtn.snp.right)
-            make.top.bottom.equalToSuperview().inset(15)
-            make.width.equalTo(pieceWidth-15)
-        }
+//        conferenceBtn.snp.makeConstraints { make in
+//            make.left.equalTo(informLabel.snp.right)
+//            make.top.bottom.equalToSuperview().inset(5)
+//            make.width.equalTo(15)
+//        }
+//
+//        conferenceLabel.snp.makeConstraints { make in
+//            make.left.equalTo(conferenceBtn.snp.right)
+//            make.top.bottom.equalToSuperview().inset(15)
+//            make.width.equalTo(pieceWidth-15)
+//        }
         
         workBtn.snp.makeConstraints { make in
-            make.left.equalTo(conferenceLabel.snp.right)
+            make.left.equalTo(informLabel.snp.right).offset(gapWidth)
             make.top.bottom.equalToSuperview().inset(5)
-            make.width.equalTo(15)
+            make.width.equalTo(25)
         }
         
         workLabel.snp.makeConstraints { make in
             make.left.equalTo(workBtn.snp.right)
             make.top.bottom.equalToSuperview().inset(15)
-            make.width.equalTo(pieceWidth-15)
+            make.width.equalTo(70)
         }
         
         informBtn.addTarget(self, action: #selector(changeCategoryName(_:)), for: .touchUpInside)
-        conferenceBtn.addTarget(self, action: #selector(changeCategoryName(_:)), for: .touchUpInside)
+//        conferenceBtn.addTarget(self, action: #selector(changeCategoryName(_:)), for: .touchUpInside)
         workBtn.addTarget(self, action: #selector(changeCategoryName(_:)), for: .touchUpInside)
         
         informBtn.tag = 101
-        conferenceBtn.tag = 102
+//        conferenceBtn.tag = 102
         workBtn.tag = 103
         
     }
@@ -204,8 +228,8 @@ class MessageCategoryTableViewCell: UITableViewCell {
         switch sender.tag {
         case 101:
             categoryStatus = .inform
-        case 102:
-            categoryStatus = .conference
+//        case 102:
+//            categoryStatus = .conference
         case 103:
             categoryStatus = .work
         default:

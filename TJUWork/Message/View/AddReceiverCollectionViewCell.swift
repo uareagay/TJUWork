@@ -12,7 +12,7 @@ class AddReceiverCollectionViewCell: UICollectionViewCell {
     
     let addBtn: UIButton = {
         let btn = UIButton()
-        btn.backgroundColor = .blue
+        btn.backgroundColor = UIColor(hex6: 0x00518e)
         btn.setImage(UIImage.resizedImage(image: UIImage(named: "加号")!, scaledToWidth: 20.0), for: .normal)
         btn.layer.masksToBounds = true
         btn.layer.cornerRadius = 8.0

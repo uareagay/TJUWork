@@ -16,7 +16,7 @@ class ContactTableViewCell: UITableViewCell {
     let nameLabel: UILabel = {
         let label = UILabel()
         label.text = "校党委"
-        label.textColor = UIColor(hex6: 0x8db6d4)
+        label.textColor = UIColor(hex6: 0x7d7d7d)
         label.textAlignment = .left
         label.font = UIFont.systemFont(ofSize: 14, weight: UIFont.Weight.regular)
         return label
@@ -49,8 +49,10 @@ class ContactTableViewCell: UITableViewCell {
         willSet {
             if newValue == true {
                 selectBtn.setImage(UIImage.resizedImage(image: UIImage(named: "联系人选中")!, scaledToWidth: 15.0), for: .normal)
+                nameLabel.textColor = UIColor(hex6: 0x00518e)
             } else {
                 selectBtn.setImage(UIImage.resizedImage(image: UIImage(named: "联系人未选中")!, scaledToWidth: 15.0), for: .normal)
+                nameLabel.textColor = UIColor(hex6: 0x7d7d7d)
             }
         }
     }
