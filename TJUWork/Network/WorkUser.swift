@@ -14,17 +14,17 @@ class WorkUser: Codable {
     private init() {}
     
     var token: String?
-    var ID: String = ""
-    var name: String = ""
     
+    var username: String = ""
     var password: String = ""
     
-    var email: String = ""
-    var picture: String = ""
-    var payNumber: String = ""
-    var wechat: String = ""
-    var phone: String = ""
-    var gender: String = ""
+    //var ID: String = ""
+    //var email: String = ""
+    //var picture: String = ""
+    //var payNumber: String = ""
+    //var wechat: String = ""
+    //var phone: String = ""
+    //var gender: String = ""
     
     var admin: String = ""
     

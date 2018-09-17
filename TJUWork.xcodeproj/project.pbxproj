@@ -13,6 +13,8 @@
 		DD03B5D5214B98D5007E2CB4 /* DetailMessageModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD03B5D4214B98D5007E2CB4 /* DetailMessageModel.swift */; };
 		DD03B5D7214BCC2C007E2CB4 /* ReplyMessageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD03B5D6214BCC2C007E2CB4 /* ReplyMessageViewController.swift */; };
 		DD03B5DB214CFE36007E2CB4 /* NotificationName.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD03B5DA214CFE36007E2CB4 /* NotificationName.swift */; };
+		DD03B5DF214D8B6A007E2CB4 /* GTExtensionSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DD03B5DD214D8B69007E2CB4 /* GTExtensionSDK.framework */; };
+		DD03B5E0214D8B6A007E2CB4 /* GTSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DD03B5DE214D8B69007E2CB4 /* GTSDK.framework */; };
 		DD0AA74420F8B6200011F1EE /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD0AA74320F8B6200011F1EE /* AppDelegate.swift */; };
 		DD0AA74620F8B6200011F1EE /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD0AA74520F8B6200011F1EE /* ViewController.swift */; };
 		DD0AA74920F8B6200011F1EE /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = DD0AA74720F8B6200011F1EE /* Main.storyboard */; };
@@ -186,6 +188,8 @@
 		DD03B5D4214B98D5007E2CB4 /* DetailMessageModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailMessageModel.swift; sourceTree = "<group>"; };
 		DD03B5D6214BCC2C007E2CB4 /* ReplyMessageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReplyMessageViewController.swift; sourceTree = "<group>"; };
 		DD03B5DA214CFE36007E2CB4 /* NotificationName.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationName.swift; sourceTree = "<group>"; };
+		DD03B5DD214D8B69007E2CB4 /* GTExtensionSDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = GTExtensionSDK.framework; sourceTree = "<group>"; };
+		DD03B5DE214D8B69007E2CB4 /* GTSDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = GTSDK.framework; sourceTree = "<group>"; };
 		DD0AA74020F8B6200011F1EE /* TJUWork.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TJUWork.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		DD0AA74320F8B6200011F1EE /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		DD0AA74520F8B6200011F1EE /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -326,6 +330,7 @@
 		DD1459E02147EF830018BC07 /* SwiftMessagesExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftMessagesExtension.swift; sourceTree = "<group>"; };
 		DD31345B2148B9AE00A0990E /* DraftListModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DraftListModel.swift; sourceTree = "<group>"; };
 		DD31345D214A58B800A0990E /* OutboxListModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OutboxListModel.swift; sourceTree = "<group>"; };
+		DD6598AC214D91480079E2CF /* TJUWork.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = TJUWork.entitlements; sourceTree = "<group>"; };
 		DD796D2521383FB10042D058 /* NetworkManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkManager.swift; sourceTree = "<group>"; };
 		DD796D272138F8840042D058 /* WorkUser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkUser.swift; sourceTree = "<group>"; };
 		DD796D292138F9FB0042D058 /* AccountManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountManager.swift; sourceTree = "<group>"; };
@@ -360,6 +365,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DD03B5E0214D8B6A007E2CB4 /* GTSDK.framework in Frameworks */,
+				DD03B5DF214D8B6A007E2CB4 /* GTExtensionSDK.framework in Frameworks */,
 				3207A80733827549AE946B8D /* Pods_TJUWork.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -398,6 +405,15 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		DD03B5DC214D8B69007E2CB4 /* GtSdkLib */ = {
+			isa = PBXGroup;
+			children = (
+				DD03B5DD214D8B69007E2CB4 /* GTExtensionSDK.framework */,
+				DD03B5DE214D8B69007E2CB4 /* GTSDK.framework */,
+			);
+			path = GtSdkLib;
+			sourceTree = "<group>";
+		};
 		DD0AA73720F8B6200011F1EE = {
 			isa = PBXGroup;
 			children = (
@@ -423,6 +439,8 @@
 		DD0AA74220F8B6200011F1EE /* TJUWork */ = {
 			isa = PBXGroup;
 			children = (
+				DD6598AC214D91480079E2CF /* TJUWork.entitlements */,
+				DD03B5DC214D8B69007E2CB4 /* GtSdkLib */,
 				DD1459122146D4B50018BC07 /* Source */,
 				DD796D2421383F7F0042D058 /* Network */,
 				DD81CB3921007B9B00EB5843 /* Schedule */,
@@ -685,6 +703,14 @@
 			path = "Third Party";
 			sourceTree = "<group>";
 		};
+		DD6598AD214E3E8C0079E2CF /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				DD03B5D2214AC4DF007E2CB4 /* WorkCalendarModel.swift */,
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
 		DD796D2421383F7F0042D058 /* Network */ = {
 			isa = PBXGroup;
 			children = (
@@ -747,6 +773,7 @@
 		DD81CB3921007B9B00EB5843 /* Schedule */ = {
 			isa = PBXGroup;
 			children = (
+				DD6598AD214E3E8C0079E2CF /* Model */,
 				DDBBEE9121019A6400244E40 /* View */,
 				DD81CB3A21007BCC00EB5843 /* Controller */,
 			);
@@ -771,7 +798,6 @@
 				DD14583F214699180018BC07 /* PersonalMessageHelper.swift */,
 				DD31345B2148B9AE00A0990E /* DraftListModel.swift */,
 				DD31345D214A58B800A0990E /* OutboxListModel.swift */,
-				DD03B5D2214AC4DF007E2CB4 /* WorkCalendarModel.swift */,
 				DD03B5D0214A9FC3007E2CB4 /* InboxListModel.swift */,
 				DD03B5D4214B98D5007E2CB4 /* DetailMessageModel.swift */,
 			);
@@ -857,6 +883,14 @@
 				TargetAttributes = {
 					DD0AA73F20F8B6200011F1EE = {
 						CreatedOnToolsVersion = 9.4.1;
+						SystemCapabilities = {
+							com.apple.BackgroundModes = {
+								enabled = 1;
+							};
+							com.apple.Push = {
+								enabled = 1;
+							};
+						};
 					};
 					DD0AA75320F8B6230011F1EE = {
 						CreatedOnToolsVersion = 9.4.1;
@@ -1302,15 +1336,23 @@
 			baseConfigurationReference = 4FD6EC0575B276B254E8A465 /* Pods-TJUWork.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = 358P3P2LMY;
+				CODE_SIGN_ENTITLEMENTS = TJUWork/TJUWork.entitlements;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_STYLE = Manual;
+				DEVELOPMENT_TEAM = TYRRVX7RWJ;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/TJUWork/GtSdkLib",
+				);
 				INFOPLIST_FILE = TJUWork/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "Zhao-Jiachen.TJUWork";
+				PRODUCT_BUNDLE_IDENTIFIER = cn.edu.twt.TJUWork;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "1ac82bba-dc4f-45c8-91cb-3645c8939b1f";
+				PROVISIONING_PROFILE_SPECIFIER = "Work-Push";
 				SWIFT_OBJC_BRIDGING_HEADER = "/Users/zhaojiachen/Desktop/TJUWork/TJUWork/TJUWork-Bridging-Header.h";
 				SWIFT_VERSION = 4.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -1322,15 +1364,23 @@
 			baseConfigurationReference = 708F90E20EB76A78B88C3118 /* Pods-TJUWork.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = 358P3P2LMY;
+				CODE_SIGN_ENTITLEMENTS = TJUWork/TJUWork.entitlements;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_STYLE = Manual;
+				DEVELOPMENT_TEAM = TYRRVX7RWJ;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/TJUWork/GtSdkLib",
+				);
 				INFOPLIST_FILE = TJUWork/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "Zhao-Jiachen.TJUWork";
+				PRODUCT_BUNDLE_IDENTIFIER = cn.edu.twt.TJUWork;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "1ac82bba-dc4f-45c8-91cb-3645c8939b1f";
+				PROVISIONING_PROFILE_SPECIFIER = "Work-Push";
 				SWIFT_OBJC_BRIDGING_HEADER = "/Users/zhaojiachen/Desktop/TJUWork/TJUWork/TJUWork-Bridging-Header.h";
 				SWIFT_VERSION = 4.0;
 				TARGETED_DEVICE_FAMILY = "1,2";

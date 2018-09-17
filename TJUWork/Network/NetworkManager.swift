@@ -21,7 +21,6 @@ struct NetworkManager {
         var headers = HTTPHeaders()
         if let token = WorkUser.shared.token {
             headers["Authorization"] = "bearer \(token)"
-            print(token)
         }
         
         Alamofire.request(fullURL, method: .get, parameters: parameters, headers: headers).responseJSON { response in
@@ -43,6 +42,7 @@ struct NetworkManager {
     }
     
     static func postInformation(baseURL: String = WORK_ROOT_URL, url:String, token: String? = nil, parameters: [String:Any]? = nil, success: (([String:Any]) -> ())? = nil, failure: ((Error) -> ())? = nil) {
+        
         
         let fullURL = baseURL + url
         
@@ -66,6 +66,7 @@ struct NetworkManager {
         if let token = WorkUser.shared.token {
             headers["Authorization"] = "bearer \(token)"
         }
+        
         Alamofire.upload(multipartFormData: { formdata in
             for item in dataDict {
                 formdata.append(item.value, withName: item.key, fileName: "avatar.jpg", mimeType: "image/jpeg")

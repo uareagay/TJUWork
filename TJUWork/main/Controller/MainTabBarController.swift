@@ -44,4 +44,8 @@ class MainTanBarController: UITabBarController {
         
     }
     
+    deinit {
+        NotificationCenter.default.removeObserver(self)
+    }
+    
 }

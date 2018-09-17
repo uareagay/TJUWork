@@ -728,6 +728,7 @@ extension CreateMessageViewController {
         PersonalMessageHelper.sendMessage(dictionary: dic, success: {
             NotificationCenter.default.post(name: NotificationName.NotificationRefreshInboxLists.name, object: nil)
             NotificationCenter.default.post(name: NotificationName.NotificationRefreshOutboxLists.name, object: nil)
+            NotificationCenter.default.post(name: NotificationName.NotificationRefreshCalendar.name, object: nil)
 //            let messageVC = self.navigationController?.viewControllers[0] as! MessageViewController
 //            messageVC.tableView.mj_header.beginRefreshing()
             self.navigationController?.popViewController(animated: true)

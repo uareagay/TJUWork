@@ -93,6 +93,7 @@ extension DetailMessageViewController {
             case .inbox:
                 PersonalMessageHelper.deleteInbox(mid: [Int(self.mid!)!], success: {
                     NotificationCenter.default.post(name: NotificationName.NotificationRefreshInboxLists.name, object: nil)
+                    NotificationCenter.default.post(name: NotificationName.NotificationRefreshCalendar.name, object: nil)
 //                    let messageVC = self.navigationController?.viewControllers[0] as! MessageViewController
 //                    messageVC.refreshInboxLists()
                     self.navigationController?.popViewController(animated: true)
@@ -104,6 +105,7 @@ extension DetailMessageViewController {
             case .outbox:
                 PersonalMessageHelper.deleteOutbox(mid: [Int(self.mid!)!], success: {
                     NotificationCenter.default.post(name: NotificationName.NotificationRefreshOutboxLists.name, object: nil)
+                    NotificationCenter.default.post(name: NotificationName.NotificationRefreshCalendar.name, object: nil)
 //                    let messageVC = self.navigationController?.viewControllers[0] as! MessageViewController
 //                    messageVC.refreshOutboxLists()
                     self.navigationController?.popViewController(animated: true)

@@ -13,7 +13,7 @@ struct PersonalMessageHelper {
     
     static func sendMessage(dictionary: [String:Any], success: (()->())?, failure: (()->())?) {
         NetworkManager.postInformation(url: "/message/send", token: WorkUser.shared.token, parameters: dictionary, success: { dic in
-            print(dic)
+            
             if let status = dic["status"] as? Bool, status == true {
                 SwiftMessages.showSuccessMessage(title: "发送成功")
                 success?()
@@ -34,7 +34,7 @@ struct PersonalMessageHelper {
     
     static func saveDraft(dictionary: [String:Any], success: (()->())?, failure: (()->())?) {
         NetworkManager.postInformation(url: "/draft/save", token: WorkUser.shared.token, parameters: dictionary, success: { dic in
-            print(dic)
+            
             if let status = dic["status"] as? Bool, status == true {
                 SwiftMessages.showSuccessMessage(title: "存至草稿箱成功")
                 success?()

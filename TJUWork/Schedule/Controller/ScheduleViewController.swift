@@ -9,6 +9,8 @@
 import UIKit
 import SnapKit
 import FSCalendar
+import MJRefresh
+import SwiftMessages
 
 class ScheduleViewController: UIViewController {
     
@@ -61,10 +63,17 @@ class ScheduleViewController: UIViewController {
         let currentDate = currentCalendar.date(from: components)!
         self.selectedDate = currentDate
         super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(presentLoginView), name: NotificationName.NotificationLoginFail.name, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(headerRefresh), name: NotificationName.NotificationRefreshCalendar.name, object: nil)
     }
     
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    deinit {
+        NotificationCenter.default.removeObserver(self)
     }
     
     override func viewDidLoad() {
@@ -96,11 +105,42 @@ class ScheduleViewController: UIViewController {
         calendar.layer.masksToBounds = true
         calendar.layer.cornerRadius = 10
         
+        self.tableView.mj_header = MJRefreshNormalHeader(refreshingTarget: self, refreshingAction: #selector(headerRefresh))
+        
+        AccountManager.getToken(username: WorkUser.shared.username, password: WorkUser.shared.password, success: { token in
+            WorkUser.shared.token = token
+            print(token)
+            WorkUser.shared.save()
+            //SwiftMessages.showSuccessMessage(title: "登录成功", body: "")
+           self.tableView.mj_header.beginRefreshing()
+        }, failure: { error in
+            if error is NetworkManager.NetworkNotExist {
+                SwiftMessages.showErrorMessage(title: "您似乎已断开与互联网连接", body: "")
+            } else {
+                SwiftMessages.showErrorMessage(title: "请重新登录", body: "")
+            }
+            NotificationCenter.default.post(name: NotificationName.NotificationLoginFail.name, object: nil)
+        })
+        
+        
+        
+        //self.tableView.mj_header.beginRefreshing()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        self.navigationItem.title = "日程"
+        self.navigationController?.navigationBar.barTintColor = UIColor(hex6: 0x00518e)
+        self.navigationController?.navigationBar.titleTextAttributes = [NSAttributedStringKey.foregroundColor: UIColor.white]
+    }
+    
+    @objc func headerRefresh() {
         PersonalMessageHelper.getCalendarList(success: { model in
             self.calendarLists = model
             
             let currentCalendar = Calendar.current
             let datas = model.data
+            self.messageDisplay = []
             for i in 0..<datas.count {
                 let deadline = datas[i].to
                 let components = currentCalendar.dateComponents([.year, .month, .day], from: deadline)
@@ -116,19 +156,22 @@ class ScheduleViewController: UIViewController {
                     return false
                 }
             })
+            
+            if self.tableView.mj_header.isRefreshing {
+                self.tableView.mj_header.endRefreshing()
+            }
+            
             self.tableView.reloadData()
             self.calendar.reloadData()
         }, failure: {
-            
+            if self.tableView.mj_header.isRefreshing {
+                self.tableView.mj_header.endRefreshing()
+            }
         })
-        
     }
     
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        self.navigationItem.title = "日程"
-        self.navigationController?.navigationBar.barTintColor = UIColor(hex6: 0x00518e)
-        self.navigationController?.navigationBar.titleTextAttributes = [NSAttributedStringKey.foregroundColor: UIColor.white]
+    @objc func presentLoginView() {
+        self.present(LoginViewController(), animated: true, completion: nil)
     }
     
 }

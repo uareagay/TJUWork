@@ -10,5 +10,7 @@
 #define TJUWork_Bridging_Header_h
 
 #import "ZSSRichTextEditor.h"
+#import "GTSDK/GeTuiSdk.h"
+#import "GTExtensionSDK/GeTuiExtSdk.h"
 
 #endif /* TJUWork_Bridging_Header_h */

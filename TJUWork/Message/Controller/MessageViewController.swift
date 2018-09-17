@@ -279,7 +279,7 @@ class MessageViewController: UIViewController {
             })
             self.isSelecting = false
             PersonalMessageHelper.deleteInbox(mid: dic, success: {
-                
+                NotificationCenter.default.post(name: NotificationName.NotificationRefreshCalendar.name, object: nil)
             }, failure: {
                 
             })
@@ -298,7 +298,7 @@ class MessageViewController: UIViewController {
             })
             self.isSelecting = false
             PersonalMessageHelper.deleteOutbox(mid: dic, success: {
-                
+                NotificationCenter.default.post(name: NotificationName.NotificationRefreshCalendar.name, object: nil)
             }, failure: {
                 
             })
@@ -322,9 +322,6 @@ class MessageViewController: UIViewController {
                 
             })
         }
-        
-        
-        
         
     }
     
@@ -530,6 +527,17 @@ extension MessageViewController: UITableViewDataSource {
             let formatter = DateFormatter()
             formatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
             cell.dateLabel.text = formatter.string(from: data.from)
+            if data.isRead == "0" {
+                cell.titleLabel.textColor = UIColor(hex6: 0x00518e)
+                cell.dateLabel.textColor = UIColor(hex6: 0x00518e)
+                cell.lineView.backgroundColor = UIColor(hex6: 0x00518e)
+                cell.nameLabel.textColor = UIColor(hex6: 0x00518e)
+            } else {
+                cell.titleLabel.textColor = .green
+                cell.dateLabel.textColor = .green
+                cell.lineView.backgroundColor = .green
+                cell.nameLabel.textColor = .green
+            }
         case .outbox:
             let data = self.outboxLists.data[indexPath.section]
             cell.titleLabel.text = data.title

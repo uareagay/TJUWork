@@ -10,14 +10,21 @@ import UIKit
 import SnapKit
 import SwiftMessages
 
+
 class LoginViewController: UIViewController {
-    
     
     fileprivate let tjuImageView: UIImageView = {
         let imgView = UIImageView()
         imgView.image = UIImage.resizedImage(image: UIImage(named: "TJULogo")!, scaledToWidth: UIScreen.main.bounds.width/3)
         return imgView
     }()
+    
+    fileprivate let logoImageView: UIImageView = {
+        let imgView = UIImageView()
+        imgView.image = UIImage.resizedImage(image: UIImage(named: "logo")!, scaledToWidth: UIScreen.main.bounds.width/2+50)
+        return imgView
+    }()
+    
     
     let usernameLabel: UILabel = {
         let label = UILabel()
@@ -86,25 +93,21 @@ class LoginViewController: UIViewController {
         self.view.addSubview(usernameTextField)
         self.view.addSubview(passwordTextField)
         self.view.addSubview(loginBtn)
+        self.view.addSubview(logoImageView)
         
         loginBtn.addTarget(self, action: #selector(login(_:)), for: .touchUpInside)
         
         usernameTextField.delegate = self
         passwordTextField.delegate = self
-        
-//        let view = UIView(frame: CGRect(x: 0, y: 0, width: 20, height: 20))
-//        let aview = UIView(frame: CGRect(x: 0, y: 0, width: 20, height: 20))
-//        view.backgroundColor = .red
-//        aview.backgroundColor = .yellow
-//        usernameTextField.leftViewMode = .always
-//        usernameTextField.rightViewMode = .always
-//        usernameTextField.leftView = view
-//        usernameTextField.rightView = aview
-//        //usernameTextField.leftViewRect(forBounds: CGRect(x: 0, y: 0, width: 20, height: 20))
     
         tjuImageView.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
-            make.top.equalToSuperview().inset(UIScreen.main.bounds.width/3-60)
+            make.top.equalToSuperview().inset(UIScreen.main.bounds.width/3-50)
+        }
+        
+        logoImageView.snp.makeConstraints { make in
+            make.centerX.equalToSuperview()
+            make.top.equalTo(tjuImageView.snp.bottom).offset(UIScreen.main.bounds.width/6-10)
         }
         
         usernameLabel.snp.makeConstraints { make in
@@ -158,59 +161,34 @@ class LoginViewController: UIViewController {
         self.view.endEditing(true)
         
         guard let username = usernameTextField.text, !username.isEmpty else {
-            SwiftMessages.show {
-                let view = MessageView.viewFromNib(layout: .cardView)
-                view.configureContent(title: "", body: "请填写用户名")
-                view.button?.isHidden = true
-                view.configureTheme(Theme.error)
-                return view
-            }
+            SwiftMessages.showErrorMessage(title: "", body: "请填写用户名")
             return
         }
         
         guard let password = passwordTextField.text, !password.isEmpty else {
-            SwiftMessages.show {
-                let view = MessageView.viewFromNib(layout: .cardView)
-                view.configureContent(title: "请填写密码", body: "")
-                view.button?.isHidden = true
-                view.configureTheme(Theme.error)
-                return view
-            }
+            SwiftMessages.showErrorMessage(title: "", body: "请填写密码")
             return
         }
         
         loginBtn.isEnabled = false
         
-        
         AccountManager.getToken(username: username, password: password, success: { token in
             WorkUser.shared.token = token
-            WorkUser.shared.name = username
+            WorkUser.shared.username = username
             WorkUser.shared.password = password
-            print("成功 \(WorkUser.shared.name)")
-            print(WorkUser.shared.token)
             WorkUser.shared.save()
             
+            print(token)
+            
             self.loginBtn.isEnabled = true
-            self.present(MainTanBarController(), animated: true, completion: {
-                SwiftMessages.show {
-                    let view = MessageView.viewFromNib(layout: .cardView)
-                    view.configureContent(title: "登录成功", body: "")
-                    view.button?.isHidden = true
-                    view.configureTheme(.success)
-                    return view
-                }
+            
+            self.dismiss(animated: true, completion: {
+                SwiftMessages.showSuccessMessage(title: "登录成功", body: "")
             })
         }, failure: { errorMeg in
-            SwiftMessages.show {
-                let view = MessageView.viewFromNib(layout: .cardView)
-                view.configureContent(title: "登录失败", body: "")
-                view.button?.isHidden = true
-                view.configureTheme(Theme.error)
-                return view
-            }
+            SwiftMessages.showErrorMessage(title: "登录失败", body: "")
             self.loginBtn.isEnabled = true
         })
-        
         
         //self.present(MainTanBarController(), animated: true, completion: nil)
     }

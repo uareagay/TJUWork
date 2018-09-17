@@ -10,19 +10,23 @@ import Foundation
 
 struct AccountManager {
     
-    static func getToken(username: String, password: String, success: ((String) -> ())?, failure: ((String) -> ())?) {
+    static func getToken(username: String, password: String, success: ((String) -> ())?, failure: ((Error) -> ())?) {
         let para: [String: String] = ["username": username, "password": password]
         
         NetworkManager.postInformation(url: "/login", parameters: para, success: { dic in
             if let data = dic["data"] as? [String: Any], let token = data["token"] as? String {
                 success?(token)
             } else {
-                failure?("login failure")
+                failure?(err())
             }
         }, failure: { error in
-            failure?(error.localizedDescription)
+            failure?(error)
         })
         
+    }
+    
+    struct err: Error {
+        var localizedDescription: String = ""
     }
     
 }

@@ -10,6 +10,7 @@ import UIKit
 import SnapKit
 import Photos
 import SDWebImage
+import MJRefresh
 
 class SetInfoViewController: UIViewController {
     
@@ -25,6 +26,7 @@ class SetInfoViewController: UIViewController {
         imgView.backgroundColor = .white
         imgView.layer.masksToBounds = true
         imgView.layer.cornerRadius = UIScreen.main.bounds.width*3/10/2
+        imgView.image = UIImage(named: "头像")
         return imgView
     }()
     
@@ -95,8 +97,9 @@ class SetInfoViewController: UIViewController {
         cancelBtn.addTarget(self, action: #selector(cancelChangement(_:)), for: .touchUpInside)
         saveBtn.addTarget(self, action: #selector(saveChangement(_:)), for: .touchUpInside)
         
-        self.GetUserInfo()
-        
+        //self.GetUserInfo()
+        self.tableView.mj_header = MJRefreshNormalHeader(refreshingTarget: self, refreshingAction: #selector(GetUserInfo))
+        self.tableView.mj_header.beginRefreshing()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -237,9 +240,7 @@ extension SetInfoViewController: UITableViewDelegate {
             make.left.equalTo(contentView.snp.centerX).offset(20)
         }
         
-        
         return view
-        
     }
     
 }
@@ -266,9 +267,9 @@ extension SetInfoViewController: UITableViewDataSource {
             
             switch indexPath.row {
             case 0:
-                cell.infoLabel.text = String(userInfoModel.data.id)
-            case 1:
                 cell.infoLabel.text = userInfoModel.data.name
+            case 1:
+                cell.infoLabel.text = WorkUser.shared.username
             default:
                 return cell
             }
@@ -296,9 +297,7 @@ extension SetInfoViewController: UITableViewDataSource {
         default:
             return cell
         }
-        
         return cell
-        
     }
     
 }
@@ -329,15 +328,15 @@ extension SetInfoViewController: UIImagePickerControllerDelegate, UINavigationCo
         
         let pictureAction = UIAlertAction(title: "从相册中选择照片", style: .default) { _ in
             
-            let authStatus = PHPhotoLibrary.authorizationStatus()
-            guard authStatus == . authorized else {
-                let rvc = UIAlertController(title: nil, message: "相册不可用，请在设置中打开 TJUWork 的相册权限", preferredStyle: .alert)
-                self.present(rvc, animated: true, completion: nil)
-                DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 1.5, execute: {
-                    self.presentedViewController?.dismiss(animated: true, completion: nil)
-                })
-                return
-            }
+//            let authStatus = PHPhotoLibrary.authorizationStatus()
+//            guard authStatus == . authorized else {
+//                let rvc = UIAlertController(title: nil, message: "相册不可用，请在设置中打开 TJUWork 的相册权限", preferredStyle: .alert)
+//                self.present(rvc, animated: true, completion: nil)
+//                DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 1.5, execute: {
+//                    self.presentedViewController?.dismiss(animated: true, completion: nil)
+//                })
+//                return
+//            }
             
             if UIImagePickerController.isSourceTypeAvailable(.savedPhotosAlbum) {
                 let imagePicker = UIImagePickerController()
@@ -356,15 +355,15 @@ extension SetInfoViewController: UIImagePickerControllerDelegate, UINavigationCo
         
         let photoAction = UIAlertAction(title: "拍照", style: .default) { _ in
             
-            let authStatus = AVCaptureDevice.authorizationStatus(for: .video)
-            guard authStatus == .authorized else {
-                let rvc = UIAlertController(title: nil, message: "相机不可用，请在设置中打开 TJUWork 的相机权限", preferredStyle: .alert)
-                self.present(rvc, animated: true, completion: nil)
-                DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 1.5, execute: {
-                    self.presentedViewController?.dismiss(animated: true, completion: nil)
-                })
-                return
-            }
+//            let authStatus = AVCaptureDevice.authorizationStatus(for: .video)
+//            guard authStatus == .authorized else {
+//                let rvc = UIAlertController(title: nil, message: "相机不可用，请在设置中打开 TJUWork 的相机权限", preferredStyle: .alert)
+//                self.present(rvc, animated: true, completion: nil)
+//                DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 1.5, execute: {
+//                    self.presentedViewController?.dismiss(animated: true, completion: nil)
+//                })
+//                return
+//            }
             
             if UIImagePickerController.isSourceTypeAvailable(.camera) {
                 let imagePicker = UIImagePickerController()
@@ -395,24 +394,26 @@ extension SetInfoViewController: UIImagePickerControllerDelegate, UINavigationCo
 
 extension SetInfoViewController {
     
-    func GetUserInfo() {
-        
+    @objc func GetUserInfo() {
         NetworkManager.getInformation(url: "/user/info", token: WorkUser.shared.token, success: { dic in
-            
             if let data = try? JSONSerialization.data(withJSONObject: dic, options: JSONSerialization.WritingOptions.init(rawValue: 0)), let userInfo = try? UserInfoModel(data: data) {
                 
                 self.userInfoModel = userInfo
                 self.tableView.reloadData()
                 
                 if let picurl =  userInfo.data.picture {
+                    print("https://work-alpha.twtstudio.com"+picurl)
                     self.imgView.sd_setImage(with: URL(string: "https://work-alpha.twtstudio.com"+picurl), placeholderImage: UIImage(named: "头像"), options: SDWebImageOptions.retryFailed, completed: nil)
                 }
-                
+            }
+            if self.tableView.mj_header.isRefreshing {
+                self.tableView.mj_header.endRefreshing()
             }
         }, failure: { error in
-            
+            if self.tableView.mj_header.isRefreshing {
+                self.tableView.mj_header.endRefreshing()
+            }
         })
-        
     }
     
     func CheckEditStatus() -> Bool {
@@ -464,7 +465,6 @@ extension SetInfoViewController {
     }
     
     @objc func saveChangement(_ sender: UIButton) {
-        
         var dic: [String:String] = [:]
         
         if let cell = tableView.cellForRow(at: IndexPath(row: 2, section: 0)) as? SetInfoTableViewCell {
@@ -489,7 +489,6 @@ extension SetInfoViewController {
         }
         
         UserInfoHelper.uploadUserInfo(dictionary: dic, success: {
-            
             self.userInfoModel.data.payNumber = dic["pay_number"] ?? self.userInfoModel.data.payNumber
             self.userInfoModel.data.phone = dic["phone"] ?? self.userInfoModel.data.phone
             self.userInfoModel.data.wechat = dic["wechat"] ?? self.userInfoModel.data.wechat
@@ -497,13 +496,10 @@ extension SetInfoViewController {
             
             self.cancelBtn.isHidden = true
             self.saveBtn.isHidden = true
-            
-            
-            
         }, failure: {
-            
+            self.cancelBtn.isHidden = true
+            self.saveBtn.isHidden = true
         })
-        
     }
     
 }
