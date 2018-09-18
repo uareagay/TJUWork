@@ -16,7 +16,7 @@ struct Storage {
         //case group
     }
     
-    private static func getURL(for directory: Directory) -> URL {
+    public static func getURL(for directory: Directory) -> URL {
         var searchDirectory: FileManager.SearchPathDirectory
         switch directory {
         case .documents:

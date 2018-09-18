@@ -545,6 +545,10 @@ extension MessageViewController: UITableViewDataSource {
             let formatter = DateFormatter()
             formatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
             cell.dateLabel.text = formatter.string(from: data.from)
+            cell.titleLabel.textColor = UIColor(hex6: 0x00518e)
+            cell.dateLabel.textColor = UIColor(hex6: 0x00518e)
+            cell.lineView.backgroundColor = UIColor(hex6: 0x00518e)
+            cell.nameLabel.textColor = UIColor(hex6: 0x00518e)
         case .draft:
             let data = self.draftLists.data[indexPath.section]
             cell.titleLabel.text = data.title
@@ -553,6 +557,10 @@ extension MessageViewController: UITableViewDataSource {
             } else {
                 cell.nameLabel.text = "工作信息"
             }
+            cell.titleLabel.textColor = UIColor(hex6: 0x00518e)
+            cell.dateLabel.textColor = UIColor(hex6: 0x00518e)
+            cell.lineView.backgroundColor = UIColor(hex6: 0x00518e)
+            cell.nameLabel.textColor = UIColor(hex6: 0x00518e)
             cell.dateLabel.text = data.createdAt
         }
         
@@ -560,6 +568,12 @@ extension MessageViewController: UITableViewDataSource {
             cell.imgView.alpha  = 0.0
             return cell
         }
+        
+        cell.titleLabel.textColor = UIColor(hex6: 0x00518e)
+        cell.dateLabel.textColor = UIColor(hex6: 0x00518e)
+        cell.lineView.backgroundColor = UIColor(hex6: 0x00518e)
+        cell.nameLabel.textColor = UIColor(hex6: 0x00518e)
+        
         cell.imgView.alpha  = 1.0
         if selectedArrs.contains(indexPath.section) {
             cell.imgView.image = cell.selectedImg

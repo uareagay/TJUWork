@@ -12,6 +12,7 @@ import SnapKit
 class DetailMessageViewController: UIViewController {
     
     var tableView: UITableView!
+    var downloadedFiles: [DownloadedFile] = []
     
     fileprivate let deleteBtn: UIButton = {
         let btn = UIButton(type: .custom)
@@ -52,6 +53,8 @@ class DetailMessageViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        self.title = "详情"
+        
         tableView = UITableView(frame: self.view.bounds, style: .grouped)
         tableView.estimatedRowHeight = 100
         tableView.rowHeight = UITableViewAutomaticDimension
@@ -72,6 +75,25 @@ class DetailMessageViewController: UIViewController {
         
         PersonalMessageHelper.getDetailMessage(mid: mid!, success: { model in
             self.datailInformation = model
+            if let file = model.data.file1 {
+                self.downloadedFiles.append(file)
+            }
+            if let file = model.data.file2 {
+                self.downloadedFiles.append(file)
+            }
+            if let file = model.data.file3 {
+                self.downloadedFiles.append(file)
+            }
+            if let file = model.data.file4 {
+                self.downloadedFiles.append(file)
+            }
+            if let file = model.data.file5 {
+                self.downloadedFiles.append(file)
+            }
+            if let file = model.data.file6 {
+                self.downloadedFiles.append(file)
+            }
+            
             self.tableView.reloadData()
         }, failure: {
             
@@ -122,6 +144,16 @@ extension DetailMessageViewController {
         let replyName = self.datailInformation.data.responseBy == "0" ? "个人" : "标签"
         let replyVC = ReplyMessageViewController(mid: self.mid!, titleText: self.datailInformation.data.title, replyName: replyName, sendUID: self.datailInformation.data.sendUid)
         self.navigationController?.pushViewController(replyVC, animated: true)
+    }
+    
+    @objc func downloadFile(_ sender: UIButton) {
+        switch sender.tag {
+        case 0...5:
+            let downloadVC = DownloadViewController(fileURL: URL(string: "https://work-alpha.twtstudio.com/file/2018-07-28-5b5be16c0160e.pdf")!)
+            self.navigationController?.pushViewController(downloadVC, animated: true)
+        default:
+            break
+        }
     }
     
 }
@@ -228,13 +260,11 @@ extension DetailMessageViewController: UITableViewDelegate {
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        guard indexPath.section == 3 && indexPath.row == 0 else {
+        guard indexPath.section == 2 && indexPath.row > 0 else {
             return UITableViewAutomaticDimension
         }
-        
-        return UITableViewAutomaticDimension
+        return 25
     }
-    
     
     
 }
@@ -252,7 +282,7 @@ extension DetailMessageViewController: UITableViewDataSource {
         case 1:
             return 4
         case 2:
-            return 1
+            return 4
         case 3:
             return 1
         default:
@@ -311,7 +341,44 @@ extension DetailMessageViewController: UITableViewDataSource {
             }
             return cell
         case 2:
-            return UITableViewCell()
+            switch indexPath.row {
+            case 0:
+                let cell = tableView.dequeueReusableCell(withIdentifier: "SenderTableViewCell") as! SenderTableViewCell
+                cell.titleLabel.text = "附件："
+                cell.contentLabel.text = ""
+                return cell
+            case 1...6:
+                let cell = UITableViewCell()
+                let contentView = UIView(frame: CGRect(x: 10, y: 0, width: UIScreen.main.bounds.size.width-20, height: 25))
+                contentView.backgroundColor = .white
+                cell.backgroundColor = .clear
+                
+                let maxWidth = UIScreen.main.bounds.size.width-20-90-20
+                let imgView = UIImageView(frame: CGRect(x: 70, y: 0, width: 15, height: 15))
+                imgView.image = UIImage.resizedImage(image: UIImage(named: "附件")!, scaledToWidth: 15.0)
+                let btn = UIButton(frame: CGRect(x: 90, y: 0, width: maxWidth, height: 15))
+                //self.downloadedFiles[indexPath.row-1].originName+self.downloadedFiles[indexPath.row-1].href
+                btn.setTitle("sefiwehv.pdf", for: .normal)
+                btn.titleLabel?.font = UIFont.systemFont(ofSize: 11, weight: UIFont.Weight.regular)
+                btn.setTitleColor(UIColor(hex6: 0x003A65), for: .normal)
+                btn.titleLabel?.textAlignment = .left
+                btn.contentHorizontalAlignment = .left
+                contentView.addSubview(btn)
+                contentView.addSubview(imgView)
+                
+                let btnSize = btn.sizeThatFits(CGSize(width: 400, height: 15))
+                if btnSize.width < maxWidth {
+                    btn.frame.size = CGSize(width: btnSize.width, height: 15)
+                }
+                
+                btn.tag = indexPath.row-1
+                btn.addTarget(self, action: #selector(downloadFile(_:)), for: .touchUpInside)
+                
+                cell.contentView.addSubview(contentView)
+                return cell
+            default:
+                return UITableViewCell()
+            }
         case 3:
             guard self.datailInformation != nil else {
                 return UITableViewCell()

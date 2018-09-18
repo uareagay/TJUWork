@@ -22,8 +22,8 @@ struct DetailMessageData: Codable {
     let to: Date?
     let author, sendUid: String
     let responseBy: String
-    let file1, file2, file3, file4: JSONNull?
-    let file5, file6: JSONNull?
+    let file1, file2, file3, file4: DownloadedFile?
+    let file5, file6: DownloadedFile?
     let unit: String
     let respondTo: RespondToMessage?
     let respondedDelete: Int
@@ -35,6 +35,15 @@ struct DetailMessageData: Codable {
         case file1, file2, file3, file4, file5, file6, unit
         case respondTo = "respond_to"
         case respondedDelete = "responded_delete"
+    }
+}
+
+struct DownloadedFile: Codable {
+    let originName, href, size: String
+    
+    enum CodingKeys: String, CodingKey {
+        case originName = "origin_name"
+        case href, size
     }
 }
 
@@ -102,6 +111,31 @@ extension DetailMessageData {
     }
 }
 
+extension DownloadedFile {
+    init(data: Data) throws {
+        self = try newJSONDecoder().decode(DownloadedFile.self, from: data)
+    }
+    
+    init(_ json: String, using encoding: String.Encoding = .utf8) throws {
+        guard let data = json.data(using: encoding) else {
+            throw NSError(domain: "JSONDecoding", code: 0, userInfo: nil)
+        }
+        try self.init(data: data)
+    }
+    
+    init(fromURL url: URL) throws {
+        try self.init(data: try Data(contentsOf: url))
+    }
+    
+    func jsonData() throws -> Data {
+        return try newJSONEncoder().encode(self)
+    }
+    
+    func jsonString(encoding: String.Encoding = .utf8) throws -> String? {
+        return String(data: try self.jsonData(), encoding: encoding)
+    }
+}
+
 extension RespondToMessage {
     init(data: Data) throws {
         self = try newJSONDecoder().decode(RespondToMessage.self, from: data)
@@ -128,31 +162,31 @@ extension RespondToMessage {
 }
 
 
-
-
-// MARK: Encode/decode helpers
-
-class JSONNull: Codable, Hashable {
-    
-    public static func == (lhs: JSONNull, rhs: JSONNull) -> Bool {
-        return true
-    }
-    
-    public var hashValue: Int {
-        return 0
-    }
-    
-    public init() {}
-    
-    public required init(from decoder: Decoder) throws {
-        let container = try decoder.singleValueContainer()
-        if !container.decodeNil() {
-            throw DecodingError.typeMismatch(JSONNull.self, DecodingError.Context(codingPath: decoder.codingPath, debugDescription: "Wrong type for JSONNull"))
-        }
-    }
-    
-    public func encode(to encoder: Encoder) throws {
-        var container = encoder.singleValueContainer()
-        try container.encodeNil()
-    }
-}
+//
+//
+//// MARK: Encode/decode helpers
+//
+//class JSONNull: Codable, Hashable {
+//
+//    public static func == (lhs: JSONNull, rhs: JSONNull) -> Bool {
+//        return true
+//    }
+//
+//    public var hashValue: Int {
+//        return 0
+//    }
+//
+//    public init() {}
+//
+//    public required init(from decoder: Decoder) throws {
+//        let container = try decoder.singleValueContainer()
+//        if !container.decodeNil() {
+//            throw DecodingError.typeMismatch(JSONNull.self, DecodingError.Context(codingPath: decoder.codingPath, debugDescription: "Wrong type for JSONNull"))
+//        }
+//    }
+//
+//    public func encode(to encoder: Encoder) throws {
+//        var container = encoder.singleValueContainer()
+//        try container.encodeNil()
+//    }
+//}

@@ -39,6 +39,10 @@ class CreateMessageViewController: UIViewController {
         return view
     }()
     
+    deinit {
+        print("wevjncqwejvnjwreqnvjqrnvjnq3vjn3qjvn")
+    }
+    
     fileprivate let popView: UIView = {
         let view = UIView()
         view.backgroundColor = .white
@@ -400,11 +404,14 @@ extension CreateMessageViewController: UITableViewDataSource {
             if let title = self.draftTitle {
                 self.draftTitle = nil
                 cell.textField.text = title
+            } else {
+                cell.textField.text = ""
             }
             return cell
         case 1:
             let cell = tableView.dequeueReusableCell(withIdentifier: "MessageNameTableViewCell") as! MessageNameTableViewCell
-
+            
+            
             let toolBar = UIToolbar(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.size.width, height: 44))
             let cancelItem = UIBarButtonItem(title: "取消", style: .done, target: self, action: #selector(toolBarCancelAction(_:)))
             let doneItem = UIBarButtonItem(title: "确定", style: .done, target: self, action: #selector(toolBarDoneAction(_:)))
@@ -417,10 +424,11 @@ extension CreateMessageViewController: UITableViewDataSource {
             inputView.addSubview(pickerView)
             inputView.addSubview(toolBar)
             
-            cell.collegeLabel.limitAction = {  
-                self.tableView.isUserInteractionEnabled = false
+            //差点循环引用了...
+            cell.collegeLabel.limitAction = { [weak self] in
+                self?.tableView.isUserInteractionEnabled = false
             }
-
+            
             cell.collegeLabel.inputView = inputView
             cell.pickerBtn.addTarget(self, action: #selector(pickerViewAppear(_:)), for: .touchUpInside)
 

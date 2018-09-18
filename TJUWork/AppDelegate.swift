@@ -36,7 +36,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         self.window?.rootViewController = MainTanBarController()
         
-        WorkUser.shared.delete()
+        //WorkUser.shared.delete()
         WorkUser.shared.load(success: {
             
 //            AccountManager.getToken(username: WorkUser.shared.username, password: WorkUser.shared.password, success: { token in

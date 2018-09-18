@@ -123,7 +123,6 @@ class ScheduleViewController: UIViewController {
         })
         
         
-        
         //self.tableView.mj_header.beginRefreshing()
     }
     

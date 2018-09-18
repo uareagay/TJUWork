@@ -43,8 +43,8 @@ class ReplyRequirementTableViewCell: UITableViewCell {
         return btn
     }()
     
-    let collegeLabel: PickerViewLabel = {
-        let label = PickerViewLabel()
+    let collegeLabel: UILabel = {
+        let label = UILabel()
         label.textAlignment = .left
         label.textColor = UIColor(hex6: 0x8b8b8b)
         label.text = "学院"

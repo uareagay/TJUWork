@@ -133,6 +133,7 @@
 		DD1459E12147EF840018BC07 /* SwiftMessagesExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD1459E02147EF830018BC07 /* SwiftMessagesExtension.swift */; };
 		DD31345C2148B9AE00A0990E /* DraftListModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD31345B2148B9AE00A0990E /* DraftListModel.swift */; };
 		DD31345E214A58B800A0990E /* OutboxListModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD31345D214A58B800A0990E /* OutboxListModel.swift */; };
+		DD7627AD214F9D51005A3A97 /* DownloadViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD7627AC214F9D51005A3A97 /* DownloadViewController.swift */; };
 		DD796D2621383FB10042D058 /* NetworkManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD796D2521383FB10042D058 /* NetworkManager.swift */; };
 		DD796D282138F8840042D058 /* WorkUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD796D272138F8840042D058 /* WorkUser.swift */; };
 		DD796D2A2138F9FB0042D058 /* AccountManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD796D292138F9FB0042D058 /* AccountManager.swift */; };
@@ -331,6 +332,7 @@
 		DD31345B2148B9AE00A0990E /* DraftListModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DraftListModel.swift; sourceTree = "<group>"; };
 		DD31345D214A58B800A0990E /* OutboxListModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OutboxListModel.swift; sourceTree = "<group>"; };
 		DD6598AC214D91480079E2CF /* TJUWork.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = TJUWork.entitlements; sourceTree = "<group>"; };
+		DD7627AC214F9D51005A3A97 /* DownloadViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DownloadViewController.swift; sourceTree = "<group>"; };
 		DD796D2521383FB10042D058 /* NetworkManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkManager.swift; sourceTree = "<group>"; };
 		DD796D272138F8840042D058 /* WorkUser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkUser.swift; sourceTree = "<group>"; };
 		DD796D292138F9FB0042D058 /* AccountManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountManager.swift; sourceTree = "<group>"; };
@@ -743,6 +745,7 @@
 				DD03B5D6214BCC2C007E2CB4 /* ReplyMessageViewController.swift */,
 				DDB9CE552109ED2700E63211 /* CreateMessageViewController.swift */,
 				DD1459102146CF510018BC07 /* RichTextViewController.swift */,
+				DD7627AC214F9D51005A3A97 /* DownloadViewController.swift */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -1138,6 +1141,7 @@
 				DD1459DD2146D4B50018BC07 /* HRColorCursor.m in Sources */,
 				DD03B5D1214A9FC3007E2CB4 /* InboxListModel.swift in Sources */,
 				DDB9CE542109EB7000E63211 /* TreeNode.swift in Sources */,
+				DD7627AD214F9D51005A3A97 /* DownloadViewController.swift in Sources */,
 				DD31345C2148B9AE00A0990E /* DraftListModel.swift in Sources */,
 				DD0AA78620F9C8470011F1EE /* InfoTableViewCell.swift in Sources */,
 				DD1459D52146D4B50018BC07 /* HRColorPickerViewController.m in Sources */,
