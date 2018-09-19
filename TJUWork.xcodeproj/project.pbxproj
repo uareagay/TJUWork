@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		3207A80733827549AE946B8D /* Pods_TJUWork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 663370FA3434F79C9A81BB75 /* Pods_TJUWork.framework */; };
+		A842FF706A150DF216C82F9C /* Pods_TJUWork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A064B29AC2852FAB445A60F2 /* Pods_TJUWork.framework */; };
 		DD03B5D1214A9FC3007E2CB4 /* InboxListModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD03B5D0214A9FC3007E2CB4 /* InboxListModel.swift */; };
 		DD03B5D3214AC4DF007E2CB4 /* WorkCalendarModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD03B5D2214AC4DF007E2CB4 /* WorkCalendarModel.swift */; };
 		DD03B5D5214B98D5007E2CB4 /* DetailMessageModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD03B5D4214B98D5007E2CB4 /* DetailMessageModel.swift */; };
@@ -181,9 +181,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		4FD6EC0575B276B254E8A465 /* Pods-TJUWork.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TJUWork.debug.xcconfig"; path = "Pods/Target Support Files/Pods-TJUWork/Pods-TJUWork.debug.xcconfig"; sourceTree = "<group>"; };
-		663370FA3434F79C9A81BB75 /* Pods_TJUWork.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_TJUWork.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		708F90E20EB76A78B88C3118 /* Pods-TJUWork.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TJUWork.release.xcconfig"; path = "Pods/Target Support Files/Pods-TJUWork/Pods-TJUWork.release.xcconfig"; sourceTree = "<group>"; };
+		076EB11632FE6AE64DBABBD7 /* Pods-TJUWork.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TJUWork.release.xcconfig"; path = "Pods/Target Support Files/Pods-TJUWork/Pods-TJUWork.release.xcconfig"; sourceTree = "<group>"; };
+		A064B29AC2852FAB445A60F2 /* Pods_TJUWork.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_TJUWork.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		DD03B5D0214A9FC3007E2CB4 /* InboxListModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InboxListModel.swift; sourceTree = "<group>"; };
 		DD03B5D2214AC4DF007E2CB4 /* WorkCalendarModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkCalendarModel.swift; sourceTree = "<group>"; };
 		DD03B5D4214B98D5007E2CB4 /* DetailMessageModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailMessageModel.swift; sourceTree = "<group>"; };
@@ -360,6 +359,7 @@
 		DDB9CE652111AFF600E63211 /* ReceiverCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReceiverCollectionViewCell.swift; sourceTree = "<group>"; };
 		DDB9CE672112FD7900E63211 /* AddReceiverCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddReceiverCollectionViewCell.swift; sourceTree = "<group>"; };
 		DDBBEE9221019AB300244E40 /* ScheduleMessageTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduleMessageTableViewCell.swift; sourceTree = "<group>"; };
+		DF2F999F23DD439911A81AC7 /* Pods-TJUWork.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TJUWork.debug.xcconfig"; path = "Pods/Target Support Files/Pods-TJUWork/Pods-TJUWork.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -369,7 +369,7 @@
 			files = (
 				DD03B5E0214D8B6A007E2CB4 /* GTSDK.framework in Frameworks */,
 				DD03B5DF214D8B6A007E2CB4 /* GTExtensionSDK.framework in Frameworks */,
-				3207A80733827549AE946B8D /* Pods_TJUWork.framework in Frameworks */,
+				A842FF706A150DF216C82F9C /* Pods_TJUWork.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -390,19 +390,10 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		6A279596C56F06AE915D14E8 /* Pods */ = {
+		1B1514CBB94A3AA37A173D84 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				4FD6EC0575B276B254E8A465 /* Pods-TJUWork.debug.xcconfig */,
-				708F90E20EB76A78B88C3118 /* Pods-TJUWork.release.xcconfig */,
-			);
-			name = Pods;
-			sourceTree = "<group>";
-		};
-		7B7823B9F1E531FA16C7EDAE /* Frameworks */ = {
-			isa = PBXGroup;
-			children = (
-				663370FA3434F79C9A81BB75 /* Pods_TJUWork.framework */,
+				A064B29AC2852FAB445A60F2 /* Pods_TJUWork.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -423,8 +414,8 @@
 				DD0AA75720F8B6230011F1EE /* TJUWorkTests */,
 				DD0AA76220F8B6230011F1EE /* TJUWorkUITests */,
 				DD0AA74120F8B6200011F1EE /* Products */,
-				6A279596C56F06AE915D14E8 /* Pods */,
-				7B7823B9F1E531FA16C7EDAE /* Frameworks */,
+				E2581261EDE3DFC87AFB92B8 /* Pods */,
+				1B1514CBB94A3AA37A173D84 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -815,6 +806,15 @@
 			path = View;
 			sourceTree = "<group>";
 		};
+		E2581261EDE3DFC87AFB92B8 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				DF2F999F23DD439911A81AC7 /* Pods-TJUWork.debug.xcconfig */,
+				076EB11632FE6AE64DBABBD7 /* Pods-TJUWork.release.xcconfig */,
+			);
+			name = Pods;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -822,12 +822,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = DD0AA76820F8B6230011F1EE /* Build configuration list for PBXNativeTarget "TJUWork" */;
 			buildPhases = (
-				F4C8460BA4A5CB50A2E618FC /* [CP] Check Pods Manifest.lock */,
+				5CC56A761975DBF6E9B05956 /* [CP] Check Pods Manifest.lock */,
 				DD0AA73C20F8B6200011F1EE /* Sources */,
 				DD0AA73D20F8B6200011F1EE /* Frameworks */,
 				DD0AA73E20F8B6200011F1EE /* Resources */,
-				9689B2596E639DB23C4673D2 /* [CP] Embed Pods Frameworks */,
-				8D282D99E5ACDD3AE921FB38 /* [CP] Copy Pods Resources */,
+				7D4AF251CBBE36486C9D44A5 /* [CP] Embed Pods Frameworks */,
+				9196233B259F59987C2910FA /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -1033,22 +1033,25 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		8D282D99E5ACDD3AE921FB38 /* [CP] Copy Pods Resources */ = {
+		5CC56A761975DBF6E9B05956 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
 			);
-			name = "[CP] Copy Pods Resources";
+			name = "[CP] Check Pods Manifest.lock";
 			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-TJUWork-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-TJUWork/Pods-TJUWork-resources.sh\"\n";
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
-		9689B2596E639DB23C4673D2 /* [CP] Embed Pods Frameworks */ = {
+		7D4AF251CBBE36486C9D44A5 /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -1076,22 +1079,19 @@
 			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-TJUWork/Pods-TJUWork-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		F4C8460BA4A5CB50A2E618FC /* [CP] Check Pods Manifest.lock */ = {
+		9196233B259F59987C2910FA /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
-				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
-				"${PODS_ROOT}/Manifest.lock",
 			);
-			name = "[CP] Check Pods Manifest.lock";
+			name = "[CP] Copy Pods Resources";
 			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-TJUWork-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-TJUWork/Pods-TJUWork-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
@@ -1337,8 +1337,9 @@
 		};
 		DD0AA76920F8B6230011F1EE /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 4FD6EC0575B276B254E8A465 /* Pods-TJUWork.debug.xcconfig */;
+			baseConfigurationReference = DF2F999F23DD439911A81AC7 /* Pods-TJUWork.debug.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = TJUWork/TJUWork.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
@@ -1355,8 +1356,8 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = cn.edu.twt.TJUWork;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "1ac82bba-dc4f-45c8-91cb-3645c8939b1f";
-				PROVISIONING_PROFILE_SPECIFIER = "Work-Push";
+				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE_SPECIFIER = WorkPro;
 				SWIFT_OBJC_BRIDGING_HEADER = "/Users/zhaojiachen/Desktop/TJUWork/TJUWork/TJUWork-Bridging-Header.h";
 				SWIFT_VERSION = 4.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -1365,8 +1366,9 @@
 		};
 		DD0AA76A20F8B6230011F1EE /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 708F90E20EB76A78B88C3118 /* Pods-TJUWork.release.xcconfig */;
+			baseConfigurationReference = 076EB11632FE6AE64DBABBD7 /* Pods-TJUWork.release.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = TJUWork/TJUWork.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
@@ -1383,8 +1385,8 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = cn.edu.twt.TJUWork;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "1ac82bba-dc4f-45c8-91cb-3645c8939b1f";
-				PROVISIONING_PROFILE_SPECIFIER = "Work-Push";
+				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE_SPECIFIER = WorkPro;
 				SWIFT_OBJC_BRIDGING_HEADER = "/Users/zhaojiachen/Desktop/TJUWork/TJUWork/TJUWork-Bridging-Header.h";
 				SWIFT_VERSION = 4.0;
 				TARGETED_DEVICE_FAMILY = "1,2";

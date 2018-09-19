@@ -404,9 +404,10 @@ extension CreateMessageViewController: UITableViewDataSource {
             if let title = self.draftTitle {
                 self.draftTitle = nil
                 cell.textField.text = title
-            } else {
-                cell.textField.text = ""
             }
+//            else {
+//                //cell.textField.text = ""
+//            }
             return cell
         case 1:
             let cell = tableView.dequeueReusableCell(withIdentifier: "MessageNameTableViewCell") as! MessageNameTableViewCell

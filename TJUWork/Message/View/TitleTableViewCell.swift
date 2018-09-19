@@ -17,6 +17,7 @@ class TitleTableViewCell: UITableViewCell {
         textField.returnKeyType = .done
         textField.textAlignment = .left
         textField.font = UIFont.systemFont(ofSize: 14, weight: UIFont.Weight.regular)
+        textField.text = ""
         return textField
     }()
     

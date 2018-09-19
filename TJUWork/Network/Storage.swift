@@ -96,4 +96,6 @@ struct Storage {
         let url = getURL(for: directory).appendingPathComponent(filename, isDirectory: false)
         return FileManager.default.fileExists(atPath: url.path)
     }
+    
+    
 }

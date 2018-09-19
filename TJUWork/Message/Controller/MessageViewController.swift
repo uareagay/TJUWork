@@ -20,6 +20,7 @@ class MessageViewController: UIViewController {
     fileprivate var isSelecting: Bool = false {
         didSet {
             if isSelecting == true {
+                self.tableView.mj_header = nil
                 menuBtn.isEnabled = false
                 addBtn.isEnabled = false
                 self.navigationItem.rightBarButtonItem = cancelBarButtonItem
@@ -28,6 +29,7 @@ class MessageViewController: UIViewController {
                 self.deleteBtn.alpha = 1.0
                 
             } else {
+                self.tableView.mj_header = MJRefreshNormalHeader(refreshingTarget: self, refreshingAction: #selector(headerRefresh))
                 menuBtn.isEnabled = true
                 addBtn.isEnabled = true
                 self.navigationItem.rightBarButtonItem = nil
@@ -36,7 +38,6 @@ class MessageViewController: UIViewController {
                 self.deleteBtn.alpha = 0.0
                 selectedArrs = []
                 self.tableView.reloadData()
-                
             }
         }
     }
@@ -428,20 +429,24 @@ extension MessageViewController: UITableViewDelegate {
             let isResponse = data.isResponse
             //1为已回复，0为未回复；-1为通知消息，可以回复，但是不必要回复
             let detailVC: DetailMessageViewController
+            let isReaded = data.isRead == "0" ? false : true
             if isResponse == 1 {
-                detailVC = DetailMessageViewController(mid: data.mid, isReply: false, messageType: .inbox)
+                detailVC = DetailMessageViewController(mid: data.mid, isReply: false, messageType: .inbox, isReaded: isReaded)
             } else if isResponse == -1 {
-                detailVC = DetailMessageViewController(mid: data.mid, isReply: false, messageType: .inbox)
+                detailVC = DetailMessageViewController(mid: data.mid, isReply: false, messageType: .inbox, isReaded: isReaded)
             } else if isResponse == 0 {
-                detailVC = DetailMessageViewController(mid: data.mid, isReply: true, messageType: .inbox)
+                detailVC = DetailMessageViewController(mid: data.mid, isReply: true, messageType: .inbox, isReaded: isReaded)
             } else {
                 //不会执行
                 detailVC = DetailMessageViewController()
             }
             self.navigationController?.pushViewController(detailVC, animated: true)
+//            if data.isRead == "0" {
+//                self.refreshInboxLists()
+//            }
         case .outbox:
             let data = self.outboxLists.data[indexPath.section]
-            let detailVC = DetailMessageViewController(mid: data.mid, isReply: false, messageType: .outbox)
+            let detailVC = DetailMessageViewController(mid: data.mid, isReply: false, messageType: .outbox, isReaded: true)
             self.navigationController?.pushViewController(detailVC, animated: true)
         case .draft:
             let data = self.draftLists.data[indexPath.section]
@@ -533,10 +538,10 @@ extension MessageViewController: UITableViewDataSource {
                 cell.lineView.backgroundColor = UIColor(hex6: 0x00518e)
                 cell.nameLabel.textColor = UIColor(hex6: 0x00518e)
             } else {
-                cell.titleLabel.textColor = .green
-                cell.dateLabel.textColor = .green
-                cell.lineView.backgroundColor = .green
-                cell.nameLabel.textColor = .green
+                cell.titleLabel.textColor = UIColor(hex6: 0x16982B)
+                cell.dateLabel.textColor = UIColor(hex6: 0x16982B)
+                cell.lineView.backgroundColor = UIColor(hex6: 0x16982B)
+                cell.nameLabel.textColor = UIColor(hex6: 0x16982B)
             }
         case .outbox:
             let data = self.outboxLists.data[indexPath.section]
@@ -557,22 +562,17 @@ extension MessageViewController: UITableViewDataSource {
             } else {
                 cell.nameLabel.text = "工作信息"
             }
+            cell.dateLabel.text = data.createdAt
             cell.titleLabel.textColor = UIColor(hex6: 0x00518e)
             cell.dateLabel.textColor = UIColor(hex6: 0x00518e)
             cell.lineView.backgroundColor = UIColor(hex6: 0x00518e)
             cell.nameLabel.textColor = UIColor(hex6: 0x00518e)
-            cell.dateLabel.text = data.createdAt
         }
         
         guard self.isSelecting == true else {
             cell.imgView.alpha  = 0.0
             return cell
         }
-        
-        cell.titleLabel.textColor = UIColor(hex6: 0x00518e)
-        cell.dateLabel.textColor = UIColor(hex6: 0x00518e)
-        cell.lineView.backgroundColor = UIColor(hex6: 0x00518e)
-        cell.nameLabel.textColor = UIColor(hex6: 0x00518e)
         
         cell.imgView.alpha  = 1.0
         if selectedArrs.contains(indexPath.section) {

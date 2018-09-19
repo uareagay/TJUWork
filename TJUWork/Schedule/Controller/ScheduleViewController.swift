@@ -104,6 +104,7 @@ class ScheduleViewController: UIViewController {
         calendar.backgroundColor = .white
         calendar.layer.masksToBounds = true
         calendar.layer.cornerRadius = 10
+        calendar.locale = Locale(identifier: "zh-CN")
         
         self.tableView.mj_header = MJRefreshNormalHeader(refreshingTarget: self, refreshingAction: #selector(headerRefresh))
         

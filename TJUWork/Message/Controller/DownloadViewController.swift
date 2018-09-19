@@ -67,7 +67,7 @@ class DownloadViewController: UIViewController {
     fileprivate let progress: UIProgressView = {
         let progress = UIProgressView(progressViewStyle: .default)
         progress.trackTintColor = .gray
-        progress.progressTintColor = .green
+        progress.progressTintColor = UIColor(hex6: 0x16982B)
         return progress
     }()
     
@@ -90,7 +90,17 @@ class DownloadViewController: UIViewController {
     }
     
     deinit {
-        print("deinit DWVC")
+        print("deinit SUCCESS")
+        do {
+            if let url = self.downloadedFileURL {
+                try FileManager.default.removeItem(at: url)
+            } else {
+                print("sdv ")
+            }
+            
+        } catch {
+            print("删除失败")
+        }
     }
     
     override func viewDidLoad() {
@@ -127,8 +137,9 @@ class DownloadViewController: UIViewController {
         
         self.downloadRequest = Alamofire.download(self.downloadURL, headers: nil, to: destination)
         
-        self.downloadRequest.downloadProgress(queue: DispatchQueue.main, closure: { progress in
-            self.progress.setProgress(Float(progress.fractionCompleted), animated: true)
+        //差一点。。。
+        self.downloadRequest.downloadProgress(queue: DispatchQueue.main, closure: { [weak self] progress in
+            self?.progress.setProgress(Float(progress.fractionCompleted), animated: true)
             print("当前进度：\(progress.fractionCompleted)")
         })
         
@@ -156,7 +167,8 @@ extension DownloadViewController {
         switch response.result {
         case .success(let data):
             print(response.destinationURL)
-            self.downloadURL = response.destinationURL
+            //self.downloadURL = response.destinationURL
+            self.downloadedFileURL = response.destinationURL
             print("文件下载完毕: \(response)")
             
             self.documentController = UIDocumentInteractionController(url: response.destinationURL!)

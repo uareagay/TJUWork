@@ -9,6 +9,9 @@
 import UIKit
 import SnapKit
 
+
+fileprivate let WORK_FILE_ROOT_URL = "https://work-alpha.twtstudio.com"
+
 class DetailMessageViewController: UIViewController {
     
     var tableView: UITableView!
@@ -43,11 +46,14 @@ class DetailMessageViewController: UIViewController {
     fileprivate var isReply: Bool?
     fileprivate var messageType: DownMenuView.MenuType?
     
-    convenience init(mid: String, isReply: Bool, messageType: DownMenuView.MenuType) {
+    convenience init(mid: String, isReply: Bool, messageType: DownMenuView.MenuType, isReaded: Bool) {
         self.init()
         self.mid = mid
         self.isReply = isReply
         self.messageType = messageType
+        if isReaded == false {
+            NotificationCenter.default.post(name: NotificationName.NotificationRefreshInboxLists.name, object: nil)
+        }
     }
     
     override func viewDidLoad() {
@@ -149,8 +155,12 @@ extension DetailMessageViewController {
     @objc func downloadFile(_ sender: UIButton) {
         switch sender.tag {
         case 0...5:
-            let downloadVC = DownloadViewController(fileURL: URL(string: "https://work-alpha.twtstudio.com/file/2018-07-28-5b5be16c0160e.pdf")!)
-            self.navigationController?.pushViewController(downloadVC, animated: true)
+            //let downloadVC = DownloadViewController(fileURL: URL(string: "https://work-alpha.twtstudio.com/file/2018-07-28-5b5be16c0160e.pdf")!)
+            if let url = URL(string: WORK_FILE_ROOT_URL + self.downloadedFiles[sender.tag].href) {
+                let downloadVC = DownloadViewController(fileURL: url)
+                self.navigationController?.pushViewController(downloadVC, animated: true)
+            }
+            
         default:
             break
         }
@@ -282,7 +292,7 @@ extension DetailMessageViewController: UITableViewDataSource {
         case 1:
             return 4
         case 2:
-            return 4
+            return 1+self.downloadedFiles.count
         case 3:
             return 1
         default:
@@ -345,7 +355,13 @@ extension DetailMessageViewController: UITableViewDataSource {
             case 0:
                 let cell = tableView.dequeueReusableCell(withIdentifier: "SenderTableViewCell") as! SenderTableViewCell
                 cell.titleLabel.text = "附件："
-                cell.contentLabel.text = ""
+                
+                if self.downloadedFiles.count == 0 {
+                    cell.contentLabel.text = "无"
+                } else {
+                    cell.contentLabel.text = ""
+                }
+                
                 return cell
             case 1...6:
                 let cell = UITableViewCell()
@@ -358,7 +374,9 @@ extension DetailMessageViewController: UITableViewDataSource {
                 imgView.image = UIImage.resizedImage(image: UIImage(named: "附件")!, scaledToWidth: 15.0)
                 let btn = UIButton(frame: CGRect(x: 90, y: 0, width: maxWidth, height: 15))
                 //self.downloadedFiles[indexPath.row-1].originName+self.downloadedFiles[indexPath.row-1].href
-                btn.setTitle("sefiwehv.pdf", for: .normal)
+                //btn.setTitle("sefiwehv.pdf", for: .normal)
+                let file = self.downloadedFiles[indexPath.row-1]
+                btn.setTitle(file.originName + "（" + file.size + "）", for: .normal)
                 btn.titleLabel?.font = UIFont.systemFont(ofSize: 11, weight: UIFont.Weight.regular)
                 btn.setTitleColor(UIColor(hex6: 0x003A65), for: .normal)
                 btn.titleLabel?.textAlignment = .left
