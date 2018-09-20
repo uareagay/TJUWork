@@ -25,6 +25,17 @@ struct AccountManager {
         
     }
     
+    static func logout(success: (() -> ())?, failure: ((Error) -> ())?) {
+        
+        NetworkManager.getInformation(url: "/logout", token: WorkUser.shared.token, parameters: nil, success: { dic in
+            
+            
+        }, failure: { error in
+            failure?(error)
+        })
+        
+    }
+    
     struct err: Error {
         var localizedDescription: String = ""
     }

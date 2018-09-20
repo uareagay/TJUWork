@@ -68,6 +68,16 @@ class SetInfoViewController: UIViewController {
         return btn
     }()
     
+    fileprivate let logoutBtn: UIButton = {
+        let btn = UIButton(type: .custom)
+        btn.setTitle("退出登录", for: .normal)
+        btn.titleLabel?.font = UIFont.systemFont(ofSize: 16, weight: UIFont.Weight.bold)
+        btn.setTitleColor(.red, for: .normal)
+        btn.titleLabel?.textAlignment = .center
+        btn.backgroundColor = .white
+        return btn
+    }()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -111,6 +121,16 @@ class SetInfoViewController: UIViewController {
     
     deinit {
         NotificationCenter.default.removeObserver(self)
+    }
+    
+    @objc func logout(_ sender: UIButton) {
+        
+        AccountManager.logout(success: {
+            
+        }, failure: { error in
+            
+        })
+        
     }
     
     @objc func receiveGesture(_ gesture: UITapGestureRecognizer) {

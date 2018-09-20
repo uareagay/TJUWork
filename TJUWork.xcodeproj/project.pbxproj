@@ -161,6 +161,7 @@
 		DDB9CE662111AFF600E63211 /* ReceiverCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDB9CE652111AFF600E63211 /* ReceiverCollectionViewCell.swift */; };
 		DDB9CE682112FD7900E63211 /* AddReceiverCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDB9CE672112FD7900E63211 /* AddReceiverCollectionViewCell.swift */; };
 		DDBBEE9321019AB300244E40 /* ScheduleMessageTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDBBEE9221019AB300244E40 /* ScheduleMessageTableViewCell.swift */; };
+		DDF1EA582153EF6500A94B95 /* SearchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDF1EA572153EF6500A94B95 /* SearchViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -359,6 +360,7 @@
 		DDB9CE652111AFF600E63211 /* ReceiverCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReceiverCollectionViewCell.swift; sourceTree = "<group>"; };
 		DDB9CE672112FD7900E63211 /* AddReceiverCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddReceiverCollectionViewCell.swift; sourceTree = "<group>"; };
 		DDBBEE9221019AB300244E40 /* ScheduleMessageTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduleMessageTableViewCell.swift; sourceTree = "<group>"; };
+		DDF1EA572153EF6500A94B95 /* SearchViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchViewController.swift; sourceTree = "<group>"; };
 		DF2F999F23DD439911A81AC7 /* Pods-TJUWork.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TJUWork.debug.xcconfig"; path = "Pods/Target Support Files/Pods-TJUWork/Pods-TJUWork.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -737,6 +739,7 @@
 				DDB9CE552109ED2700E63211 /* CreateMessageViewController.swift */,
 				DD1459102146CF510018BC07 /* RichTextViewController.swift */,
 				DD7627AC214F9D51005A3A97 /* DownloadViewController.swift */,
+				DDF1EA572153EF6500A94B95 /* SearchViewController.swift */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -1141,6 +1144,7 @@
 				DD1459DD2146D4B50018BC07 /* HRColorCursor.m in Sources */,
 				DD03B5D1214A9FC3007E2CB4 /* InboxListModel.swift in Sources */,
 				DDB9CE542109EB7000E63211 /* TreeNode.swift in Sources */,
+				DDF1EA582153EF6500A94B95 /* SearchViewController.swift in Sources */,
 				DD7627AD214F9D51005A3A97 /* DownloadViewController.swift in Sources */,
 				DD31345C2148B9AE00A0990E /* DraftListModel.swift in Sources */,
 				DD0AA78620F9C8470011F1EE /* InfoTableViewCell.swift in Sources */,

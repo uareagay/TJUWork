@@ -32,7 +32,7 @@ class MessageViewController: UIViewController {
                 self.tableView.mj_header = MJRefreshNormalHeader(refreshingTarget: self, refreshingAction: #selector(headerRefresh))
                 menuBtn.isEnabled = true
                 addBtn.isEnabled = true
-                self.navigationItem.rightBarButtonItem = nil
+                self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .search, target: self, action: #selector(clickSearching(_:)))
                 
                 self.selectAllBtn.alpha = 0.0
                 self.deleteBtn.alpha = 0.0
@@ -191,7 +191,8 @@ class MessageViewController: UIViewController {
         self.navigationItem.title = "消息"
         self.navigationController?.navigationBar.barTintColor = UIColor(hex6: 0x00518e)
         self.navigationController?.navigationBar.titleTextAttributes = [NSAttributedStringKey.foregroundColor: UIColor.white]
-        self.navigationItem.rightBarButtonItem = nil
+        //self.navigationItem.rightBarButtonItem = nil
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .search, target: self, action: #selector(clickSearching(_:)))
         self.navigationController?.navigationBar.tintColor = .white
         
         NotificationCenter.default.addObserver(self, selector: #selector(refreshInboxLists), name: NotificationName.NotificationRefreshInboxLists.name, object: nil)
@@ -209,6 +210,20 @@ class MessageViewController: UIViewController {
          NotificationCenter.default.removeObserver(self)
     }
     
+    
+    @objc func clickSearching(_ sender: UIBarButtonItem) {
+        switch currentMenuType {
+        case .inbox:
+            let searchVC = SearchViewController(SearchViewController.SearchType.inbox)
+            self.navigationController?.pushViewController(searchVC, animated: true)
+        case .outbox:
+            let searchVC = SearchViewController(SearchViewController.SearchType.outbox)
+            self.navigationController?.pushViewController(searchVC, animated: true)
+        default: break
+        }
+    }
+    
+   
     @objc func clickMenuBtn(_ sender: UIButton) {
         if menuBtn.isSelected == false {
             tableView.isScrollEnabled = false

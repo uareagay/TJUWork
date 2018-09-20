@@ -70,7 +70,6 @@ class LoginViewController: UIViewController {
     }()
 
     let loginBtn: UIButton = {
-        
         let btn = UIButton(type: .custom)
         btn.setTitle("登录", for: .normal)
         btn.setTitleColor(.white, for: .normal)
@@ -79,7 +78,6 @@ class LoginViewController: UIViewController {
         btn.backgroundColor = UIColor(hex6: 0x00518e)
         btn.layer.masksToBounds = true
         btn.layer.cornerRadius = 13
-        
         return btn
     }()
     
@@ -201,6 +199,7 @@ class LoginViewController: UIViewController {
 
 
 extension LoginViewController: UITextFieldDelegate {
+    
     @objc func keyboardWillShow(_ notification: NSNotification) {
         self.view.frame.origin.y = -100
         
@@ -222,4 +221,5 @@ extension LoginViewController: UITextFieldDelegate {
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         self.view.endEditing(true)
     }
+    
 }
