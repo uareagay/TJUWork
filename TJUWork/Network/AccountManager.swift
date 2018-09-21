@@ -8,6 +8,7 @@
 
 import Foundation
 
+
 struct AccountManager {
     
     static func getToken(username: String, password: String, success: ((String) -> ())?, failure: ((Error) -> ())?) {
@@ -28,8 +29,11 @@ struct AccountManager {
     static func logout(success: (() -> ())?, failure: ((Error) -> ())?) {
         
         NetworkManager.getInformation(url: "/logout", token: WorkUser.shared.token, parameters: nil, success: { dic in
-            
-            
+            if let status = dic["status"] as? Bool, status == true {
+                success?()
+            } else {
+                failure?(err())
+            }
         }, failure: { error in
             failure?(error)
         })

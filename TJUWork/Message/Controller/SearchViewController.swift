@@ -7,6 +7,7 @@
 //
 
 import Foundation
+//import MJRefresh
 
 
 class SearchViewController: UIViewController {
@@ -15,6 +16,9 @@ class SearchViewController: UIViewController {
         case inbox  //收件箱
         case outbox //发件箱
     }
+    
+    fileprivate var inboxLists: [InboxSearchData] = []
+    fileprivate var outboxLists: [OutboxSearchData] = []
     
     fileprivate let searchBar: UISearchBar = {
         let searchBar = UISearchBar(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.size.width, height: 44))
@@ -28,12 +32,14 @@ class SearchViewController: UIViewController {
     }()
     
     fileprivate var tableView: UITableView!
-    fileprivate var currentPage: Int = 0
+    //fileprivate var currentPage: Int = 0
+    fileprivate var currentType: SearchType = .inbox
     
     
     convenience init(_ type: SearchType) {
         self.init(nibName: nil, bundle: nil)
         
+        self.currentType = type
         switch type {
         case .inbox:
             self.searchBar.placeholder = "收件箱搜索"
@@ -46,9 +52,19 @@ class SearchViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        tableView = UITableView(frame: self.view.bounds, style: .plain)
+        tableView = UITableView(frame: self.view.bounds, style: .grouped)
+        tableView.allowsSelection = false
+        tableView.register(MessageTableViewCell.self, forCellReuseIdentifier: "MessageTableViewCell")
+        tableView.rowHeight = 65
+        tableView.separatorStyle = .none
         tableView.delegate = self
         tableView.dataSource = self
+        tableView.tableHeaderView = UIView(frame: CGRect(x: 0, y: 0, width: self.view.bounds.size.width, height: 20))
+        
+        
+        //let footer = MJRefreshAutoNormalFooter(refreshingTarget: self, refreshingAction: #selector())
+        
+        self.view.addSubview(tableView)
         
         
         
@@ -91,22 +107,52 @@ extension SearchViewController {
 extension SearchViewController: UISearchBarDelegate {
     
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        searchBar.resignFirstResponder()
         searchBarTextDidEndEditing(searchBar)
     }
     
     func searchBarTextDidEndEditing(_ searchBar: UISearchBar) {
-        if let searchText = self.searchBar.text?.addingPercentEncoding(withAllowedCharacters: CharacterSet.urlQueryAllowed) {
-            searchMessage(with: searchText)
+//        if let searchText = self.searchBar.text?.addingPercentEncoding(withAllowedCharacters: CharacterSet.urlQueryAllowed) {
+//            searchMessage(with: searchBar.text!)
+//        }
+        guard let text = searchBar.text else {
+            return
         }
+        searchMessage(with: text)
     }
-    
-    
     
 }
 
 extension SearchViewController {
     
+    @objc func loadMore() {
+        
+    }
+    
     func searchMessage(with keyword: String) {
+        print(keyword)
+        guard keyword.count > 0 else {
+            return
+        }
+        print("fuck")
+        switch currentType {
+        case .inbox:
+            PersonalMessageHelper.searchInbox(content: keyword, success: { model in
+                self.inboxLists = model.data
+                print(self.inboxLists.count)
+                self.tableView.reloadData()
+            }, failure: {
+                print("b")
+            })
+        case .outbox:
+            PersonalMessageHelper.searchOutbox(content: keyword, success: { model in
+                self.outboxLists = model.data
+                
+                self.tableView.reloadData()
+            }, failure: {
+                
+            })
+        }
         
     }
     
@@ -114,16 +160,59 @@ extension SearchViewController {
 
 extension SearchViewController: UITableViewDelegate {
     
+//    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+//        return 65
+//    }
+    
+    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        return 1
+    }
+    
+    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        return nil
+    }
+    
+    func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
+        return 5
+    }
+    
+    func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
+        return UIView()
+    }
+    
 }
 
 extension SearchViewController: UITableViewDataSource {
     
+    func numberOfSections(in tableView: UITableView) -> Int {
+        return self.currentType == .inbox ? self.inboxLists.count : self.outboxLists.count
+    }
+    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 0
+        return 1
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        return UITableViewCell()
+        let cell = tableView.dequeueReusableCell(withIdentifier: "MessageTableViewCell") as! MessageTableViewCell
+        
+        switch self.currentType {
+        case .inbox:
+            let data = self.inboxLists[indexPath.row]
+            cell.titleLabel.text = data.title
+            cell.nameLabel.text = data.type
+            let formatter = DateFormatter()
+            formatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+            cell.dateLabel.text = formatter.string(from: data.from)
+        case .outbox:
+            let data = self.outboxLists[indexPath.row]
+            cell.titleLabel.text = data.title
+            cell.nameLabel.text = data.type == "0" ? "通知信息" : "工作信息"
+            let formatter = DateFormatter()
+            formatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+            cell.dateLabel.text = formatter.string(from: data.from)
+        }
+        
+        return cell
     }
     
     

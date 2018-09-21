@@ -11,6 +11,7 @@ import SnapKit
 import Photos
 import SDWebImage
 import MJRefresh
+import SwiftMessages
 
 class SetInfoViewController: UIViewController {
     
@@ -70,11 +71,14 @@ class SetInfoViewController: UIViewController {
     
     fileprivate let logoutBtn: UIButton = {
         let btn = UIButton(type: .custom)
+        btn.frame = CGRect(x: 10, y: 5, width: UIScreen.main.bounds.size.width-20, height: 60)
         btn.setTitle("退出登录", for: .normal)
-        btn.titleLabel?.font = UIFont.systemFont(ofSize: 16, weight: UIFont.Weight.bold)
+        btn.titleLabel?.font = UIFont.systemFont(ofSize: 18, weight: UIFont.Weight.bold)
         btn.setTitleColor(.red, for: .normal)
         btn.titleLabel?.textAlignment = .center
         btn.backgroundColor = .white
+        btn.layer.masksToBounds = true
+        btn.layer.cornerRadius = 20
         return btn
     }()
     
@@ -110,6 +114,9 @@ class SetInfoViewController: UIViewController {
         //self.GetUserInfo()
         self.tableView.mj_header = MJRefreshNormalHeader(refreshingTarget: self, refreshingAction: #selector(GetUserInfo))
         self.tableView.mj_header.beginRefreshing()
+        
+        setupFooterView()
+        
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -123,14 +130,35 @@ class SetInfoViewController: UIViewController {
         NotificationCenter.default.removeObserver(self)
     }
     
+    func setupFooterView() {
+        let contentView = UIView(frame: CGRect(x: 0, y: 0, width: self.view.bounds.size.width, height: 80))
+        contentView.backgroundColor = .clear
+        contentView.addSubview(logoutBtn)
+        tableView.tableFooterView = contentView
+        logoutBtn.addTarget(self, action: #selector(logout(_:)), for: .touchUpInside)
+    }
+    
     @objc func logout(_ sender: UIButton) {
-        
-        AccountManager.logout(success: {
+        let alertVC = UIAlertController(title: "退出", message: "确定要退出吗？", preferredStyle: .alert)
+        let cancelAction = UIAlertAction(title: "不了", style: .default, handler: nil)
+        cancelAction.setValue(UIColor.red, forKey: "titleTextColor")
+        let outAction = UIAlertAction(title: "退出", style: .default, handler: { action in
             
-        }, failure: { error in
+            
+            AccountManager.logout(success: {
+                SwiftMessages.showSuccessMessage(title: "退出成功", body: "")
+                let loginVC = LoginViewController()
+                self.present(loginVC, animated: true, completion: nil)
+                WorkUser.shared.delete()
+            }, failure: { error in
+                
+            })
+
             
         })
-        
+        alertVC.addAction(cancelAction)
+        alertVC.addAction(outAction)
+        self.present(alertVC, animated: true, completion: nil)
     }
     
     @objc func receiveGesture(_ gesture: UITapGestureRecognizer) {

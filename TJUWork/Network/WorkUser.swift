@@ -53,8 +53,9 @@ class WorkUser: Codable {
     }
     
     func delete() {
-        Storage.remove("user.json", from: .documents)
         
+        
+        print(Storage.remove("user.json", from: .documents))
         WorkUser.shared = WorkUser()
     }
     

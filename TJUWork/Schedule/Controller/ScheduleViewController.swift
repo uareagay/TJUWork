@@ -110,7 +110,7 @@ class ScheduleViewController: UIViewController {
         
         AccountManager.getToken(username: WorkUser.shared.username, password: WorkUser.shared.password, success: { token in
             WorkUser.shared.token = token
-            print(token)
+            
             WorkUser.shared.save()
             //SwiftMessages.showSuccessMessage(title: "登录成功", body: "")
            self.tableView.mj_header.beginRefreshing()

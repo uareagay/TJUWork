@@ -45,15 +45,17 @@ class DetailMessageViewController: UIViewController {
     fileprivate var mid: String?
     fileprivate var isReply: Bool?
     fileprivate var messageType: DownMenuView.MenuType?
+    fileprivate var isReaded: Bool!
     
     convenience init(mid: String, isReply: Bool, messageType: DownMenuView.MenuType, isReaded: Bool) {
         self.init()
         self.mid = mid
         self.isReply = isReply
         self.messageType = messageType
-        if isReaded == false {
-            NotificationCenter.default.post(name: NotificationName.NotificationRefreshInboxLists.name, object: nil)
-        }
+        self.isReaded = isReaded
+//        if isReaded == false {
+//            NotificationCenter.default.post(name: NotificationName.NotificationRefreshInboxLists.name, object: nil)
+//        }
     }
     
     override func viewDidLoad() {
@@ -79,7 +81,14 @@ class DetailMessageViewController: UIViewController {
         deleteBtn.addTarget(self, action: #selector(deleteMessage(_:)), for: .touchUpInside)
         replyBtn.addTarget(self, action: #selector(replyMessage(_:)), for: .touchUpInside)
         
+        
         PersonalMessageHelper.getDetailMessage(mid: mid!, success: { model in
+            
+            
+            if self.isReaded == false {
+                NotificationCenter.default.post(name: NotificationName.NotificationRefreshInboxLists.name, object: nil)
+            }
+            
             self.datailInformation = model
             if let file = model.data.file1 {
                 self.downloadedFiles.append(file)

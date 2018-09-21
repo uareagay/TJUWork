@@ -252,7 +252,52 @@ struct PersonalMessageHelper {
         })
     }
     
+    static func searchInbox(content: String, success: ((InboxSearchModel)->())?, failure: (()->())?) {
+        NetworkManager.postInformation(url: "/message/inbox/search", token: WorkUser.shared.token, parameters: ["content": content], success: { dic in
+            if let status = dic["status"] as? Bool, status == true {
+                if let data = try? JSONSerialization.data(withJSONObject: dic, options: JSONSerialization.WritingOptions.init(rawValue: 0)), let model = try? InboxSearchModel(data: data) {
+                    //SwiftMessages.showSuccessMessage(title: "搜索成功")
+                    success?(model)
+                } else {
+                    SwiftMessages.showErrorMessage(title: "搜索失败")
+                    failure?()
+                }
+            } else {
+                SwiftMessages.showErrorMessage(title: "搜索失败")
+                failure?()
+            }
+        }, failure: { error in
+            if error is NetworkManager.NetworkNotExist {
+                SwiftMessages.showErrorMessage(title: NetworkManager.errorString)
+            } else {
+                SwiftMessages.showErrorMessage(title: "搜索失败")
+            }
+            failure?()
+        })
+    }
     
-    
+    static func searchOutbox(content: String, success: ((OutboxSearchModel)->())?, failure: (()->())?) {
+        NetworkManager.postInformation(url: "/message/outbox/search", token: WorkUser.shared.token, parameters: ["content": content], success: { dic in
+            if let status = dic["status"] as? Bool, status == true {
+                if let data = try? JSONSerialization.data(withJSONObject: dic, options: JSONSerialization.WritingOptions.init(rawValue: 0)), let model = try? OutboxSearchModel(data: data) {
+                    //SwiftMessages.showSuccessMessage(title: "搜索成功")
+                    success?(model)
+                } else {
+                    SwiftMessages.showErrorMessage(title: "搜索失败")
+                    failure?()
+                }
+            } else {
+                SwiftMessages.showErrorMessage(title: "搜索失败")
+                failure?()
+            }
+        }, failure: { error in
+            if error is NetworkManager.NetworkNotExist {
+                SwiftMessages.showErrorMessage(title: NetworkManager.errorString)
+            } else {
+                SwiftMessages.showErrorMessage(title: "搜索失败")
+            }
+            failure?()
+        })
+    }
     
 }

@@ -95,6 +95,18 @@ class MessageViewController: UIViewController {
     fileprivate var outboxLists: OutboxListModel!
     fileprivate var inboxLists: InboxListModel!
     
+    override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
+        super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(refreshInboxLists), name: NotificationName.NotificationRefreshInboxLists.name, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(refreshOutboxLists), name: NotificationName.NotificationRefreshOutboxLists.name, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(refreshDraftLists), name: NotificationName.NotificationRefreshDraftLists.name, object: nil)
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -195,9 +207,6 @@ class MessageViewController: UIViewController {
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .search, target: self, action: #selector(clickSearching(_:)))
         self.navigationController?.navigationBar.tintColor = .white
         
-        NotificationCenter.default.addObserver(self, selector: #selector(refreshInboxLists), name: NotificationName.NotificationRefreshInboxLists.name, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(refreshOutboxLists), name: NotificationName.NotificationRefreshOutboxLists.name, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(refreshDraftLists), name: NotificationName.NotificationRefreshDraftLists.name, object: nil)
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -278,66 +287,74 @@ class MessageViewController: UIViewController {
     }
     
     @objc func deleteMessage(_ sender: UIButton) {
-        var dic: [Int] = []
-        
-        switch self.currentMenuType {
-        case .inbox:
-            for i in 0..<self.selectedArrs.count {
-                dic.append(Int(self.inboxLists.data[self.selectedArrs[i]].mid)!)
-            }
-            self.inboxLists.data = self.inboxLists.data.filter({ data in
-                if dic.contains(Int(data.mid)!) {
-                    return false
-                } else {
-                    return true
-                }
-                
-            })
-            self.isSelecting = false
-            PersonalMessageHelper.deleteInbox(mid: dic, success: {
-                NotificationCenter.default.post(name: NotificationName.NotificationRefreshCalendar.name, object: nil)
-            }, failure: {
-                
-            })
+        let alertVC = UIAlertController(title: "删除", message: "确定要删除吗？", preferredStyle: .alert)
+        let cancelAction = UIAlertAction(title: "不了", style: .default, handler: nil)
+        cancelAction.setValue(UIColor.red, forKey: "titleTextColor")
+        let outAction = UIAlertAction(title: "删除", style: .default, handler: { _ in
+            var dic: [Int] = []
             
-        case .outbox:
-            for i in 0..<self.selectedArrs.count {
-                dic.append(Int(self.outboxLists.data[self.selectedArrs[i]].mid)!)
-            }
-            self.outboxLists.data = self.outboxLists.data.filter({ data in
-                if dic.contains(Int(data.mid)!) {
-                    return false
-                } else {
-                    return true
+            switch self.currentMenuType {
+            case .inbox:
+                for i in 0..<self.selectedArrs.count {
+                    dic.append(Int(self.inboxLists.data[self.selectedArrs[i]].mid)!)
                 }
+                self.inboxLists.data = self.inboxLists.data.filter({ data in
+                    if dic.contains(Int(data.mid)!) {
+                        return false
+                    } else {
+                        return true
+                    }
+                    
+                })
+                self.isSelecting = false
+                PersonalMessageHelper.deleteInbox(mid: dic, success: {
+                    NotificationCenter.default.post(name: NotificationName.NotificationRefreshCalendar.name, object: nil)
+                }, failure: {
+                    
+                })
                 
-            })
-            self.isSelecting = false
-            PersonalMessageHelper.deleteOutbox(mid: dic, success: {
-                NotificationCenter.default.post(name: NotificationName.NotificationRefreshCalendar.name, object: nil)
-            }, failure: {
-                
-            })
-            
-        case .draft:
-            for i in 0..<self.selectedArrs.count {
-                dic.append(Int(self.draftLists.data[self.selectedArrs[i]].did)!)
-            }
-            self.draftLists.data = self.draftLists.data.filter({ data in
-                if dic.contains(Int(data.did)!) {
-                    return false
-                } else {
-                    return true
+            case .outbox:
+                for i in 0..<self.selectedArrs.count {
+                    dic.append(Int(self.outboxLists.data[self.selectedArrs[i]].mid)!)
                 }
+                self.outboxLists.data = self.outboxLists.data.filter({ data in
+                    if dic.contains(Int(data.mid)!) {
+                        return false
+                    } else {
+                        return true
+                    }
+                    
+                })
+                self.isSelecting = false
+                PersonalMessageHelper.deleteOutbox(mid: dic, success: {
+                    NotificationCenter.default.post(name: NotificationName.NotificationRefreshCalendar.name, object: nil)
+                }, failure: {
+                    
+                })
                 
-            })
-            self.isSelecting = false
-            PersonalMessageHelper.deleteDraft(did: dic, success: {
-                
-            }, failure: {
-                
-            })
-        }
+            case .draft:
+                for i in 0..<self.selectedArrs.count {
+                    dic.append(Int(self.draftLists.data[self.selectedArrs[i]].did)!)
+                }
+                self.draftLists.data = self.draftLists.data.filter({ data in
+                    if dic.contains(Int(data.did)!) {
+                        return false
+                    } else {
+                        return true
+                    }
+                    
+                })
+                self.isSelecting = false
+                PersonalMessageHelper.deleteDraft(did: dic, success: {
+                    //NotificationCenter.default.post(name: NotificationName.NotificationRefreshDraftLists.name, object: nil)
+                }, failure: {
+                    
+                })
+            }
+        })
+        alertVC.addAction(cancelAction)
+        alertVC.addAction(outAction)
+        self.present(alertVC, animated: true, completion: nil)
         
     }
     

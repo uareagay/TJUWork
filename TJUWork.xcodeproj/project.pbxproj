@@ -162,6 +162,8 @@
 		DDB9CE682112FD7900E63211 /* AddReceiverCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDB9CE672112FD7900E63211 /* AddReceiverCollectionViewCell.swift */; };
 		DDBBEE9321019AB300244E40 /* ScheduleMessageTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDBBEE9221019AB300244E40 /* ScheduleMessageTableViewCell.swift */; };
 		DDF1EA582153EF6500A94B95 /* SearchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDF1EA572153EF6500A94B95 /* SearchViewController.swift */; };
+		DDF1EA5A2155572300A94B95 /* InboxSearchModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDF1EA592155572300A94B95 /* InboxSearchModel.swift */; };
+		DDF1EA5C2155581C00A94B95 /* OutboxSearchModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDF1EA5B2155581C00A94B95 /* OutboxSearchModel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -361,6 +363,8 @@
 		DDB9CE672112FD7900E63211 /* AddReceiverCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddReceiverCollectionViewCell.swift; sourceTree = "<group>"; };
 		DDBBEE9221019AB300244E40 /* ScheduleMessageTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduleMessageTableViewCell.swift; sourceTree = "<group>"; };
 		DDF1EA572153EF6500A94B95 /* SearchViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchViewController.swift; sourceTree = "<group>"; };
+		DDF1EA592155572300A94B95 /* InboxSearchModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InboxSearchModel.swift; sourceTree = "<group>"; };
+		DDF1EA5B2155581C00A94B95 /* OutboxSearchModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OutboxSearchModel.swift; sourceTree = "<group>"; };
 		DF2F999F23DD439911A81AC7 /* Pods-TJUWork.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TJUWork.debug.xcconfig"; path = "Pods/Target Support Files/Pods-TJUWork/Pods-TJUWork.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -797,6 +801,8 @@
 				DD31345D214A58B800A0990E /* OutboxListModel.swift */,
 				DD03B5D0214A9FC3007E2CB4 /* InboxListModel.swift */,
 				DD03B5D4214B98D5007E2CB4 /* DetailMessageModel.swift */,
+				DDF1EA592155572300A94B95 /* InboxSearchModel.swift */,
+				DDF1EA5B2155581C00A94B95 /* OutboxSearchModel.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -1129,6 +1135,7 @@
 				DD03B5D7214BCC2C007E2CB4 /* ReplyMessageViewController.swift in Sources */,
 				DDB9CE682112FD7900E63211 /* AddReceiverCollectionViewCell.swift in Sources */,
 				DD0AA74620F8B6200011F1EE /* ViewController.swift in Sources */,
+				DDF1EA5C2155581C00A94B95 /* OutboxSearchModel.swift in Sources */,
 				DDB9CE4F21061EA300E63211 /* SenderMultiLinesTableViewCell.swift in Sources */,
 				DD1459D42146D4B50018BC07 /* HRCgUtil.m in Sources */,
 				DD1459D72146D4B50018BC07 /* HRBrightnessCursor.m in Sources */,
@@ -1160,6 +1167,7 @@
 				DDB9CE5E21102FD600E63211 /* MessageNameTableViewCell.swift in Sources */,
 				DDB9CE562109ED2700E63211 /* CreateMessageViewController.swift in Sources */,
 				DD0AA77820F8CC2B0011F1EE /* ClassExtensions.swift in Sources */,
+				DDF1EA5A2155572300A94B95 /* InboxSearchModel.swift in Sources */,
 				DDB9CE4B2106133400E63211 /* DetailMessageViewController.swift in Sources */,
 				DD31345E214A58B800A0990E /* OutboxListModel.swift in Sources */,
 				DDB9CE5A210D836300E63211 /* ContactTableViewCell.swift in Sources */,

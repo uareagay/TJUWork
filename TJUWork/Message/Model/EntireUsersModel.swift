@@ -27,8 +27,9 @@ struct EntireUsersData: Codable {
 }
 
 struct User: Codable {
-    let uid, realName, email, wechat: String
-    let phone, payNumber: String
+    let uid, realName: String
+    let email, wechat: String?
+    let phone, payNumber: String?
     
     enum CodingKeys: String, CodingKey {
         case uid

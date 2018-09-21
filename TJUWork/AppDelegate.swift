@@ -51,7 +51,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 //                NotificationCenter.default.post(name: NotificationName.NotificationLoginFail.name, object: nil)
 //            })
         }, failure: {
-            NotificationCenter.default.post(name: NotificationName.NotificationLoginFail.name, object: nil)
+            //NotificationCenter.default.post(name: NotificationName.NotificationLoginFail.name, object: nil)
             //self.window?.rootViewController!.present(LoginViewController(), animated: true, completion: nil)
         })
         
