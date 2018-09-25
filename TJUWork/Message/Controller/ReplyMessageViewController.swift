@@ -25,9 +25,9 @@ class ReplyMessageViewController: UIViewController {
     
     var HTMLString: String = "<p>编辑内容</p>" {
         didSet {
-            if let attributedString = try? NSAttributedString(data: (HTMLString.data(using: .unicode))!, options: [NSAttributedString.DocumentReadingOptionKey.documentType : NSAttributedString.DocumentType.html], documentAttributes: nil) {
-                self.textView.attributedText = attributedString
-            }
+//            if let attributedString = try? NSAttributedString(data: (HTMLString.data(using: .unicode))!, options: [NSAttributedString.DocumentReadingOptionKey.documentType : NSAttributedString.DocumentType.html], documentAttributes: nil) {
+//                self.textView.attributedText = attributedString
+//            }
         }
     }
     
@@ -192,6 +192,8 @@ extension ReplyMessageViewController: UITextViewDelegate {
         let richTextVC = RichTextViewController(isReply: true)
         richTextVC.hidesBottomBarWhenPushed = true
         richTextVC.setHTML(self.HTMLString)
+        richTextVC.delegate = self
+        
         self.navigationController?.pushViewController(richTextVC, animated: true)
         return false
     }
@@ -227,6 +229,17 @@ extension ReplyMessageViewController {
             self.replyBtn.isEnabled = true
             self.textView.isUserInteractionEnabled = true
         })
+    }
+    
+}
+
+extension ReplyMessageViewController: RichTextTransmitProtocol {
+    
+    func transmitText(_ text: String) {
+        self.HTMLString = text
+        if let attributedString = try? NSAttributedString(data: (text.data(using: .unicode))!, options: [NSAttributedString.DocumentReadingOptionKey.documentType : NSAttributedString.DocumentType.html], documentAttributes: nil) {
+            self.textView.attributedText = attributedString
+        }
     }
     
 }

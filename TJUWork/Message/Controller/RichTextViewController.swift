@@ -9,9 +9,15 @@
 import Foundation
 import SwiftMessages
 
+protocol RichTextTransmitProtocol: class {
+    func transmitText(_ text: String)
+}
+
 class RichTextViewController: ZSSRichTextEditor {
     
     fileprivate var isReply: Bool = false
+    
+    weak var delegate: RichTextTransmitProtocol?
     
     convenience init(isReply: Bool) {
         self.init()
@@ -44,15 +50,17 @@ extension RichTextViewController {
     }
     
     @objc func saveEdit(_ sender: UIButton) {
-        if self.isReply == true {
-            let replyVC = self.navigationController?.viewControllers[2] as! ReplyMessageViewController
-            replyVC.HTMLString = self.getHTML()
-            self.navigationController?.popViewController(animated: true)
-        } else {
-            let createMessageVC = self.navigationController?.viewControllers[1] as! CreateMessageViewController
-            createMessageVC.HTMLString = self.getHTML()
-            self.navigationController?.popViewController(animated: true)
-        }
+//        if self.isReply == true {
+//            let replyVC = self.navigationController?.viewControllers[2] as! ReplyMessageViewController
+//            replyVC.HTMLString = self.getHTML()
+//            self.navigationController?.popViewController(animated: true)
+//        } else {
+//            let createMessageVC = self.navigationController?.viewControllers[1] as! CreateMessageViewController
+//            createMessageVC.HTMLString = self.getHTML()
+//            self.navigationController?.popViewController(animated: true)
+//        }
+        delegate?.transmitText(self.getHTML())
+        self.navigationController?.popViewController(animated: true)
     }
     
 }

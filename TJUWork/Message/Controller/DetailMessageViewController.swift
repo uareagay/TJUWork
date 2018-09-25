@@ -125,6 +125,7 @@ extension DetailMessageViewController {
     @objc func deleteMessage(_ sender: UIButton) {
         self.deleteBtn.isEnabled = false
         self.replyBtn.isEnabled = false
+        
         if let type = self.messageType {
             switch type {
             case .inbox:
@@ -133,7 +134,8 @@ extension DetailMessageViewController {
                     NotificationCenter.default.post(name: NotificationName.NotificationRefreshCalendar.name, object: nil)
 //                    let messageVC = self.navigationController?.viewControllers[0] as! MessageViewController
 //                    messageVC.refreshInboxLists()
-                    self.navigationController?.popViewController(animated: true)
+//                    self.navigationController?.popViewController(animated: true)
+                    self.navigationController?.popToRootViewController(animated: true)
                 }, failure: {
                     self.deleteBtn.isEnabled = true
                     self.replyBtn.isEnabled = true
@@ -145,7 +147,8 @@ extension DetailMessageViewController {
                     NotificationCenter.default.post(name: NotificationName.NotificationRefreshCalendar.name, object: nil)
 //                    let messageVC = self.navigationController?.viewControllers[0] as! MessageViewController
 //                    messageVC.refreshOutboxLists()
-                    self.navigationController?.popViewController(animated: true)
+//                    self.navigationController?.popViewController(animated: true)
+                    self.navigationController?.popToRootViewController(animated: true)
                 }, failure: {
                     self.deleteBtn.isEnabled = true
                     self.replyBtn.isEnabled = true

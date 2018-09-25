@@ -487,7 +487,6 @@
 		DD0AA77220F8C4D60011F1EE /* Login */ = {
 			isa = PBXGroup;
 			children = (
-				DD0AA77920F90F530011F1EE /* View */,
 				DD0AA77320F8C4EA0011F1EE /* Controller */,
 			);
 			path = Login;
@@ -508,13 +507,6 @@
 				DD0AA77C20F9168A0011F1EE /* Controller */,
 			);
 			path = main;
-			sourceTree = "<group>";
-		};
-		DD0AA77920F90F530011F1EE /* View */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = View;
 			sourceTree = "<group>";
 		};
 		DD0AA77C20F9168A0011F1EE /* Controller */ = {
