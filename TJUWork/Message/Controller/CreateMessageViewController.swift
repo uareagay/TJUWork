@@ -733,6 +733,7 @@ extension CreateMessageViewController {
         
         self.sendBtn.isEnabled = false
         self.storeDraftBtn.isEnabled = false
+        self.textView.isUserInteractionEnabled = false
         
         PersonalMessageHelper.sendMessage(dictionary: dic, success: {
             NotificationCenter.default.post(name: NotificationName.NotificationRefreshInboxLists.name, object: nil)
@@ -744,6 +745,7 @@ extension CreateMessageViewController {
         }, failure: {
             self.sendBtn.isEnabled = true
             self.storeDraftBtn.isEnabled = true
+            self.textView.isUserInteractionEnabled = true
         })
         
     }
@@ -778,6 +780,7 @@ extension CreateMessageViewController {
         
         self.sendBtn.isEnabled = false
         self.storeDraftBtn.isEnabled = false
+        self.textView.isUserInteractionEnabled = false
         
         PersonalMessageHelper.saveDraft(dictionary: dic, success: {
 //            let messageVC = self.navigationController?.viewControllers[0] as! MessageViewController
@@ -787,6 +790,7 @@ extension CreateMessageViewController {
         }, failure: {
             self.sendBtn.isEnabled = true
             self.storeDraftBtn.isEnabled = true
+            self.textView.isUserInteractionEnabled = true
         })
     }
     

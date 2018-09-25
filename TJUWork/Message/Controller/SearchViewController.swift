@@ -53,7 +53,6 @@ class SearchViewController: UIViewController {
         super.viewDidLoad()
         
         tableView = UITableView(frame: self.view.bounds, style: .grouped)
-        tableView.allowsSelection = false
         tableView.register(MessageTableViewCell.self, forCellReuseIdentifier: "MessageTableViewCell")
         tableView.rowHeight = 65
         tableView.separatorStyle = .none
@@ -134,7 +133,7 @@ extension SearchViewController {
         guard keyword.count > 0 else {
             return
         }
-        print("fuck")
+        
         switch currentType {
         case .inbox:
             PersonalMessageHelper.searchInbox(content: keyword, success: { model in
@@ -142,7 +141,7 @@ extension SearchViewController {
                 print(self.inboxLists.count)
                 self.tableView.reloadData()
             }, failure: {
-                print("b")
+                
             })
         case .outbox:
             PersonalMessageHelper.searchOutbox(content: keyword, success: { model in
@@ -160,10 +159,6 @@ extension SearchViewController {
 
 extension SearchViewController: UITableViewDelegate {
     
-//    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-//        return 65
-//    }
-    
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         return 1
     }
@@ -178,6 +173,35 @@ extension SearchViewController: UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
         return UIView()
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        self.tableView.deselectRow(at: indexPath, animated: true)
+        
+        switch self.currentType {
+        case .inbox:
+            let data = self.inboxLists[indexPath.section]
+            let isResponse = data.isResponse
+            //1为已回复，0为未回复；-1为通知消息，可以回复，但是不必要回复
+            let detailVC: DetailMessageViewController
+            let isReaded = data.isRead == "0" ? false : true
+            if isResponse == 1 {
+                detailVC = DetailMessageViewController(mid: data.mid, isReply: false, messageType: .inbox, isReaded: isReaded)
+            } else if isResponse == -1 {
+                detailVC = DetailMessageViewController(mid: data.mid, isReply: false, messageType: .inbox, isReaded: isReaded)
+            } else if isResponse == 0 {
+                detailVC = DetailMessageViewController(mid: data.mid, isReply: true, messageType: .inbox, isReaded: isReaded)
+            } else {
+                //不会执行
+                detailVC = DetailMessageViewController()
+            }
+            self.navigationController?.pushViewController(detailVC, animated: true)
+            
+        case .outbox:
+            let data = self.outboxLists[indexPath.section]
+            let detailVC = DetailMessageViewController(mid: data.mid, isReply: false, messageType: .outbox, isReaded: true)
+            self.navigationController?.pushViewController(detailVC, animated: true)
+        }
     }
     
 }

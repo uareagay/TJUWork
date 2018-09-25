@@ -214,6 +214,7 @@ extension ReplyMessageViewController {
         dic["receivers[0]"] = self.sendUID
         
         self.replyBtn.isEnabled = false
+        self.textView.isUserInteractionEnabled = false
         
         PersonalMessageHelper.sendMessage(dictionary: dic, success: {
             NotificationCenter.default.post(name: NotificationName.NotificationRefreshInboxLists.name, object: nil)
@@ -224,6 +225,7 @@ extension ReplyMessageViewController {
             self.navigationController?.popToRootViewController(animated: true)
         }, failure: {
             self.replyBtn.isEnabled = true
+            self.textView.isUserInteractionEnabled = true
         })
     }
     
