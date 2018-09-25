@@ -16,8 +16,10 @@ class ScheduleViewController: UIViewController {
     
     fileprivate var calendar: FSCalendar!
     fileprivate var tableView: UITableView!
-    fileprivate var calendarLists: WorkCalendarModel!
-    fileprivate var selectedList: [WorkCalendarData] = []
+//    fileprivate var calendarLists: WorkCalendarModel!
+//    fileprivate var selectedList: [WorkCalendarData] = []
+    fileprivate var calendarLists: ScheduleListsModel!
+    fileprivate var selectedList: [ScheduleListsData] = []
     fileprivate var messageDisplay: [Date] = []
     
     fileprivate var selectedDate: Date {
@@ -135,7 +137,15 @@ class ScheduleViewController: UIViewController {
     }
     
     @objc func headerRefresh() {
-        PersonalMessageHelper.getCalendarList(success: { model in
+//        PersonalMessageHelper.getCalendarList(success: { model in
+//
+//        }, failure: {
+//            if self.tableView.mj_header.isRefreshing {
+//                self.tableView.mj_header.endRefreshing()
+//            }
+//        })
+        
+        ScheduleHelper.getCalendarList(success: { model in
             self.calendarLists = model
             
             let currentCalendar = Calendar.current
@@ -167,7 +177,9 @@ class ScheduleViewController: UIViewController {
             if self.tableView.mj_header.isRefreshing {
                 self.tableView.mj_header.endRefreshing()
             }
+
         })
+        
     }
     
     @objc func presentLoginView() {
@@ -213,6 +225,33 @@ extension ScheduleViewController: UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 65
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+//        let data = self.inboxLists.data[indexPath.section]
+//        let isResponse = data.isResponse
+//        //1为已回复，0为未回复；-1为通知消息，可以回复，但是不必要回复
+//        let detailVC: DetailMessageViewController
+//        let isReaded = data.isRead == "0" ? false : true
+//        if isResponse == 1 {
+//            detailVC = DetailMessageViewController(mid: data.mid, isReply: false, messageType: .inbox, isReaded: isReaded)
+//        } else if isResponse == -1 {
+//            detailVC = DetailMessageViewController(mid: data.mid, isReply: false, messageType: .inbox, isReaded: isReaded)
+//        } else if isResponse == 0 {
+//            detailVC = DetailMessageViewController(mid: data.mid, isReply: true, messageType: .inbox, isReaded: isReaded)
+//        } else {
+//            //不会执行
+//            detailVC = DetailMessageViewController()
+//        }
+//        self.navigationController?.pushViewController(detailVC, animated: true)
+        guard indexPath.section == 1 else {
+            return
+        }
+        let data = self.selectedList[indexPath.row]
+        
+        let detailVC = DetailMessageViewController(mid: String(data.id), isReply: true, messageType: .inbox, isReaded: true)
+        
+        self.navigationController?.pushViewController(detailVC, animated: true)
     }
     
 }

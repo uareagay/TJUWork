@@ -28,6 +28,8 @@
 		DD0AA78420F9B9F40011F1EE /* SetInfoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD0AA78320F9B9F40011F1EE /* SetInfoViewController.swift */; };
 		DD0AA78620F9C8470011F1EE /* InfoTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD0AA78520F9C8470011F1EE /* InfoTableViewCell.swift */; };
 		DD0AA78820F9CF250011F1EE /* SetInfoTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD0AA78720F9CF250011F1EE /* SetInfoTableViewCell.swift */; };
+		DD0B762F215A6CB6009A392C /* ScheduleHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD0B762E215A6CB6009A392C /* ScheduleHelper.swift */; };
+		DD0B7631215A6D49009A392C /* ScheduleListsModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD0B7630215A6D49009A392C /* ScheduleListsModel.swift */; };
 		DD145834214182700018BC07 /* UserInfoModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD145833214182700018BC07 /* UserInfoModel.swift */; };
 		DD145836214193B60018BC07 /* UserInfoHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD145835214193B60018BC07 /* UserInfoHelper.swift */; };
 		DD145838214198140018BC07 /* DeviceStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD145837214198140018BC07 /* DeviceStatus.swift */; };
@@ -212,6 +214,8 @@
 		DD0AA78320F9B9F40011F1EE /* SetInfoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetInfoViewController.swift; sourceTree = "<group>"; };
 		DD0AA78520F9C8470011F1EE /* InfoTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InfoTableViewCell.swift; sourceTree = "<group>"; };
 		DD0AA78720F9CF250011F1EE /* SetInfoTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetInfoTableViewCell.swift; sourceTree = "<group>"; };
+		DD0B762E215A6CB6009A392C /* ScheduleHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduleHelper.swift; sourceTree = "<group>"; };
+		DD0B7630215A6D49009A392C /* ScheduleListsModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduleListsModel.swift; sourceTree = "<group>"; };
 		DD145833214182700018BC07 /* UserInfoModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserInfoModel.swift; sourceTree = "<group>"; };
 		DD145835214193B60018BC07 /* UserInfoHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserInfoHelper.swift; sourceTree = "<group>"; };
 		DD145837214198140018BC07 /* DeviceStatus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceStatus.swift; sourceTree = "<group>"; };
@@ -698,6 +702,8 @@
 			isa = PBXGroup;
 			children = (
 				DD03B5D2214AC4DF007E2CB4 /* WorkCalendarModel.swift */,
+				DD0B762E215A6CB6009A392C /* ScheduleHelper.swift */,
+				DD0B7630215A6D49009A392C /* ScheduleListsModel.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -1122,6 +1128,7 @@
 				DD1459DB2146D4B50018BC07 /* CYRTextView.m in Sources */,
 				DD81CB3C21007BEB00EB5843 /* ScheduleViewController.swift in Sources */,
 				DD03B5D5214B98D5007E2CB4 /* DetailMessageModel.swift in Sources */,
+				DD0B762F215A6CB6009A392C /* ScheduleHelper.swift in Sources */,
 				DDB9CE622110610800E63211 /* MessageCategoryTableViewCell.swift in Sources */,
 				DD81CB3620FB47AD00EB5843 /* MessageTableViewCell.swift in Sources */,
 				DD03B5D7214BCC2C007E2CB4 /* ReplyMessageViewController.swift in Sources */,
@@ -1132,6 +1139,7 @@
 				DD1459D42146D4B50018BC07 /* HRCgUtil.m in Sources */,
 				DD1459D72146D4B50018BC07 /* HRBrightnessCursor.m in Sources */,
 				DD14583A2142DBB90018BC07 /* EntireUsersModel.swift in Sources */,
+				DD0B7631215A6D49009A392C /* ScheduleListsModel.swift in Sources */,
 				DD796D2621383FB10042D058 /* NetworkManager.swift in Sources */,
 				DD796D282138F8840042D058 /* WorkUser.swift in Sources */,
 				DD145836214193B60018BC07 /* UserInfoHelper.swift in Sources */,
