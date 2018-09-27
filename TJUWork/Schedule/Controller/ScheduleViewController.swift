@@ -22,6 +22,55 @@ class ScheduleViewController: UIViewController {
     fileprivate var selectedList: [ScheduleListsData] = []
     fileprivate var messageDisplay: [Date] = []
     
+    // MessageViewController Code
+    fileprivate var cancelBarButtonItem: UIBarButtonItem!
+    
+    fileprivate let deleteBtn: UIButton = {
+        let btn = UIButton(frame: CGRect(x: UIScreen.main.bounds.size.width/2-30-40, y: UIScreen.main.bounds.size.height-130, width: 60, height: 60))
+        btn.setImage(UIImage.resizedImage(image: UIImage(named: "删除")!, scaledToWidth: 60.0), for: .normal)
+        btn.alpha = 0.0
+        return btn
+    }()
+    
+    fileprivate let selectAllBtn: UIButton = {
+        let btn = UIButton(frame: CGRect(x: UIScreen.main.bounds.size.width/2-30+40, y: UIScreen.main.bounds.size.height-130, width: 60, height: 60))
+        btn.setImage(UIImage.resizedImage(image: UIImage(named: "全选")!, scaledToWidth: 49.0), for: .normal)
+        btn.alpha = 0.0
+        return btn
+    }()
+    
+    fileprivate var selectedArrs: [Int] = []
+    
+    fileprivate var isSelecting: Bool = false {
+        didSet {
+            if isSelecting == true {
+                
+                self.calendar.isUserInteractionEnabled = false
+                self.tableView.mj_header = nil
+                self.deleteBtn.alpha = 1.0
+                self.selectAllBtn.alpha = 1.0
+                
+                self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "完成", style: .plain, target: self, action: #selector(cancelEditStatus(_:)))
+                
+                
+            } else {
+                
+                self.calendar.isUserInteractionEnabled = true
+                self.tableView.mj_header = MJRefreshNormalHeader(refreshingTarget: self, refreshingAction: #selector(headerRefresh))
+                
+                self.navigationItem.rightBarButtonItem = nil
+                
+                self.deleteBtn.alpha = 0.0
+                self.selectAllBtn.alpha = 0.0
+                
+                selectedArrs = []
+                self.tableView.reloadData()
+                
+            }
+        }
+    }
+    
+    
     fileprivate var selectedDate: Date {
         didSet {
             let tomorrowDate = Date(timeInterval: 24*60*60, since: selectedDate)
@@ -85,6 +134,7 @@ class ScheduleViewController: UIViewController {
         tableView.delegate = self
         tableView.dataSource = self
         tableView.register(ScheduleMessageTableViewCell.self, forCellReuseIdentifier: "ScheduleMessageTableViewCell")
+        tableView.register(MessageTableViewCell.self, forCellReuseIdentifier: "MessageTableViewCell")
         tableView.estimatedRowHeight = 65
         tableView.separatorStyle = .none
         tableView.showsVerticalScrollIndicator = false
@@ -108,6 +158,7 @@ class ScheduleViewController: UIViewController {
         calendar.layer.cornerRadius = 10
         calendar.locale = Locale(identifier: "zh-CN")
         
+        
         self.tableView.mj_header = MJRefreshNormalHeader(refreshingTarget: self, refreshingAction: #selector(headerRefresh))
         
         AccountManager.getToken(username: WorkUser.shared.username, password: WorkUser.shared.password, success: { token in
@@ -127,6 +178,22 @@ class ScheduleViewController: UIViewController {
         
         
         //self.tableView.mj_header.beginRefreshing()
+        
+        cancelBarButtonItem = UIBarButtonItem(title: "完成", style: .plain, target: self, action: #selector(cancelEditStatus(_:)))
+        
+        let longPress = UILongPressGestureRecognizer(target: self, action: #selector(longPressEditing(_:)))
+        longPress.minimumPressDuration = 0.7
+        longPress.name = "LongPress"
+        longPress.delegate = self
+        longPress.delaysTouchesBegan = true
+        tableView.addGestureRecognizer(longPress)
+        
+        
+        self.view.addSubview(deleteBtn)
+        self.view.addSubview(selectAllBtn)
+        selectAllBtn.addTarget(self, action: #selector(selectAllMessage(_:)), for: .touchUpInside)
+        deleteBtn.addTarget(self, action: #selector(deleteMessage(_:)), for: .touchUpInside)
+        
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -134,17 +201,25 @@ class ScheduleViewController: UIViewController {
         self.navigationItem.title = "日程"
         self.navigationController?.navigationBar.barTintColor = UIColor(hex6: 0x00518e)
         self.navigationController?.navigationBar.titleTextAttributes = [NSAttributedStringKey.foregroundColor: UIColor.white]
+        self.navigationController?.navigationBar.tintColor = .white
+    }
+    
+}
+
+extension ScheduleViewController {
+    
+    @objc func longPressEditing(_ gesture: UILongPressGestureRecognizer) {
+        if gesture.state == .began {
+            let pressPoint = gesture.location(in: self.tableView)
+            if let indexPath = self.tableView.indexPathForRow(at: pressPoint), indexPath.section == 1 {
+                isSelecting = true
+                selectedArrs.append(indexPath.section)
+                self.tableView.reloadData()
+            }
+        }
     }
     
     @objc func headerRefresh() {
-//        PersonalMessageHelper.getCalendarList(success: { model in
-//
-//        }, failure: {
-//            if self.tableView.mj_header.isRefreshing {
-//                self.tableView.mj_header.endRefreshing()
-//            }
-//        })
-        
         ScheduleHelper.getCalendarList(success: { model in
             self.calendarLists = model
             
@@ -177,13 +252,35 @@ class ScheduleViewController: UIViewController {
             if self.tableView.mj_header.isRefreshing {
                 self.tableView.mj_header.endRefreshing()
             }
-
+            
         })
         
     }
     
     @objc func presentLoginView() {
         self.present(LoginViewController(), animated: true, completion: nil)
+    }
+    
+    
+    
+    @objc func cancelEditStatus(_ sender: UIBarButtonItem) {
+        self.isSelecting = false
+    }
+
+    @objc func selectAllMessage(_ sender: UIButton) {
+        self.selectedArrs = []
+        
+        
+    }
+    
+    @objc func deleteMessage(_ sender: UIButton) {
+        
+//        PersonalMessageHelper.deleteInbox(mid: <#T##[Int]#>, success: {
+//            
+//        }, failure: {
+//            
+//        })
+        
     }
     
 }
@@ -270,7 +367,7 @@ extension ScheduleViewController: UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "ScheduleMessageTableViewCell") as! ScheduleMessageTableViewCell
+        let cell = tableView.dequeueReusableCell(withIdentifier: "MessageTableViewCell") as! MessageTableViewCell
         cell.selectionStyle = .none
         
         let data = self.selectedList[indexPath.row]
@@ -279,6 +376,18 @@ extension ScheduleViewController: UITableViewDataSource {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd  HH:mm:ss"
         cell.dateLabel.text = dateFormatter.string(from: data.to)
+        
+        guard self.isSelecting == true else {
+            cell.imgView.alpha  = 0.0
+            return cell
+        }
+
+        cell.imgView.alpha  = 1.0
+        if selectedArrs.contains(indexPath.section) {
+            cell.imgView.image = cell.selectedImg
+        } else {
+            cell.imgView.image = cell.unselectedImg
+        }
         
         return cell
     }
@@ -319,6 +428,14 @@ extension ScheduleViewController: FSCalendarDataSource {
             }
         }
         return number
+    }
+    
+}
+
+extension ScheduleViewController: UIGestureRecognizerDelegate {
+    
+    func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldReceive touch: UITouch) -> Bool {
+        return true
     }
     
 }

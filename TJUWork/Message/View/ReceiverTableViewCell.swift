@@ -164,7 +164,7 @@ extension ReceiverTableViewCell: UICollectionViewDataSource {
 extension ReceiverTableViewCell: AddAndDeleteReceiverProtocol {
     
     func addReceiverCell(uids: [String:String]) {
-        print(uids)
+        
         var addedArrs: [String] = []
         var endPos = selectedDatas.count
         
