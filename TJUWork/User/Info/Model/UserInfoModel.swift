@@ -24,6 +24,7 @@ struct UserInfoData: Codable {
     var phone: String?
     let gender, createdAt, updatedAt: String
     let admin: [Admin]
+    let deviceID: String?
     
     enum CodingKeys: String, CodingKey {
         case id, name, email, picture
@@ -31,12 +32,13 @@ struct UserInfoData: Codable {
         case wechat, phone, gender
         case createdAt = "created_at"
         case updatedAt = "updated_at"
+        case deviceID = "device_id"
         case admin
     }
 }
 
 struct Admin: Codable {
-    let lid: Int
+    let lid: String
     let name: String
 }
 

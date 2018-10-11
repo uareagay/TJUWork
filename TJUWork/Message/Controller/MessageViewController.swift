@@ -21,21 +21,22 @@ class MessageViewController: UIViewController {
         didSet {
             if isSelecting == true {
                 self.tableView.mj_header = nil
+                self.tableView.mj_footer = nil
                 menuBtn.isEnabled = false
                 addBtn.isEnabled = false
                 self.navigationItem.rightBarButtonItem = cancelBarButtonItem
-                
                 self.selectAllBtn.alpha = 1.0
                 self.deleteBtn.alpha = 1.0
                 
             } else {
                 self.tableView.mj_header = MJRefreshNormalHeader(refreshingTarget: self, refreshingAction: #selector(headerRefresh))
+                self.tableView.mj_footer = MJRefreshAutoNormalFooter(refreshingTarget: self, refreshingAction: #selector(footerLoadMore))
                 menuBtn.isEnabled = true
                 addBtn.isEnabled = true
                 self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .search, target: self, action: #selector(clickSearching(_:)))
-                
                 self.selectAllBtn.alpha = 0.0
                 self.deleteBtn.alpha = 0.0
+                
                 selectedArrs = []
                 self.tableView.reloadData()
             }
@@ -174,7 +175,7 @@ class MessageViewController: UIViewController {
         
         self.tableView.mj_header = MJRefreshNormalHeader(refreshingTarget: self, refreshingAction: #selector(headerRefresh))
         self.tableView.mj_header.beginRefreshing()
-        
+        self.tableView.mj_footer = MJRefreshAutoNormalFooter(refreshingTarget: self, refreshingAction: #selector(footerLoadMore))
     }
     
     @objc func longPressEditing(_ gesture: UILongPressGestureRecognizer) {
@@ -676,6 +677,11 @@ extension MessageViewController {
                 self.tableView.mj_header.endRefreshing()
             }
         })
+        
+    }
+    
+    @objc func footerLoadMore() {
+        
         
     }
     

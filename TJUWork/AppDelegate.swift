@@ -34,7 +34,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         self.registerRemoteNotification()
         
-        self.window?.rootViewController = MainTanBarController()
+        let aa = MainTanBarController()
+        aa.selectedIndex = 0
+        self.window?.rootViewController = aa
+        
         
         //WorkUser.shared.delete()
         WorkUser.shared.load(success: {

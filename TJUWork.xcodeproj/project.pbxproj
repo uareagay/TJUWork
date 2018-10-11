@@ -135,6 +135,9 @@
 		DD1459E12147EF840018BC07 /* SwiftMessagesExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD1459E02147EF830018BC07 /* SwiftMessagesExtension.swift */; };
 		DD31345C2148B9AE00A0990E /* DraftListModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD31345B2148B9AE00A0990E /* DraftListModel.swift */; };
 		DD31345E214A58B800A0990E /* OutboxListModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD31345D214A58B800A0990E /* OutboxListModel.swift */; };
+		DD43E30C216ED3D900AC573F /* AddScheduleViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD43E30B216ED3D800AC573F /* AddScheduleViewController.swift */; };
+		DD646759215F59CD00B0A0B8 /* SearchContactUsersViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD646758215F59CD00B0A0B8 /* SearchContactUsersViewController.swift */; };
+		DD706910215F6E7100D7BCE5 /* PhoneBook.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD70690F215F6E7100D7BCE5 /* PhoneBook.swift */; };
 		DD7627AD214F9D51005A3A97 /* DownloadViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD7627AC214F9D51005A3A97 /* DownloadViewController.swift */; };
 		DD796D2621383FB10042D058 /* NetworkManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD796D2521383FB10042D058 /* NetworkManager.swift */; };
 		DD796D282138F8840042D058 /* WorkUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD796D272138F8840042D058 /* WorkUser.swift */; };
@@ -147,6 +150,10 @@
 		DD81CB3620FB47AD00EB5843 /* MessageTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD81CB3520FB47AD00EB5843 /* MessageTableViewCell.swift */; };
 		DD81CB3820FCCE5100EB5843 /* DownMenuView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD81CB3720FCCE5100EB5843 /* DownMenuView.swift */; };
 		DD81CB3C21007BEB00EB5843 /* ScheduleViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD81CB3B21007BEB00EB5843 /* ScheduleViewController.swift */; };
+		DD826832215E63EC00596022 /* ContactsBookViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD826831215E63EC00596022 /* ContactsBookViewController.swift */; };
+		DD826834215E6AD600596022 /* ContactUsersModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD826833215E6AD600596022 /* ContactUsersModel.swift */; };
+		DD826837215E6E1A00596022 /* ContactUsersHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD826836215E6E1A00596022 /* ContactUsersHelper.swift */; };
+		DD82683A215E77BE00596022 /* PhoneTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD826839215E77BE00596022 /* PhoneTableViewCell.swift */; };
 		DDB9CE4B2106133400E63211 /* DetailMessageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDB9CE4A2106133400E63211 /* DetailMessageViewController.swift */; };
 		DDB9CE4D21061E7C00E63211 /* SenderTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDB9CE4C21061E7C00E63211 /* SenderTableViewCell.swift */; };
 		DDB9CE4F21061EA300E63211 /* SenderMultiLinesTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDB9CE4E21061EA300E63211 /* SenderMultiLinesTableViewCell.swift */; };
@@ -337,7 +344,10 @@
 		DD1459E02147EF830018BC07 /* SwiftMessagesExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftMessagesExtension.swift; sourceTree = "<group>"; };
 		DD31345B2148B9AE00A0990E /* DraftListModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DraftListModel.swift; sourceTree = "<group>"; };
 		DD31345D214A58B800A0990E /* OutboxListModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OutboxListModel.swift; sourceTree = "<group>"; };
+		DD43E30B216ED3D800AC573F /* AddScheduleViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddScheduleViewController.swift; sourceTree = "<group>"; };
+		DD646758215F59CD00B0A0B8 /* SearchContactUsersViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchContactUsersViewController.swift; sourceTree = "<group>"; };
 		DD6598AC214D91480079E2CF /* TJUWork.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = TJUWork.entitlements; sourceTree = "<group>"; };
+		DD70690F215F6E7100D7BCE5 /* PhoneBook.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhoneBook.swift; sourceTree = "<group>"; };
 		DD7627AC214F9D51005A3A97 /* DownloadViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DownloadViewController.swift; sourceTree = "<group>"; };
 		DD796D2521383FB10042D058 /* NetworkManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkManager.swift; sourceTree = "<group>"; };
 		DD796D272138F8840042D058 /* WorkUser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkUser.swift; sourceTree = "<group>"; };
@@ -350,6 +360,10 @@
 		DD81CB3520FB47AD00EB5843 /* MessageTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageTableViewCell.swift; sourceTree = "<group>"; };
 		DD81CB3720FCCE5100EB5843 /* DownMenuView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DownMenuView.swift; sourceTree = "<group>"; };
 		DD81CB3B21007BEB00EB5843 /* ScheduleViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduleViewController.swift; sourceTree = "<group>"; };
+		DD826831215E63EC00596022 /* ContactsBookViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactsBookViewController.swift; sourceTree = "<group>"; };
+		DD826833215E6AD600596022 /* ContactUsersModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactUsersModel.swift; sourceTree = "<group>"; };
+		DD826836215E6E1A00596022 /* ContactUsersHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactUsersHelper.swift; sourceTree = "<group>"; };
+		DD826839215E77BE00596022 /* PhoneTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhoneTableViewCell.swift; sourceTree = "<group>"; };
 		DDB9CE4A2106133400E63211 /* DetailMessageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailMessageViewController.swift; sourceTree = "<group>"; };
 		DDB9CE4C21061E7C00E63211 /* SenderTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SenderTableViewCell.swift; sourceTree = "<group>"; };
 		DDB9CE4E21061EA300E63211 /* SenderMultiLinesTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SenderMultiLinesTableViewCell.swift; sourceTree = "<group>"; };
@@ -442,6 +456,7 @@
 		DD0AA74220F8B6200011F1EE /* TJUWork */ = {
 			isa = PBXGroup;
 			children = (
+				DD82682F215E63AF00596022 /* ContactsBook */,
 				DD6598AC214D91480079E2CF /* TJUWork.entitlements */,
 				DD03B5DC214D8B69007E2CB4 /* GtSdkLib */,
 				DD1459122146D4B50018BC07 /* Source */,
@@ -783,8 +798,46 @@
 			isa = PBXGroup;
 			children = (
 				DD81CB3B21007BEB00EB5843 /* ScheduleViewController.swift */,
+				DD43E30B216ED3D800AC573F /* AddScheduleViewController.swift */,
 			);
 			path = Controller;
+			sourceTree = "<group>";
+		};
+		DD82682F215E63AF00596022 /* ContactsBook */ = {
+			isa = PBXGroup;
+			children = (
+				DD826838215E77A000596022 /* View */,
+				DD826835215E6DFD00596022 /* Model */,
+				DD826830215E63D300596022 /* Controller */,
+			);
+			path = ContactsBook;
+			sourceTree = "<group>";
+		};
+		DD826830215E63D300596022 /* Controller */ = {
+			isa = PBXGroup;
+			children = (
+				DD826831215E63EC00596022 /* ContactsBookViewController.swift */,
+				DD646758215F59CD00B0A0B8 /* SearchContactUsersViewController.swift */,
+			);
+			path = Controller;
+			sourceTree = "<group>";
+		};
+		DD826835215E6DFD00596022 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				DD826833215E6AD600596022 /* ContactUsersModel.swift */,
+				DD826836215E6E1A00596022 /* ContactUsersHelper.swift */,
+				DD70690F215F6E7100D7BCE5 /* PhoneBook.swift */,
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
+		DD826838215E77A000596022 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				DD826839215E77BE00596022 /* PhoneTableViewCell.swift */,
+			);
+			path = View;
 			sourceTree = "<group>";
 		};
 		DDB9CE522109EB4400E63211 /* Model */ = {
@@ -1116,6 +1169,7 @@
 				DDB9CE602110584500E63211 /* PickerViewLabel.swift in Sources */,
 				DD796D2A2138F9FB0042D058 /* AccountManager.swift in Sources */,
 				DD0AA78820F9CF250011F1EE /* SetInfoTableViewCell.swift in Sources */,
+				DD826832215E63EC00596022 /* ContactsBookViewController.swift in Sources */,
 				DD1459DC2146D4B50018BC07 /* HRColorUtil.m in Sources */,
 				DD81CB3420FB45ED00EB5843 /* MessageViewController.swift in Sources */,
 				DD1459D12146D4B50018BC07 /* ZSSBarButtonItem.m in Sources */,
@@ -1127,6 +1181,7 @@
 				DD1459112146CF510018BC07 /* RichTextViewController.swift in Sources */,
 				DD1459DB2146D4B50018BC07 /* CYRTextView.m in Sources */,
 				DD81CB3C21007BEB00EB5843 /* ScheduleViewController.swift in Sources */,
+				DD826834215E6AD600596022 /* ContactUsersModel.swift in Sources */,
 				DD03B5D5214B98D5007E2CB4 /* DetailMessageModel.swift in Sources */,
 				DD0B762F215A6CB6009A392C /* ScheduleHelper.swift in Sources */,
 				DDB9CE622110610800E63211 /* MessageCategoryTableViewCell.swift in Sources */,
@@ -1143,6 +1198,7 @@
 				DD796D2621383FB10042D058 /* NetworkManager.swift in Sources */,
 				DD796D282138F8840042D058 /* WorkUser.swift in Sources */,
 				DD145836214193B60018BC07 /* UserInfoHelper.swift in Sources */,
+				DD43E30C216ED3D900AC573F /* AddScheduleViewController.swift in Sources */,
 				DD145834214182700018BC07 /* UserInfoModel.swift in Sources */,
 				DD0AA77F20F917B90011F1EE /* MainTabBarController.swift in Sources */,
 				DD0AA78420F9B9F40011F1EE /* SetInfoViewController.swift in Sources */,
@@ -1157,7 +1213,9 @@
 				DD0AA78620F9C8470011F1EE /* InfoTableViewCell.swift in Sources */,
 				DD1459D52146D4B50018BC07 /* HRColorPickerViewController.m in Sources */,
 				DDB9CE5C2110116100E63211 /* TitleTableViewCell.swift in Sources */,
+				DD826837215E6E1A00596022 /* ContactUsersHelper.swift in Sources */,
 				DDB9CE51210702CF00E63211 /* BodyContentsTableViewCell.swift in Sources */,
+				DD706910215F6E7100D7BCE5 /* PhoneBook.swift in Sources */,
 				DD1459DA2146D4B50018BC07 /* CYRTextStorage.m in Sources */,
 				DD14583C2142DD0B0018BC07 /* EntireUsersHelper.swift in Sources */,
 				DD796D2E21391D880042D058 /* Storage.swift in Sources */,
@@ -1169,6 +1227,7 @@
 				DD0AA77820F8CC2B0011F1EE /* ClassExtensions.swift in Sources */,
 				DDF1EA5A2155572300A94B95 /* InboxSearchModel.swift in Sources */,
 				DDB9CE4B2106133400E63211 /* DetailMessageViewController.swift in Sources */,
+				DD82683A215E77BE00596022 /* PhoneTableViewCell.swift in Sources */,
 				DD31345E214A58B800A0990E /* OutboxListModel.swift in Sources */,
 				DDB9CE5A210D836300E63211 /* ContactTableViewCell.swift in Sources */,
 				DD796D2C21391D380042D058 /* CacheManager.swift in Sources */,
@@ -1176,6 +1235,7 @@
 				DD145838214198140018BC07 /* DeviceStatus.swift in Sources */,
 				DD1459D92146D4B50018BC07 /* CYRToken.m in Sources */,
 				DD14583E21455E740018BC07 /* EntireLabelsModel.swift in Sources */,
+				DD646759215F59CD00B0A0B8 /* SearchContactUsersViewController.swift in Sources */,
 				DDB9CE6421119EB100E63211 /* ReceiverTableViewCell.swift in Sources */,
 				DD1459DE2146D4B50018BC07 /* ZSSTextView.m in Sources */,
 				DD0AA74420F8B6200011F1EE /* AppDelegate.swift in Sources */,

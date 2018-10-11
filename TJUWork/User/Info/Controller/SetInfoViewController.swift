@@ -91,7 +91,6 @@ class SetInfoViewController: UIViewController {
         tableView.separatorStyle = .none
         tableView.estimatedRowHeight = 44
         
-        
         tableView.register(InfoTableViewCell.self, forCellReuseIdentifier: "InfoTableViewCell")
         tableView.register(SetInfoTableViewCell.self, forCellReuseIdentifier: "SetInfoTableViewCell")
         
@@ -144,7 +143,6 @@ class SetInfoViewController: UIViewController {
         cancelAction.setValue(UIColor.red, forKey: "titleTextColor")
         let outAction = UIAlertAction(title: "退出", style: .default, handler: { action in
             
-            
             AccountManager.logout(success: {
                 SwiftMessages.showSuccessMessage(title: "退出成功", body: "")
                 let loginVC = LoginViewController()
@@ -154,7 +152,6 @@ class SetInfoViewController: UIViewController {
                 
             })
 
-            
         })
         alertVC.addAction(cancelAction)
         alertVC.addAction(outAction)
@@ -166,11 +163,21 @@ class SetInfoViewController: UIViewController {
     }
     
     @objc func keyboardWillShow(_ notification: Notification) {
+        guard self.userInfoModel != nil else {
+            return
+        }
+        
         self.view.frame.origin.y = -150
+
+        self.view.setNeedsLayout()
         self.view.layoutIfNeeded()
     }
     
     @objc func keyboardWillHide(_ notification: Notification) {
+        guard self.userInfoModel != nil else {
+            return
+        }
+        
         if CheckEditStatus() {
             saveBtn.isHidden = false
             cancelBtn.isHidden = false
@@ -444,6 +451,7 @@ extension SetInfoViewController {
     
     @objc func GetUserInfo() {
         NetworkManager.getInformation(url: "/user/info", token: WorkUser.shared.token, success: { dic in
+            
             if let data = try? JSONSerialization.data(withJSONObject: dic, options: JSONSerialization.WritingOptions.init(rawValue: 0)), let userInfo = try? UserInfoModel(data: data) {
                 
                 self.userInfoModel = userInfo
@@ -467,12 +475,12 @@ extension SetInfoViewController {
     func CheckEditStatus() -> Bool {
         
         if let cell = tableView.cellForRow(at: IndexPath(row: 2, section: 0)) as? SetInfoTableViewCell {
-            if cell.infoTextField.text != userInfoModel.data.payNumber ?? ""{
+            if cell.infoTextField.text != userInfoModel.data.payNumber ?? "" {
                 return true
             }
         }
         if let cell = tableView.cellForRow(at: IndexPath(row: 3, section: 0)) as? SetInfoTableViewCell {
-            if cell.infoTextField.text != userInfoModel.data.phone  ?? ""{
+            if cell.infoTextField.text != userInfoModel.data.phone  ?? "" {
                 return true
             }
         }

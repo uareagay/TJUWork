@@ -11,10 +11,18 @@ import SnapKit
 import FSCalendar
 import MJRefresh
 import SwiftMessages
+import EventKit
 
 class ScheduleViewController: UIViewController {
     
+    
+    fileprivate let eventStore = EKEventStore()
+    fileprivate var events: [EKEvent] = []
+    
+    fileprivate var chineseCalendar: Calendar!
     fileprivate var calendar: FSCalendar!
+    fileprivate let lunarDays = ["初一", "初二", "初三", "初四", "初五", "初六", "初七", "初八", "初九", "初十", "十一", "十二", "十三", "十四", "十五", "十六", "十七", "十八", "十九", "二十", "廿一", "廿二", "廿三", "廿四", "廿五", "廿六", "廿七", "廿八", "廿九", "三十"]
+    
     fileprivate var tableView: UITableView!
 //    fileprivate var calendarLists: WorkCalendarModel!
 //    fileprivate var selectedList: [WorkCalendarData] = []
@@ -58,7 +66,7 @@ class ScheduleViewController: UIViewController {
                 self.calendar.isUserInteractionEnabled = true
                 self.tableView.mj_header = MJRefreshNormalHeader(refreshingTarget: self, refreshingAction: #selector(headerRefresh))
                 
-                self.navigationItem.rightBarButtonItem = nil
+                self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addCalendar(_:)))
                 
                 self.deleteBtn.alpha = 0.0
                 self.selectAllBtn.alpha = 0.0
@@ -134,22 +142,29 @@ class ScheduleViewController: UIViewController {
         tableView.delegate = self
         tableView.dataSource = self
         tableView.register(ScheduleMessageTableViewCell.self, forCellReuseIdentifier: "ScheduleMessageTableViewCell")
-        tableView.register(MessageTableViewCell.self, forCellReuseIdentifier: "MessageTableViewCell")
-        tableView.estimatedRowHeight = 65
+        //tableView.register(MessageTableViewCell.self, forCellReuseIdentifier: "MessageTableViewCell")
+        tableView.estimatedRowHeight = 80
         tableView.separatorStyle = .none
         tableView.showsVerticalScrollIndicator = false
-        tableView.backgroundColor = UITableView(frame: CGRect.zero, style: .grouped).backgroundColor
+        //tableView.backgroundColor = UITableView(frame: CGRect.zero, style: .grouped).backgroundColor
+        tableView.backgroundColor = UIColor(red: 0.937255, green: 0.937255, blue: 0.956863, alpha: 1.0)
         self.view.addSubview(tableView)
-        self.view.backgroundColor = .gray
+        self.view.backgroundColor = .red
         
-        calendar = FSCalendar(frame: CGRect(x: 10, y: 10, width: UIScreen.main.bounds.size.width-20, height: 250))
+        calendar = FSCalendar(frame: CGRect(x: 10, y: 10, width: UIScreen.main.bounds.size.width-20, height: 370))
         calendar.delegate = self
         calendar.dataSource = self
         calendar.appearance.headerTitleColor = UIColor(hex6: 0x8db6d4)
         calendar.appearance.weekdayTextColor = UIColor(hex6: 0x8db6d4)
         calendar.appearance.caseOptions = .weekdayUsesSingleUpperCase
         calendar.appearance.headerMinimumDissolvedAlpha = 0.0
-        calendar.placeholderType = .none
+        
+        calendar.appearance.titlePlaceholderColor = .lightGray
+        calendar.appearance.subtitlePlaceholderColor = .lightGray
+        calendar.appearance.subtitleDefaultColor = .gray
+        calendar.appearance.titleFont = UIFont.systemFont(ofSize: 15.0)
+        
+        calendar.placeholderType = .fillSixRows
         calendar.appearance.todayColor = .gray
         calendar.bottomBorder.backgroundColor = .clear
         calendar.setValue(nil, forKey: "topBorder")
@@ -157,6 +172,10 @@ class ScheduleViewController: UIViewController {
         calendar.layer.masksToBounds = true
         calendar.layer.cornerRadius = 10
         calendar.locale = Locale(identifier: "zh-CN")
+        calendar.appearance.subtitleOffset = CGPoint(x: 0.0, y: 3.0)
+        
+        chineseCalendar = Calendar(identifier: .chinese)
+        
         
         
         self.tableView.mj_header = MJRefreshNormalHeader(refreshingTarget: self, refreshingAction: #selector(headerRefresh))
@@ -176,7 +195,6 @@ class ScheduleViewController: UIViewController {
             NotificationCenter.default.post(name: NotificationName.NotificationLoginFail.name, object: nil)
         })
         
-        
         //self.tableView.mj_header.beginRefreshing()
         
         cancelBarButtonItem = UIBarButtonItem(title: "完成", style: .plain, target: self, action: #selector(cancelEditStatus(_:)))
@@ -188,11 +206,12 @@ class ScheduleViewController: UIViewController {
         longPress.delaysTouchesBegan = true
         tableView.addGestureRecognizer(longPress)
         
-        
         self.view.addSubview(deleteBtn)
         self.view.addSubview(selectAllBtn)
         selectAllBtn.addTarget(self, action: #selector(selectAllMessage(_:)), for: .touchUpInside)
         deleteBtn.addTarget(self, action: #selector(deleteMessage(_:)), for: .touchUpInside)
+        
+        requestEvents()
         
     }
     
@@ -202,18 +221,42 @@ class ScheduleViewController: UIViewController {
         self.navigationController?.navigationBar.barTintColor = UIColor(hex6: 0x00518e)
         self.navigationController?.navigationBar.titleTextAttributes = [NSAttributedStringKey.foregroundColor: UIColor.white]
         self.navigationController?.navigationBar.tintColor = .white
+        
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addCalendar(_:)))
     }
     
 }
 
 extension ScheduleViewController {
     
+    func requestEvents() {
+        eventStore.requestAccess(to: .event, completion: { [weak self] granted, error in
+            if granted {
+                let calendars = self?.eventStore.calendars(for: .event).filter { calendar in
+                    return calendar.type == EKCalendarType.subscription
+                }
+                
+                let startDate = Date().addingTimeInterval(-2*365*24*60*60)
+                let endDate = Date().addingTimeInterval(2*365*24*60*60)
+                let fetchCalendarEvents = self?.eventStore.predicateForEvents(withStart: startDate, end: endDate, calendars: calendars)
+                
+                self?.events = self?.eventStore.events(matching: fetchCalendarEvents!) ?? []
+                
+            }
+            
+        })
+    }
+    
+    @objc func addCalendar(_ sender: UIButton) {
+        
+    }
+    
     @objc func longPressEditing(_ gesture: UILongPressGestureRecognizer) {
         if gesture.state == .began {
             let pressPoint = gesture.location(in: self.tableView)
             if let indexPath = self.tableView.indexPathForRow(at: pressPoint), indexPath.section == 1 {
                 isSelecting = true
-                selectedArrs.append(indexPath.section)
+                selectedArrs.append(indexPath.row)
                 self.tableView.reloadData()
             }
         }
@@ -261,25 +304,52 @@ extension ScheduleViewController {
         self.present(LoginViewController(), animated: true, completion: nil)
     }
     
-    
-    
     @objc func cancelEditStatus(_ sender: UIBarButtonItem) {
         self.isSelecting = false
     }
 
     @objc func selectAllMessage(_ sender: UIButton) {
         self.selectedArrs = []
-        
-        
+        for index in 0..<self.selectedList.count {
+            selectedArrs.append(index)
+        }
+        self.tableView.reloadData()
     }
     
     @objc func deleteMessage(_ sender: UIButton) {
         
-//        PersonalMessageHelper.deleteInbox(mid: <#T##[Int]#>, success: {
-//            
-//        }, failure: {
-//            
-//        })
+        let alertVC = UIAlertController(title: "删除", message: "确定要删除吗？", preferredStyle: .alert)
+        let cancelAction = UIAlertAction(title: "不了", style: .default, handler: nil)
+        cancelAction.setValue(UIColor.red, forKey: "titleTextColor")
+        let outAction = UIAlertAction(title: "删除", style: .default, handler: { _ in
+            var idArrs: [String] = []
+            var typeArrs: [String] = []
+            
+            idArrs = self.selectedArrs.map { index in
+                return String(self.selectedList[index].id)
+            }
+            typeArrs = self.selectedArrs.map { index in
+                let type = self.selectedList[index].type
+                switch type {
+                case .integer(let value):
+                    return String(value)
+                case .string(let value):
+                    return value
+                }
+            }
+            
+            ScheduleHelper.deleteCalendarList(idArrs: idArrs, typeArrs: typeArrs, success: {
+                self.isSelecting = false
+                self.headerRefresh()
+                
+            }, failure: {
+                
+            })
+        })
+        
+        alertVC.addAction(cancelAction)
+        alertVC.addAction(outAction)
+        self.present(alertVC, animated: true, completion: nil)
         
     }
     
@@ -291,7 +361,7 @@ extension ScheduleViewController: UITableViewDelegate {
         guard section == 0 else {
             return 50
         }
-        return 270
+        return 390
     }
     
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
@@ -313,7 +383,7 @@ extension ScheduleViewController: UITableViewDelegate {
             
             return view
         }
-        let view = UIView(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.size.width, height: 270))
+        let view = UIView(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.size.width, height: 390))
         view.backgroundColor = .clear
         calendar.removeFromSuperview()
         view.addSubview(calendar)
@@ -321,29 +391,28 @@ extension ScheduleViewController: UITableViewDelegate {
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 65
+        return 70
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-//        let data = self.inboxLists.data[indexPath.section]
-//        let isResponse = data.isResponse
-//        //1为已回复，0为未回复；-1为通知消息，可以回复，但是不必要回复
-//        let detailVC: DetailMessageViewController
-//        let isReaded = data.isRead == "0" ? false : true
-//        if isResponse == 1 {
-//            detailVC = DetailMessageViewController(mid: data.mid, isReply: false, messageType: .inbox, isReaded: isReaded)
-//        } else if isResponse == -1 {
-//            detailVC = DetailMessageViewController(mid: data.mid, isReply: false, messageType: .inbox, isReaded: isReaded)
-//        } else if isResponse == 0 {
-//            detailVC = DetailMessageViewController(mid: data.mid, isReply: true, messageType: .inbox, isReaded: isReaded)
-//        } else {
-//            //不会执行
-//            detailVC = DetailMessageViewController()
-//        }
-//        self.navigationController?.pushViewController(detailVC, animated: true)
+
         guard indexPath.section == 1 else {
             return
         }
+        
+        guard self.isSelecting == false else {
+            let cell = tableView.cellForRow(at: indexPath) as! ScheduleMessageTableViewCell
+            if let index = selectedArrs.index(of: indexPath.row) {
+                selectedArrs.remove(at: index)
+                cell.imgView.image = cell.unselectedImg
+            } else {
+                selectedArrs.append(indexPath.row)
+                cell.imgView.image = cell.selectedImg
+            }
+            return
+        }
+        
+        
         let data = self.selectedList[indexPath.row]
         
         let detailVC = DetailMessageViewController(mid: String(data.id), isReply: true, messageType: .inbox, isReaded: true)
@@ -367,15 +436,21 @@ extension ScheduleViewController: UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "MessageTableViewCell") as! MessageTableViewCell
+        let cell = tableView.dequeueReusableCell(withIdentifier: "ScheduleMessageTableViewCell") as! ScheduleMessageTableViewCell
         cell.selectionStyle = .none
         
         let data = self.selectedList[indexPath.row]
         cell.titleLabel.text = data.title
-        cell.nameLabel.text = data.author
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd  HH:mm:ss"
         cell.dateLabel.text = dateFormatter.string(from: data.to)
+        
+        if let author = data.author {
+            cell.nameLabel.text = author
+        }
+        if let className = data.className {
+            cell.nameLabel.text = className
+        }
         
         guard self.isSelecting == true else {
             cell.imgView.alpha  = 0.0
@@ -383,7 +458,7 @@ extension ScheduleViewController: UITableViewDataSource {
         }
 
         cell.imgView.alpha  = 1.0
-        if selectedArrs.contains(indexPath.section) {
+        if selectedArrs.contains(indexPath.row) {
             cell.imgView.image = cell.selectedImg
         } else {
             cell.imgView.image = cell.unselectedImg
@@ -413,8 +488,22 @@ extension ScheduleViewController: FSCalendarDelegate {
                 self.titleLabel.text = "过去事件"
             }
         }
+        
+        
     }
     
+    
+    func calendar(_ calendar: FSCalendar, subtitleFor date: Date) -> String? {
+        let currentDateEvents = self.events.filter { event in
+            return event.occurrenceDate == date
+        }
+        if let event = currentDateEvents.first {
+            return event.title
+        }
+        
+        let lunarDay = self.chineseCalendar.component(.day, from: date)
+        return self.lunarDays[lunarDay - 1]
+    }
     
 }
 

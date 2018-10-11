@@ -18,10 +18,47 @@ struct ScheduleListsModel: Codable {
 
 struct ScheduleListsData: Codable {
     let id: Int
+    let title: String
     let from, to: Date
-    let title, type: String
-    let author: String
+    let className: String?
+    let type: TypeUnion
+    let author: String?
+    
+    enum CodingKeys: String, CodingKey {
+        case id, title, from, to
+        case className = "class_name"
+        case type, author
+    }
 }
+
+enum TypeUnion: Codable {
+    case integer(Int)
+    case string(String)
+    
+    init(from decoder: Decoder) throws {
+        let container = try decoder.singleValueContainer()
+        if let x = try? container.decode(Int.self) {
+            self = .integer(x)
+            return
+        }
+        if let x = try? container.decode(String.self) {
+            self = .string(x)
+            return
+        }
+        throw DecodingError.typeMismatch(TypeUnion.self, DecodingError.Context(codingPath: decoder.codingPath, debugDescription: "Wrong type for TypeUnion"))
+    }
+    
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.singleValueContainer()
+        switch self {
+        case .integer(let x):
+            try container.encode(x)
+        case .string(let x):
+            try container.encode(x)
+        }
+    }
+}
+
 
 // MARK: Convenience initializers and mutators
 

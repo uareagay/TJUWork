@@ -14,7 +14,6 @@ struct ScheduleHelper {
     
     static func getCalendarList(success: ((ScheduleListsModel)->())?, failure: (()->())?) {
         NetworkManager.getInformation(url: "/calender/list", token: WorkUser.shared.token, success: { dic in
-            print(dic)
             if let status = dic["status"] as? Bool, status == true {
                 if let data = try? JSONSerialization.data(withJSONObject: dic, options: JSONSerialization.WritingOptions.init(rawValue: 0)), let model = try? ScheduleListsModel(data: data) {
                     //SwiftMessages.showSuccessMessage(title: "获取日历列表成功")
@@ -32,6 +31,50 @@ struct ScheduleHelper {
                 SwiftMessages.showErrorMessage(title: NetworkManager.errorString)
             } else {
                 SwiftMessages.showErrorMessage(title: "获取日历列表失败")
+            }
+            failure?()
+        })
+    }
+    
+    static func deleteCalendarList(idArrs: [String], typeArrs: [String], success: (()->())?, failure: (()->())?) {
+        var dic: [String:String] = [:]
+        for i in 0..<idArrs.count {
+            dic["id[\(i)]"] = idArrs[i]
+        }
+        for i in 0..<typeArrs.count {
+            dic["type[\(i)]"] = typeArrs[i]
+        }
+        
+        NetworkManager.postInformation(url: "/calender/delete", token: WorkUser.shared.token, parameters: dic, success: { dic in
+            if let status = dic["status"] as? Bool, status == true {
+                success?()
+            } else {
+                SwiftMessages.showErrorMessage(title: "删除日历失败")
+                failure?()
+            }
+        }, failure: { error in
+            if error is NetworkManager.NetworkNotExist {
+                SwiftMessages.showErrorMessage(title: NetworkManager.errorString)
+            } else {
+                SwiftMessages.showErrorMessage(title: "删除日历失败")
+            }
+            failure?()
+        })
+    }
+    
+    static func addCalendar(title: String, from: String, className: String, success: (()->())?, failure: (()->())?) {
+        NetworkManager.postInformation(url: "/calender/create", token: WorkUser.shared.token, parameters: nil, success: { dic in
+            if let status = dic["status"] as? Bool, status == true {
+                success?()
+            } else {
+                SwiftMessages.showErrorMessage(title: "添加日历失败")
+                failure?()
+            }
+        }, failure: { error in
+            if error is NetworkManager.NetworkNotExist {
+                SwiftMessages.showErrorMessage(title: NetworkManager.errorString)
+            } else {
+                SwiftMessages.showErrorMessage(title: "添加日历失败")
             }
             failure?()
         })

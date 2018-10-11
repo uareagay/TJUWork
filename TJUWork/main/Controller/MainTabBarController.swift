@@ -29,7 +29,12 @@ class MainTanBarController: UITabBarController {
         three.tabBarItem.selectedImage = self.resizedTabBarItemImage(img: UIImage(named: "人选中")!)
         three.tabBarItem.imageInsets = UIEdgeInsets(top: 6, left: 0, bottom: -6, right: 0)
         
-        self.setViewControllers([UINavigationController(rootViewController: one), UINavigationController(rootViewController: two), UINavigationController(rootViewController: three)], animated: true)
+        let four = ContactsBookViewController()
+        four.tabBarItem.image = self.resizedTabBarItemImage(img: UIImage(named: "人")!)
+        four.tabBarItem.selectedImage = self.resizedTabBarItemImage(img: UIImage(named: "人选中")!)
+        four.tabBarItem.imageInsets = UIEdgeInsets(top: 6, left: 0, bottom: -6, right: 0)
+        
+        self.setViewControllers([UINavigationController(rootViewController: one), UINavigationController(rootViewController: two), UINavigationController(rootViewController: three), UINavigationController(rootViewController: four)], animated: true)
         
     }
     

@@ -127,39 +127,80 @@ class DetailMessageViewController: UIViewController {
 extension DetailMessageViewController {
     
     @objc func deleteMessage(_ sender: UIButton) {
-        self.deleteBtn.isEnabled = false
-        self.replyBtn.isEnabled = false
         
-        if let type = self.messageType {
-            switch type {
-            case .inbox:
-                PersonalMessageHelper.deleteInbox(mid: [Int(self.mid!)!], success: {
-                    NotificationCenter.default.post(name: NotificationName.NotificationRefreshInboxLists.name, object: nil)
-                    NotificationCenter.default.post(name: NotificationName.NotificationRefreshCalendar.name, object: nil)
-//                    let messageVC = self.navigationController?.viewControllers[0] as! MessageViewController
-//                    messageVC.refreshInboxLists()
-//                    self.navigationController?.popViewController(animated: true)
-                    self.navigationController?.popToRootViewController(animated: true)
-                }, failure: {
-                    self.deleteBtn.isEnabled = true
-                    self.replyBtn.isEnabled = true
-                })
-                
-            case .outbox:
-                PersonalMessageHelper.deleteOutbox(mid: [Int(self.mid!)!], success: {
-                    NotificationCenter.default.post(name: NotificationName.NotificationRefreshOutboxLists.name, object: nil)
-                    NotificationCenter.default.post(name: NotificationName.NotificationRefreshCalendar.name, object: nil)
-//                    let messageVC = self.navigationController?.viewControllers[0] as! MessageViewController
-//                    messageVC.refreshOutboxLists()
-//                    self.navigationController?.popViewController(animated: true)
-                    self.navigationController?.popToRootViewController(animated: true)
-                }, failure: {
-                    self.deleteBtn.isEnabled = true
-                    self.replyBtn.isEnabled = true
-                })
-            case .draft: break //不会执行
+        let alertVC = UIAlertController(title: "删除", message: "确定要删除吗？", preferredStyle: .alert)
+        let cancelAction = UIAlertAction(title: "不了", style: .default, handler: nil)
+        cancelAction.setValue(UIColor.red, forKey: "titleTextColor")
+        let deletAction = UIAlertAction(title: "删除", style: .default) { _ in
+            if let type = self.messageType {
+                switch type {
+                case .inbox:
+                    self.deleteBtn.isEnabled = false
+                    self.replyBtn.isEnabled = false
+                    
+                    PersonalMessageHelper.deleteInbox(mid: [Int(self.mid!)!], success: {
+                        NotificationCenter.default.post(name: NotificationName.NotificationRefreshInboxLists.name, object: nil)
+                        NotificationCenter.default.post(name: NotificationName.NotificationRefreshCalendar.name, object: nil)
+                        
+                        self.navigationController?.popToRootViewController(animated: true)
+                    }, failure: {
+                        self.deleteBtn.isEnabled = true
+                        self.replyBtn.isEnabled = true
+                    })
+                    
+                case .outbox:
+                    self.deleteBtn.isEnabled = false
+                    self.replyBtn.isEnabled = false
+                    
+                    PersonalMessageHelper.deleteOutbox(mid: [Int(self.mid!)!], success: {
+                        NotificationCenter.default.post(name: NotificationName.NotificationRefreshOutboxLists.name, object: nil)
+                        NotificationCenter.default.post(name: NotificationName.NotificationRefreshCalendar.name, object: nil)
+                        
+                        self.navigationController?.popToRootViewController(animated: true)
+                    }, failure: {
+                        self.deleteBtn.isEnabled = true
+                        self.replyBtn.isEnabled = true
+                    })
+                case .draft: break //不会执行
+                }
             }
         }
+        
+        alertVC.addAction(cancelAction)
+        alertVC.addAction(deletAction)
+        self.present(alertVC, animated: true)
+        
+//        if let type = self.messageType {
+//            switch type {
+//            case .inbox:
+//                PersonalMessageHelper.deleteInbox(mid: [Int(self.mid!)!], success: {
+//                    NotificationCenter.default.post(name: NotificationName.NotificationRefreshInboxLists.name, object: nil)
+//                    NotificationCenter.default.post(name: NotificationName.NotificationRefreshCalendar.name, object: nil)
+////                    let messageVC = self.navigationController?.viewControllers[0] as! MessageViewController
+////                    messageVC.refreshInboxLists()
+////                    self.navigationController?.popViewController(animated: true)
+//                    self.navigationController?.popToRootViewController(animated: true)
+//                }, failure: {
+//                    self.deleteBtn.isEnabled = true
+//                    self.replyBtn.isEnabled = true
+//                })
+//
+//            case .outbox:
+//                PersonalMessageHelper.deleteOutbox(mid: [Int(self.mid!)!], success: {
+//                    NotificationCenter.default.post(name: NotificationName.NotificationRefreshOutboxLists.name, object: nil)
+//                    NotificationCenter.default.post(name: NotificationName.NotificationRefreshCalendar.name, object: nil)
+////                    let messageVC = self.navigationController?.viewControllers[0] as! MessageViewController
+////                    messageVC.refreshOutboxLists()
+////                    self.navigationController?.popViewController(animated: true)
+//                    self.navigationController?.popToRootViewController(animated: true)
+//                }, failure: {
+//                    self.deleteBtn.isEnabled = true
+//                    self.replyBtn.isEnabled = true
+//                })
+//            case .draft: break //不会执行
+//            }
+//        }
+        
     }
     
     @objc func replyMessage(_ sender: UIButton) {

@@ -113,7 +113,7 @@ struct PersonalMessageHelper {
         }
         
         NetworkManager.postInformation(url: "/message/outbox/delete", token: WorkUser.shared.token, parameters: dic, success: { dic in
-            print(dic)
+            
             if let status = dic["status"] as? Bool, status == true {
                 //SwiftMessages.showSuccessMessage(title: "删除发件成功")
                 success?()

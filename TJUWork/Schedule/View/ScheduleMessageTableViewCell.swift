@@ -44,8 +44,16 @@ class ScheduleMessageTableViewCell: UITableViewCell {
         return view
     }()
     
+    let imgView: UIImageView = {
+        let imgView = UIImageView()
+        imgView.alpha = 0.0
+        return imgView
+    }()
     
-    //65
+    let selectedImg = UIImage.resizedImage(image: UIImage(named: "消息选中")!, scaledToWidth: 17.0)
+    let unselectedImg = UIImage.resizedImage(image: UIImage(named: "消息未选中")!, scaledToWidth: 17.0)
+    
+    
     override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         
@@ -54,6 +62,7 @@ class ScheduleMessageTableViewCell: UITableViewCell {
         contentView.addSubview(nameLabel)
         contentView.addSubview(dateLabel)
         contentView.addSubview(titleLabel)
+        contentView.addSubview(imgView)
         
         lineView.snp.makeConstraints { make in
             make.top.bottom.left.equalToSuperview()
@@ -68,20 +77,24 @@ class ScheduleMessageTableViewCell: UITableViewCell {
         }
         
         nameLabel.snp.makeConstraints { make in
-            make.bottom.equalToSuperview().inset(8)
+            make.bottom.equalToSuperview().inset(3)
             make.left.equalToSuperview().inset(15)
-            make.width.equalTo(100)
-            make.height.equalTo(20)
+            make.width.equalTo(150)
+            make.height.equalTo(25)
         }
         
         dateLabel.snp.makeConstraints { make in
-            make.bottom.equalToSuperview().inset(8)
+            make.bottom.equalToSuperview().inset(3)
             make.right.equalToSuperview().inset(20)
             make.width.equalTo(150)
-            make.height.equalTo(20)
+            make.height.equalTo(25)
         }
         
-        
+        imgView.snp.makeConstraints { make in
+            make.top.equalToSuperview().inset(7)
+            make.right.equalToSuperview().inset(12)
+            make.width.height.equalTo(17)
+        }
         
     }
     
