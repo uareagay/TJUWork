@@ -33,7 +33,7 @@ struct EntireUsersHelper {
     
     static func getEntireLabels(success: ((EntireLabelsModel)->())?, failure: (()->())?) {
         
-        NetworkManager.getInformation(url: "/label/show", token: WorkUser.shared.token,success: { dic in
+        NetworkManager.getInformation(url: "/user/labels", token: WorkUser.shared.token,success: { dic in
             if let status = dic["status"] as? Bool, status == true {
                 if let data = try? JSONSerialization.data(withJSONObject: dic, options: JSONSerialization.WritingOptions.init(rawValue: 0)), let model = try? EntireLabelsModel(data: data) {
                     success?(model)

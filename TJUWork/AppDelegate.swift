@@ -24,6 +24,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Override point for customization after application launch.
         
         
+        UIApplication.shared.applicationIconBadgeNumber = 0
+        
         // [ GTSdk ]：是否运行电子围栏Lbs功能和是否SDK主动请求用户定位
         GeTuiSdk.lbsLocationEnable(true, andUserVerify: true);
         
@@ -34,9 +36,22 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         self.registerRemoteNotification()
         
-        let aa = MainTanBarController()
-        aa.selectedIndex = 0
-        self.window?.rootViewController = aa
+        let mainVC = MainTanBarController()
+        
+//        if let remoteDic = launchOptions?[UIApplicationLaunchOptionsKey.remoteNotification] {
+//            mainVC.selectedIndex = 1
+//            AccountManager.getToken(username: WorkUser.shared.username, password: WorkUser.shared.password, success: { token in
+//                WorkUser.shared.token = token
+//                WorkUser.shared.save()
+//            }, failure: { error in
+//
+//            })
+//        } else {
+//            mainVC.selectedIndex = 0
+//        }
+        
+        mainVC.selectedIndex = 0
+        self.window?.rootViewController = mainVC
         
         
         //WorkUser.shared.delete()
@@ -126,7 +141,13 @@ extension AppDelegate: GeTuiSdkDelegate {
         // [4-EXT-1]: 个推SDK已注册，返回clientId
         NSLog("\n>>>[GeTuiSdk RegisterClient]:%@\n\n", clientId);
         
+        WorkUser.shared.clientID = clientId
         
+        NetworkManager.postInformation(url: "/user/device", token: WorkUser.shared.token, parameters: ["cid": clientId], success: { dic in
+            
+        }, failure: { error in
+            
+        })
         
     }
     
@@ -154,15 +175,39 @@ extension AppDelegate: GeTuiSdkDelegate {
         NSLog("\n>>>[GeTuiSdk DidReceivePayload]:%@\n\n",msg);
         
         if offLine == false {
-            
-            let rvc = UIAlertController(title: nil, message: payloadMsg, preferredStyle: .alert)
-            
+            let rvc = UIAlertController(title: nil, message: "有一条新消息", preferredStyle: .alert)
+            let cancelAction = UIAlertAction(title: "稍后", style: .default, handler: nil)
+            let checkAction = UIAlertAction(title: "查看", style: .default) { action in
+                
+                self.jumpPage()
+
+//                let json = try! JSONSerialization.jsonObject(with: payloadData, options: .mutableContainers) as? [String:Any]
+//                if let mid = json?["mid"] as? Int {
+//                    let detailVC = DetailMessageViewController(mid: String(mid), isReply: true, messageType: .inbox, isReaded: false)
+//                    //self.window?.rootViewController?.navigationController?.pushViewController(detailVC, animated: true)
+//                    if let mainTabVC = self.window?.rootViewController as? MainTanBarController, let navVC = mainTabVC.selectedViewController as? UINavigationController {
+//                        navVC.pushViewController(detailVC, animated: true)
+//                    }
+//                }
+            }
+
+            rvc.addAction(cancelAction)
+            rvc.addAction(checkAction)
             self.window?.rootViewController?.present(rvc, animated: true, completion: nil)
-            DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 20, execute: {
-                self.window?.rootViewController?.presentedViewController?.dismiss(animated: true, completion: nil)
-            })
             
+           
+        } else {
+//            let json = try! JSONSerialization.jsonObject(with: payloadData, options: .mutableContainers) as? [String:Any]
+//            if let mid = json?["mid"] as? Int {
+//                let detailVC = DetailMessageViewController(mid: String(mid), isReply: true, messageType: .inbox, isReaded: false)
+//                //self.window?.rootViewController?.navigationController?.pushViewController(detailVC, animated: true)
+//                if let mainTabVC = self.window?.rootViewController as? MainTanBarController, let navVC = mainTabVC.selectedViewController as? UINavigationController {
+//                    navVC.pushViewController(detailVC, animated: true)
+//                }
+//            }
+            jumpPage()
         }
+        
         
     }
     
@@ -179,6 +224,7 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
     @available(iOS 10.0, *)
     func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
         GeTuiSdk.handleRemoteNotification(response.notification.request.content.userInfo);
+        print(response.notification.request.content.userInfo["payload"])
         
         completionHandler();
     }
@@ -227,4 +273,67 @@ extension AppDelegate {
         }
     }
 
+}
+
+extension AppDelegate {
+    func jumpPage() {
+//        let rvc = UIAlertController(title: nil, message: "有一条新消息", preferredStyle: .alert)
+//        let cancelAction = UIAlertAction(title: "稍后", style: .default, handler: nil)
+//        let checkAction = UIAlertAction(title: "查看", style: .default) { action in
+//            if let rootVC = self.window?.rootViewController as? UITabBarController {
+//                if let navigationVC = rootVC.selectedViewController as? UINavigationController, let messageVC = navigationVC.viewControllers.first as? MessageViewController {
+//
+//                    messageVC.currentMenuType = .inbox
+//                    messageVC.menuView.hideMenuView()
+//                    messageVC.isSelecting = false
+//                    NotificationCenter.default.post(name: NotificationName.NotificationRefreshInboxLists.name, object: nil)
+//                } else {
+//                    rootVC.selectedIndex = 1
+//                    if let navigationVC = rootVC.selectedViewController as? UINavigationController, let messageVC = navigationVC.viewControllers.first as? MessageViewController {
+//
+//                        messageVC.currentMenuType = .inbox
+//                        messageVC.menuView.hideMenuView()
+//                        messageVC.isSelecting = false
+//                        NotificationCenter.default.post(name: NotificationName.NotificationRefreshInboxLists.name, object: nil)
+//                    }
+//
+//                }
+//            }
+//        }
+//
+//        rvc.addAction(cancelAction)
+//        rvc.addAction(checkAction)
+//        self.window?.rootViewController?.present(rvc, animated: true, completion: nil)
+        
+        let mainVC = MainTanBarController()
+        mainVC.selectedIndex = 1
+        self.window?.rootViewController = mainVC
+        
+//        if let rootVC = self.window?.rootViewController as? UITabBarController {
+//            rootVC.selectedIndex = 1
+//            if let navigationVC = rootVC.selectedViewController as? UINavigationController {
+//
+//                rootVC.selectedViewController = UINavigationController(rootViewController: MessageViewController())
+////                messageVC.currentMenuType = .inbox
+////                messageVC.menuView.hideMenuView()
+////                messageVC.isSelecting = false
+////                NotificationCenter.default.post(name: NotificationName.NotificationRefreshInboxLists.name, object: nil)
+//            }
+//
+//        }
+//            else {
+//                rootVC.selectedIndex = 1
+//                if let navigationVC = rootVC.selectedViewController as? UINavigationController, let messageVC = navigationVC.viewControllers.first as? MessageViewController {
+//
+//                    messageVC.currentMenuType = .inbox
+//                    messageVC.menuView.hideMenuView()
+//                    messageVC.isSelecting = false
+//                    NotificationCenter.default.post(name: NotificationName.NotificationRefreshInboxLists.name, object: nil)
+//                }
+//
+//            }
+
+        
+    }
+    
 }

@@ -105,7 +105,10 @@ class LoginViewController: UIViewController {
         
         logoImageView.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
-            make.top.equalTo(tjuImageView.snp.bottom).offset(UIScreen.main.bounds.width/6-10)
+            //make.top.equalTo(tjuImageView.snp.bottom).offset(UIScreen.main.bounds.width/6-10)
+            make.top.equalTo(tjuImageView.snp.bottom).offset(40)
+            make.width.equalTo(280)
+            make.height.equalTo(100)
         }
         
         usernameLabel.snp.makeConstraints { make in
@@ -140,9 +143,12 @@ class LoginViewController: UIViewController {
         
         loginBtn.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
-            make.width.equalTo(UIScreen.main.bounds.width*2.2/5)
-            make.height.equalTo(UIScreen.main.bounds.width*2/15)
-            make.bottom.equalToSuperview().inset(UIScreen.main.bounds.height/5)
+            //make.width.equalTo(UIScreen.main.bounds.width*2.2/5)
+            //make.height.equalTo(UIScreen.main.bounds.width*2/15)
+            make.width.equalTo(200)
+            make.height.equalTo(50)
+            make.top.equalTo(passwordTextField.snp.bottom).offset(100)
+            //make.bottom.equalToSuperview().inset(UIScreen.main.bounds.height/5)
         }
         
         

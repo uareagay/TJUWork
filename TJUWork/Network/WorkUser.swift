@@ -17,6 +17,7 @@ class WorkUser: Codable {
     
     var username: String = ""
     var password: String = ""
+    var clientID: String?
     
     //var ID: String = ""
     //var email: String = ""

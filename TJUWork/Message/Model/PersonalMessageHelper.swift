@@ -34,7 +34,6 @@ struct PersonalMessageHelper {
     
     static func saveDraft(dictionary: [String:Any], success: (()->())?, failure: (()->())?) {
         NetworkManager.postInformation(url: "/draft/save", token: WorkUser.shared.token, parameters: dictionary, success: { dic in
-            
             if let status = dic["status"] as? Bool, status == true {
                 SwiftMessages.showSuccessMessage(title: "存至草稿箱成功")
                 success?()
@@ -297,6 +296,34 @@ struct PersonalMessageHelper {
                 SwiftMessages.showErrorMessage(title: "搜索失败")
             }
             failure?()
+        })
+    }
+    
+    static func getResponsePeoples(mid: String, success: ((ResponsePeopleModel)->())?, failure: (()->())?) {
+        NetworkManager.getInformation(url: "/message/response/number", token: WorkUser.shared.token, parameters: ["mid": mid], success: { dic in
+            print(dic)
+            if let status = dic["status"] as? Bool, status == true {
+                if let data = try? JSONSerialization.data(withJSONObject: dic, options: JSONSerialization.WritingOptions.init(rawValue: 0)), let model = try? ResponsePeopleModel(data: data) {
+                    //let nameArrs = model.data.finished.map { $0.name }
+                    success?(model)
+                }
+            }
+        }, failure: { error in
+            
+        })
+    }
+    
+    static func getReadPeoples(mid: String, success: ((ReadPeopleModel)->())?, failure: (()->())?) {
+        NetworkManager.getInformation(url: "/message/read/number", token: WorkUser.shared.token, parameters: ["mid": mid], success: { dic in
+            print(dic)
+            if let status = dic["status"] as? Bool, status == true {
+                if let data = try? JSONSerialization.data(withJSONObject: dic, options: JSONSerialization.WritingOptions.init(rawValue: 0)), let model = try? ReadPeopleModel(data: data) {
+                    //let nameArrs = model.data.finished.map { $0.name }
+                    success?(model)
+                }
+            }
+        }, failure: { error in
+            
         })
     }
     

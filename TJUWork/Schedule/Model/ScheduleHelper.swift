@@ -62,8 +62,14 @@ struct ScheduleHelper {
         })
     }
     
-    static func addCalendar(title: String, from: String, className: String, success: (()->())?, failure: (()->())?) {
-        NetworkManager.postInformation(url: "/calender/create", token: WorkUser.shared.token, parameters: nil, success: { dic in
+    static func addCalendar(title: String, to: String, className: String, success: (()->())?, failure: (()->())?) {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "YYYY/MM/dd   HH:mm"
+        let from = formatter.string(from: Date())
+        print(from)
+        let dic: [String:String] = ["title": title, "class_name": className, "to": to, "from": from]
+        
+        NetworkManager.postInformation(url: "/calender/create", token: WorkUser.shared.token, parameters: dic, success: { dic in
             if let status = dic["status"] as? Bool, status == true {
                 success?()
             } else {

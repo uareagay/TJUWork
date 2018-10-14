@@ -123,8 +123,7 @@ class ScheduleViewController: UIViewController {
         self.selectedDate = currentDate
         super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
         
-        NotificationCenter.default.addObserver(self, selector: #selector(presentLoginView), name: NotificationName.NotificationLoginFail.name, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(headerRefresh), name: NotificationName.NotificationRefreshCalendar.name, object: nil)
+        
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -158,12 +157,10 @@ class ScheduleViewController: UIViewController {
         calendar.appearance.weekdayTextColor = UIColor(hex6: 0x8db6d4)
         calendar.appearance.caseOptions = .weekdayUsesSingleUpperCase
         calendar.appearance.headerMinimumDissolvedAlpha = 0.0
-        
         calendar.appearance.titlePlaceholderColor = .lightGray
         calendar.appearance.subtitlePlaceholderColor = .lightGray
         calendar.appearance.subtitleDefaultColor = .gray
         calendar.appearance.titleFont = UIFont.systemFont(ofSize: 15.0)
-        
         calendar.placeholderType = .fillSixRows
         calendar.appearance.todayColor = .gray
         calendar.bottomBorder.backgroundColor = .clear
@@ -176,16 +173,16 @@ class ScheduleViewController: UIViewController {
         
         chineseCalendar = Calendar(identifier: .chinese)
         
-        
-        
         self.tableView.mj_header = MJRefreshNormalHeader(refreshingTarget: self, refreshingAction: #selector(headerRefresh))
         
         AccountManager.getToken(username: WorkUser.shared.username, password: WorkUser.shared.password, success: { token in
             WorkUser.shared.token = token
-            
             WorkUser.shared.save()
-            //SwiftMessages.showSuccessMessage(title: "登录成功", body: "")
-           self.tableView.mj_header.beginRefreshing()
+            
+            
+//            self.tableView.mj_header.beginRefreshing()
+            self.headerRefresh()
+            
         }, failure: { error in
             if error is NetworkManager.NetworkNotExist {
                 SwiftMessages.showErrorMessage(title: "您似乎已断开与互联网连接", body: "")
@@ -194,8 +191,6 @@ class ScheduleViewController: UIViewController {
             }
             NotificationCenter.default.post(name: NotificationName.NotificationLoginFail.name, object: nil)
         })
-        
-        //self.tableView.mj_header.beginRefreshing()
         
         cancelBarButtonItem = UIBarButtonItem(title: "完成", style: .plain, target: self, action: #selector(cancelEditStatus(_:)))
         
@@ -212,7 +207,8 @@ class ScheduleViewController: UIViewController {
         deleteBtn.addTarget(self, action: #selector(deleteMessage(_:)), for: .touchUpInside)
         
         requestEvents()
-        
+        NotificationCenter.default.addObserver(self, selector: #selector(presentLoginView), name: NotificationName.NotificationLoginFail.name, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(headerRefresh), name: NotificationName.NotificationRefreshCalendar.name, object: nil)
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -221,8 +217,14 @@ class ScheduleViewController: UIViewController {
         self.navigationController?.navigationBar.barTintColor = UIColor(hex6: 0x00518e)
         self.navigationController?.navigationBar.titleTextAttributes = [NSAttributedStringKey.foregroundColor: UIColor.white]
         self.navigationController?.navigationBar.tintColor = .white
-        
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addCalendar(_:)))
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        self.isSelecting = false
+        
+        self.tableView.mj_header.endRefreshing()
     }
     
 }
@@ -248,7 +250,8 @@ extension ScheduleViewController {
     }
     
     @objc func addCalendar(_ sender: UIButton) {
-        
+        let addVC = AddScheduleViewController()
+        self.navigationController?.pushViewController(addVC, animated: true)
     }
     
     @objc func longPressEditing(_ gesture: UILongPressGestureRecognizer) {
@@ -325,11 +328,9 @@ extension ScheduleViewController {
             var idArrs: [String] = []
             var typeArrs: [String] = []
             
-            idArrs = self.selectedArrs.map { index in
-                return String(self.selectedList[index].id)
-            }
-            typeArrs = self.selectedArrs.map { index in
-                let type = self.selectedList[index].type
+            idArrs = self.selectedArrs.map { String(self.selectedList[$0].id) }
+            typeArrs = self.selectedArrs.map {
+                let type = self.selectedList[$0].type
                 switch type {
                 case .integer(let value):
                     return String(value)
@@ -338,10 +339,16 @@ extension ScheduleViewController {
                 }
             }
             
+            var tmp: [ScheduleListsData] = []
+            self.selectedList = self.selectedList.filter { !(self.selectedArrs.contains($0.id)) }
+            for (index,value) in self.selectedList.enumerated() where !self.selectedArrs.contains(index) {
+                tmp.append(value)
+            }
+            self.selectedList = tmp
+            
+            self.isSelecting = false
             ScheduleHelper.deleteCalendarList(idArrs: idArrs, typeArrs: typeArrs, success: {
-                self.isSelecting = false
                 self.headerRefresh()
-                
             }, failure: {
                 
             })
@@ -412,12 +419,17 @@ extension ScheduleViewController: UITableViewDelegate {
             return
         }
         
-        
         let data = self.selectedList[indexPath.row]
+        // 0: integer 自创日程
+        // 1: string 工作消息
+        switch data.type {
+        case .integer:
+            return
+        case .string:
+            let detailVC = DetailMessageViewController(mid: String(data.id), isReply: true, messageType: .inbox, isReaded: true)
+            self.navigationController?.pushViewController(detailVC, animated: true)
+        }
         
-        let detailVC = DetailMessageViewController(mid: String(data.id), isReply: true, messageType: .inbox, isReaded: true)
-        
-        self.navigationController?.pushViewController(detailVC, animated: true)
     }
     
 }

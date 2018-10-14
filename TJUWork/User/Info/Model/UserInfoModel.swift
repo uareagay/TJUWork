@@ -22,7 +22,7 @@ struct UserInfoData: Codable {
     var picture, payNumber: String?
     var wechat: String?
     var phone: String?
-    let gender, createdAt, updatedAt: String
+    let gender, createdAt, updatedAt: String?
     let admin: [Admin]
     let deviceID: String?
     

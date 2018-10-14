@@ -54,6 +54,20 @@ class MessageTableViewCell: UITableViewCell {
     let selectedImg = UIImage.resizedImage(image: UIImage(named: "消息选中")!, scaledToWidth: 17.0)
     let unselectedImg = UIImage.resizedImage(image: UIImage(named: "消息未选中")!, scaledToWidth: 17.0)
     
+    let percentBtn: UIButton = {
+        let btn = UIButton(type: .custom)
+        btn.setTitle("", for: .normal)
+        btn.titleLabel?.font = UIFont.systemFont(ofSize: 12, weight: UIFont.Weight.regular)
+        btn.setTitleColor(.white, for: .normal)
+        btn.titleLabel?.textAlignment = .center
+        btn.backgroundColor = UIColor(hex6: 0x00518e)
+        btn.layer.masksToBounds = true
+        btn.layer.cornerRadius = 6
+        btn.isUserInteractionEnabled = false
+        btn.isHidden = true
+        return btn
+    }()
+    
     //65
     override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
@@ -64,6 +78,7 @@ class MessageTableViewCell: UITableViewCell {
         contentView.addSubview(dateLabel)
         contentView.addSubview(titleLabel)
         contentView.addSubview(imgView)
+        contentView.addSubview(percentBtn)
         
         lineView.snp.makeConstraints { make in
             make.top.bottom.left.equalToSuperview()
@@ -73,7 +88,7 @@ class MessageTableViewCell: UITableViewCell {
         titleLabel.snp.makeConstraints { make in
             make.top.equalToSuperview().inset(8)
             make.left.equalToSuperview().inset(15)
-            make.right.equalToSuperview().inset(30)
+            make.right.equalToSuperview().inset(90)
             make.height.equalTo(29)
         }
         
@@ -94,6 +109,13 @@ class MessageTableViewCell: UITableViewCell {
         imgView.snp.makeConstraints { make in
             make.top.right.equalToSuperview().inset(7)
             make.width.height.equalTo(17)
+        }
+        
+        percentBtn.snp.makeConstraints { make in
+            make.right.equalTo(imgView.snp.left).offset(-6)
+            make.top.equalToSuperview().inset(7)
+            make.height.equalTo(18)
+            make.width.equalTo(50)
         }
         
     }

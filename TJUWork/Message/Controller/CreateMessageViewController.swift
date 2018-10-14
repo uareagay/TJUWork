@@ -363,6 +363,7 @@ extension CreateMessageViewController: UITableViewDelegate {
         }
         return 55
     }
+    
 }
 
 extension CreateMessageViewController: UITableViewDataSource {
@@ -395,7 +396,10 @@ extension CreateMessageViewController: UITableViewDataSource {
             }
             if let text = self.draftText {
                 self.draftText = nil
-                self.HTMLString = text
+                //self.HTMLString = text
+                if let attributedString = try? NSAttributedString(data: (text.data(using: .unicode))!, options: [NSAttributedString.DocumentReadingOptionKey.documentType : NSAttributedString.DocumentType.html], documentAttributes: nil) {
+                    self.textView.attributedText = attributedString
+                }
             }
             return cell
         }
@@ -412,7 +416,6 @@ extension CreateMessageViewController: UITableViewDataSource {
             return cell
         case 1:
             let cell = tableView.dequeueReusableCell(withIdentifier: "MessageNameTableViewCell") as! MessageNameTableViewCell
-            
             
             let toolBar = UIToolbar(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.size.width, height: 44))
             let cancelItem = UIBarButtonItem(title: "取消", style: .done, target: self, action: #selector(toolBarCancelAction(_:)))
@@ -475,7 +478,8 @@ extension CreateMessageViewController: UITableViewDataSource {
             return UITableViewCell()
         }
     }
-
+    
+    
 }
 
 extension CreateMessageViewController: UIPickerViewDelegate {
@@ -604,6 +608,7 @@ extension CreateMessageViewController {
         guard self.entireLabelsModel != nil else {
             return
         }
+        
         let index = self.pickerView.selectedRow(inComponent: 0)
         let cell = self.tableView.cellForRow(at: IndexPath(row: 1, section: 0)) as! MessageNameTableViewCell
         cell.collegeLabel.text = self.entireLabelsModel.data[index].name
@@ -734,7 +739,7 @@ extension CreateMessageViewController {
         
         self.sendBtn.isEnabled = false
         self.storeDraftBtn.isEnabled = false
-        self.textView.isUserInteractionEnabled = false
+        self.tableView.isUserInteractionEnabled = false
         
         PersonalMessageHelper.sendMessage(dictionary: dic, success: {
             NotificationCenter.default.post(name: NotificationName.NotificationRefreshInboxLists.name, object: nil)
@@ -746,7 +751,7 @@ extension CreateMessageViewController {
         }, failure: {
             self.sendBtn.isEnabled = true
             self.storeDraftBtn.isEnabled = true
-            self.textView.isUserInteractionEnabled = true
+            self.tableView.isUserInteractionEnabled = true
         })
         
     }
@@ -778,10 +783,12 @@ extension CreateMessageViewController {
         dic["type"] = String(type!)
         dic["title"] = title
         dic["text"] = self.HTMLString
+        dic["response_to"] = "0"
+        
         
         self.sendBtn.isEnabled = false
         self.storeDraftBtn.isEnabled = false
-        self.textView.isUserInteractionEnabled = false
+        self.tableView.isUserInteractionEnabled = false
         
         PersonalMessageHelper.saveDraft(dictionary: dic, success: {
 //            let messageVC = self.navigationController?.viewControllers[0] as! MessageViewController
@@ -791,7 +798,7 @@ extension CreateMessageViewController {
         }, failure: {
             self.sendBtn.isEnabled = true
             self.storeDraftBtn.isEnabled = true
-            self.textView.isUserInteractionEnabled = true
+            self.tableView.isUserInteractionEnabled = true
         })
     }
     

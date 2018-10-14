@@ -1,41 +1,43 @@
 //
-//  EntireLabelsModel.swift
+//  ReadPeopleModel.swift
 //  TJUWork
 //
-//  Created by 赵家琛 on 2018/9/9.
-//  Copyright © 2018年 赵家琛. All rights reserved.
+//  Created by 赵家琛 on 2018/10/12.
+//  Copyright © 2018 赵家琛. All rights reserved.
 //
 
 import Foundation
 
-struct EntireLabelsModel: Codable {
+
+struct ReadPeopleModel: Codable {
     let status: Bool
     let code: Int
     let message: String
-    let data: [EntireLabelsData]
+    let data: ReadPeopleData
 }
 
-struct EntireLabelsData: Codable {
-//    let lid, name, createdUid, type: String
-//    let createdAt: String
-    let createdAt: String
-    let lid, name, aid: String
+struct ReadPeopleData: Codable {
+    let needRead, hasRead: Int
+    let finished: [ReadPeople]
+    let unfinished: [ReadPeople]
     
     enum CodingKeys: String, CodingKey {
-//        case lid, name
-//        case createdUid = "created_uid"
-//        case type
-//        case createdAt = "created_at"
-        case createdAt = "created_at"
-        case lid, name, aid
+        case needRead = "need_read"
+        case hasRead = "has_read"
+        case finished, unfinished
     }
+}
+
+struct ReadPeople: Codable {
+    let name, uid: String
+    let phone: String?
 }
 
 // MARK: Convenience initializers and mutators
 
-extension EntireLabelsModel {
+extension ReadPeopleModel {
     init(data: Data) throws {
-        self = try newJSONDecoder().decode(EntireLabelsModel.self, from: data)
+        self = try newJSONDecoder().decode(ReadPeopleModel.self, from: data)
     }
     
     init(_ json: String, using encoding: String.Encoding = .utf8) throws {
@@ -58,9 +60,34 @@ extension EntireLabelsModel {
     }
 }
 
-extension EntireLabelsData {
+extension ReadPeopleData {
     init(data: Data) throws {
-        self = try newJSONDecoder().decode(EntireLabelsData.self, from: data)
+        self = try newJSONDecoder().decode(ReadPeopleData.self, from: data)
+    }
+    
+    init(_ json: String, using encoding: String.Encoding = .utf8) throws {
+        guard let data = json.data(using: encoding) else {
+            throw NSError(domain: "JSONDecoding", code: 0, userInfo: nil)
+        }
+        try self.init(data: data)
+    }
+    
+    init(fromURL url: URL) throws {
+        try self.init(data: try Data(contentsOf: url))
+    }
+    
+    func jsonData() throws -> Data {
+        return try newJSONEncoder().encode(self)
+    }
+    
+    func jsonString(encoding: String.Encoding = .utf8) throws -> String? {
+        return String(data: try self.jsonData(), encoding: encoding)
+    }
+}
+
+extension ReadPeople {
+    init(data: Data) throws {
+        self = try newJSONDecoder().decode(ReadPeople.self, from: data)
     }
     
     init(_ json: String, using encoding: String.Encoding = .utf8) throws {

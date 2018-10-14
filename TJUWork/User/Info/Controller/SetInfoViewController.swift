@@ -16,7 +16,8 @@ import SwiftMessages
 class SetInfoViewController: UIViewController {
     
     fileprivate var offY: CGFloat = 0
-    fileprivate let imgHeight = UIScreen.main.bounds.width*3/10
+    //fileprivate let imgHeight = UIScreen.main.bounds.width*3/10
+    fileprivate let imgHeight = 120
     fileprivate let tagArrs = ["用户名：","姓名：", "工资号：", "手机：", "微信：", "邮箱"]
     
     var tableView: UITableView!
@@ -26,7 +27,8 @@ class SetInfoViewController: UIViewController {
         let imgView = UIImageView()
         imgView.backgroundColor = .white
         imgView.layer.masksToBounds = true
-        imgView.layer.cornerRadius = UIScreen.main.bounds.width*3/10/2
+        //imgView.layer.cornerRadius = UIScreen.main.bounds.width*3/10/2
+        imgView.layer.cornerRadius = 120/2
         imgView.image = UIImage(named: "头像")
         return imgView
     }()
@@ -112,9 +114,10 @@ class SetInfoViewController: UIViewController {
         
         //self.GetUserInfo()
         self.tableView.mj_header = MJRefreshNormalHeader(refreshingTarget: self, refreshingAction: #selector(GetUserInfo))
-        self.tableView.mj_header.beginRefreshing()
+//        self.tableView.mj_header.beginRefreshing()
         
         setupFooterView()
+        GetUserInfo()
         
     }
     
@@ -123,6 +126,12 @@ class SetInfoViewController: UIViewController {
         self.navigationItem.title = "个人资料"
         self.navigationController?.navigationBar.barTintColor = UIColor(hex6: 0x00518e)
         self.navigationController?.navigationBar.titleTextAttributes = [NSAttributedStringKey.foregroundColor: UIColor.white]
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        
+        self.tableView.mj_header.endRefreshing()
     }
     
     deinit {
@@ -440,6 +449,11 @@ extension SetInfoViewController: UIImagePickerControllerDelegate, UINavigationCo
         alertVC.addAction(pictureAction)
         alertVC.addAction(photoAction)
         alertVC.addAction(cancelAction)
+        
+        
+        alertVC.popoverPresentationController?.sourceView = self.view
+        alertVC.popoverPresentationController?.sourceRect = CGRect(x: 0, y: 0, width: 1, height: 1)
+        
         self.present(alertVC, animated: true, completion: nil)
         
     }

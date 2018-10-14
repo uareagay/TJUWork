@@ -136,6 +136,8 @@
 		DD31345C2148B9AE00A0990E /* DraftListModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD31345B2148B9AE00A0990E /* DraftListModel.swift */; };
 		DD31345E214A58B800A0990E /* OutboxListModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD31345D214A58B800A0990E /* OutboxListModel.swift */; };
 		DD43E30C216ED3D900AC573F /* AddScheduleViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD43E30B216ED3D800AC573F /* AddScheduleViewController.swift */; };
+		DD43E310216FE65200AC573F /* ReadPeopleModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD43E30F216FE65200AC573F /* ReadPeopleModel.swift */; };
+		DD43E312216FE67000AC573F /* ResponsePeopleModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD43E311216FE67000AC573F /* ResponsePeopleModel.swift */; };
 		DD646759215F59CD00B0A0B8 /* SearchContactUsersViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD646758215F59CD00B0A0B8 /* SearchContactUsersViewController.swift */; };
 		DD706910215F6E7100D7BCE5 /* PhoneBook.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD70690F215F6E7100D7BCE5 /* PhoneBook.swift */; };
 		DD7627AD214F9D51005A3A97 /* DownloadViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD7627AC214F9D51005A3A97 /* DownloadViewController.swift */; };
@@ -170,6 +172,7 @@
 		DDB9CE662111AFF600E63211 /* ReceiverCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDB9CE652111AFF600E63211 /* ReceiverCollectionViewCell.swift */; };
 		DDB9CE682112FD7900E63211 /* AddReceiverCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDB9CE672112FD7900E63211 /* AddReceiverCollectionViewCell.swift */; };
 		DDBBEE9321019AB300244E40 /* ScheduleMessageTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDBBEE9221019AB300244E40 /* ScheduleMessageTableViewCell.swift */; };
+		DDEFCF8F2171D6AA00B26A13 /* PeopleSituationTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDEFCF8E2171D6AA00B26A13 /* PeopleSituationTableViewCell.swift */; };
 		DDF1EA582153EF6500A94B95 /* SearchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDF1EA572153EF6500A94B95 /* SearchViewController.swift */; };
 		DDF1EA5A2155572300A94B95 /* InboxSearchModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDF1EA592155572300A94B95 /* InboxSearchModel.swift */; };
 		DDF1EA5C2155581C00A94B95 /* OutboxSearchModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDF1EA5B2155581C00A94B95 /* OutboxSearchModel.swift */; };
@@ -345,6 +348,8 @@
 		DD31345B2148B9AE00A0990E /* DraftListModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DraftListModel.swift; sourceTree = "<group>"; };
 		DD31345D214A58B800A0990E /* OutboxListModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OutboxListModel.swift; sourceTree = "<group>"; };
 		DD43E30B216ED3D800AC573F /* AddScheduleViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddScheduleViewController.swift; sourceTree = "<group>"; };
+		DD43E30F216FE65200AC573F /* ReadPeopleModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadPeopleModel.swift; sourceTree = "<group>"; };
+		DD43E311216FE67000AC573F /* ResponsePeopleModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResponsePeopleModel.swift; sourceTree = "<group>"; };
 		DD646758215F59CD00B0A0B8 /* SearchContactUsersViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchContactUsersViewController.swift; sourceTree = "<group>"; };
 		DD6598AC214D91480079E2CF /* TJUWork.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = TJUWork.entitlements; sourceTree = "<group>"; };
 		DD70690F215F6E7100D7BCE5 /* PhoneBook.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhoneBook.swift; sourceTree = "<group>"; };
@@ -380,6 +385,7 @@
 		DDB9CE652111AFF600E63211 /* ReceiverCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReceiverCollectionViewCell.swift; sourceTree = "<group>"; };
 		DDB9CE672112FD7900E63211 /* AddReceiverCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddReceiverCollectionViewCell.swift; sourceTree = "<group>"; };
 		DDBBEE9221019AB300244E40 /* ScheduleMessageTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduleMessageTableViewCell.swift; sourceTree = "<group>"; };
+		DDEFCF8E2171D6AA00B26A13 /* PeopleSituationTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PeopleSituationTableViewCell.swift; sourceTree = "<group>"; };
 		DDF1EA572153EF6500A94B95 /* SearchViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchViewController.swift; sourceTree = "<group>"; };
 		DDF1EA592155572300A94B95 /* InboxSearchModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InboxSearchModel.swift; sourceTree = "<group>"; };
 		DDF1EA5B2155581C00A94B95 /* OutboxSearchModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OutboxSearchModel.swift; sourceTree = "<group>"; };
@@ -780,6 +786,7 @@
 				DDB9CE652111AFF600E63211 /* ReceiverCollectionViewCell.swift */,
 				DDB9CE672112FD7900E63211 /* AddReceiverCollectionViewCell.swift */,
 				DDB9CE6321119EB100E63211 /* ReceiverTableViewCell.swift */,
+				DDEFCF8E2171D6AA00B26A13 /* PeopleSituationTableViewCell.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -848,6 +855,8 @@
 				DD14583D21455E740018BC07 /* EntireLabelsModel.swift */,
 				DD14583B2142DD0B0018BC07 /* EntireUsersHelper.swift */,
 				DD14583F214699180018BC07 /* PersonalMessageHelper.swift */,
+				DD43E30F216FE65200AC573F /* ReadPeopleModel.swift */,
+				DD43E311216FE67000AC573F /* ResponsePeopleModel.swift */,
 				DD31345B2148B9AE00A0990E /* DraftListModel.swift */,
 				DD31345D214A58B800A0990E /* OutboxListModel.swift */,
 				DD03B5D0214A9FC3007E2CB4 /* InboxListModel.swift */,
@@ -1170,6 +1179,7 @@
 				DD796D2A2138F9FB0042D058 /* AccountManager.swift in Sources */,
 				DD0AA78820F9CF250011F1EE /* SetInfoTableViewCell.swift in Sources */,
 				DD826832215E63EC00596022 /* ContactsBookViewController.swift in Sources */,
+				DD43E312216FE67000AC573F /* ResponsePeopleModel.swift in Sources */,
 				DD1459DC2146D4B50018BC07 /* HRColorUtil.m in Sources */,
 				DD81CB3420FB45ED00EB5843 /* MessageViewController.swift in Sources */,
 				DD1459D12146D4B50018BC07 /* ZSSBarButtonItem.m in Sources */,
@@ -1210,6 +1220,8 @@
 				DDF1EA582153EF6500A94B95 /* SearchViewController.swift in Sources */,
 				DD7627AD214F9D51005A3A97 /* DownloadViewController.swift in Sources */,
 				DD31345C2148B9AE00A0990E /* DraftListModel.swift in Sources */,
+				DD43E310216FE65200AC573F /* ReadPeopleModel.swift in Sources */,
+				DDEFCF8F2171D6AA00B26A13 /* PeopleSituationTableViewCell.swift in Sources */,
 				DD0AA78620F9C8470011F1EE /* InfoTableViewCell.swift in Sources */,
 				DD1459D52146D4B50018BC07 /* HRColorPickerViewController.m in Sources */,
 				DDB9CE5C2110116100E63211 /* TitleTableViewCell.swift in Sources */,
@@ -1344,7 +1356,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 11.4;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
@@ -1398,7 +1410,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 11.4;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
 				SWIFT_COMPILATION_MODE = wholemodule;
@@ -1422,6 +1434,7 @@
 					"$(PROJECT_DIR)/TJUWork/GtSdkLib",
 				);
 				INFOPLIST_FILE = TJUWork/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -1451,6 +1464,7 @@
 					"$(PROJECT_DIR)/TJUWork/GtSdkLib",
 				);
 				INFOPLIST_FILE = TJUWork/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
