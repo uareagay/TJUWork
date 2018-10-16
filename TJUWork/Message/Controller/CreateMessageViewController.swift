@@ -64,7 +64,19 @@ class CreateMessageViewController: UIViewController {
         label.textColor = UIColor(hex6: 0x00518e)
         label.textAlignment = .left
         label.font = UIFont.systemFont(ofSize: 16, weight: UIFont.Weight.regular)
+        label.alpha = 0.6
         return label
+    }()
+    
+    fileprivate let searchPeopleBtn: UIButton = {
+        let btn = UIButton(type: .custom)
+        btn.setTitle("搜索收件人", for: .normal)
+        btn.titleLabel?.font = UIFont.systemFont(ofSize: 16, weight: UIFont.Weight.regular)
+        btn.setTitleColor(UIColor(hex6: 0x00518e), for: .normal)
+        btn.titleLabel?.textAlignment = .right
+        btn.contentHorizontalAlignment = .right
+        btn.backgroundColor = .white
+        return btn
     }()
     
     fileprivate let topLineView: UIView = {
@@ -264,6 +276,7 @@ class CreateMessageViewController: UIViewController {
         cancelUsersBtn.addTarget(self, action: #selector(cancelUsersAction(_:)), for: .touchUpInside)
         sendBtn.addTarget(self, action: #selector(sendMessage(_:)), for: .touchUpInside)
         storeDraftBtn.addTarget(self, action: #selector(storeDraft(_:)), for: .touchUpInside)
+        searchPeopleBtn.addTarget(self, action: #selector(searchPeople(_:)), for: .touchUpInside)
         
         EntireUsersHelper.getEntireUsersInLabels(success: { model in
             self.entireUsersModel = model
@@ -286,6 +299,19 @@ class CreateMessageViewController: UIViewController {
         self.navigationController?.navigationBar.barTintColor = UIColor(hex6: 0x00518e)
         self.navigationController?.navigationBar.titleTextAttributes = [NSAttributedStringKey.foregroundColor: UIColor.white]
         
+        topLabel.removeFromSuperview()
+        topLineView.removeFromSuperview()
+        
+        saveUsersBtn.removeFromSuperview()
+        cancelUsersBtn.removeFromSuperview()
+        popView.removeFromSuperview()
+        emptyView.removeFromSuperview()
+        
+        guard self.entireUsersModel != nil else {
+            return
+        }
+        treeTableView.removeFromSuperview()
+        treeTableView = TreeTableView(frame: self.view.bounds, style: .plain, self.entireUsersModel)
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -530,12 +556,12 @@ extension CreateMessageViewController: AddAndDeleteReceiverProtocol {
     }
 
     func presentTreeTableView() {
-        
         guard self.treeTableView != nil else {
             return
         }
         
         popView.addSubview(topLabel)
+        popView.addSubview(searchPeopleBtn)
         popView.addSubview(topLineView)
         popView.addSubview(treeTableView)
         popView.addSubview(saveUsersBtn)
@@ -545,8 +571,17 @@ extension CreateMessageViewController: AddAndDeleteReceiverProtocol {
         
         topLabel.snp.makeConstraints { make in
             make.top.equalToSuperview().inset(6)
-            make.left.right.equalToSuperview().inset(20)
+//            make.left.right.equalToSuperview().inset(20)
+            make.left.equalToSuperview().inset(20)
+            make.width.equalTo(90)
             make.height.equalTo(30)
+        }
+        searchPeopleBtn.snp.makeConstraints { make in
+            make.top.equalToSuperview().offset(4)
+            make.right.equalToSuperview().inset(20)
+//            make.left.equalTo(topLabel.snp.right)
+            make.width.equalTo(90)
+            make.height.equalTo(34)
         }
         topLineView.snp.makeConstraints { make in
             make.left.right.equalToSuperview()
@@ -571,6 +606,24 @@ extension CreateMessageViewController: AddAndDeleteReceiverProtocol {
             make.left.equalTo(popView.snp.centerX).offset(20)
         }
     }
+    
+    @objc func dismissTreeTableView(_ sender: UIButton) {
+        topLabel.removeFromSuperview()
+        topLineView.removeFromSuperview()
+        treeTableView.removeFromSuperview()
+        saveUsersBtn.removeFromSuperview()
+        cancelUsersBtn.removeFromSuperview()
+        popView.removeFromSuperview()
+        emptyView.removeFromSuperview()
+    }
+    
+    @objc func searchPeople(_ sender: UIButton) {
+        let searchVC = SearchPeopleViewController(self.entireUsersModel)
+        //searchVC.delegate = self
+        let cell = self.tableView.cellForRow(at: IndexPath(row: 2, section: 0)) as! ReceiverTableViewCell
+        searchVC.delegate = cell
+        self.navigationController?.pushViewController(searchVC, animated: true)
+    }
 
 }
 
@@ -582,16 +635,6 @@ extension CreateMessageViewController: UIGestureRecognizerDelegate {
             return true
         }
         return false
-    }
-
-    @objc func dismissTreeTableView(_ sender: UIButton) {
-        topLabel.removeFromSuperview()
-        topLineView.removeFromSuperview()
-        treeTableView.removeFromSuperview()
-        saveUsersBtn.removeFromSuperview()
-        cancelUsersBtn.removeFromSuperview()
-        popView.removeFromSuperview()
-        emptyView.removeFromSuperview()
     }
 
 }

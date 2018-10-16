@@ -65,8 +65,6 @@ class SearchViewController: UIViewController {
         
         self.view.addSubview(tableView)
         
-        
-        
         self.searchBar.delegate = self
         
         self.view.backgroundColor = .white
