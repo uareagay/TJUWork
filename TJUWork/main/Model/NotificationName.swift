@@ -15,6 +15,7 @@ enum NotificationName: String {
     case NotificationRefreshOutboxLists
     case NotificationRefreshDraftLists
     case NotificationRefreshCalendar
+    case NotificationRefreshPersonalInfo
     case NotificationLoginFail
     
 }

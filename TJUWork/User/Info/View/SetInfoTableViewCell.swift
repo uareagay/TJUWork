@@ -46,20 +46,19 @@ class SetInfoTableViewCell: UITableViewCell {
         nameLabel.snp.makeConstraints { make in
             make.top.bottom.equalToSuperview().inset(5)
             make.left.equalToSuperview().inset(15)
-            make.width.equalTo(70)
+            make.width.equalTo(90)
         }
         infoTextField.snp.makeConstraints { make in
             make.top.bottom.equalToSuperview().inset(5)
             make.right.equalToSuperview().inset(15)
-            make.width.equalTo(220)
+//            make.width.equalTo(220)
+            make.left.equalTo(nameLabel.snp.right)
         }
         lineView.snp.makeConstraints { make in
             make.left.right.equalToSuperview().inset(15)
             make.bottom.equalToSuperview()
             make.height.equalTo(0.5)
         }
-        
-        
         
     }
     

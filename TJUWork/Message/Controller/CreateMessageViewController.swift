@@ -272,7 +272,7 @@ class CreateMessageViewController: UIViewController {
             
         })
         
-        EntireUsersHelper.getEntireLabels(success: { model in
+        EntireUsersHelper.getPersonalLabels(success: { model in
             self.entireLabelsModel = model
         }, failure: {
             
@@ -634,7 +634,18 @@ extension CreateMessageViewController {
     }
     
     @objc func sendMessage(_ sender: UIButton) {
+        let alertVC = UIAlertController(title: "确认发送吗？", message: "", preferredStyle: .alert)
+        let cancelAction = UIAlertAction(title: "取消", style: .default)
+        let saveChangeAction = UIAlertAction(title: "发送", style: .default) { _ in
+            self.sendMessageLogic()
+        }
+        alertVC.addAction(cancelAction)
+        alertVC.addAction(saveChangeAction)
         
+        self.present(alertVC, animated: true)
+    }
+    
+    func sendMessageLogic() {
         var dic: [String:Any] = [:]
         let type: Int? = self.messageType
         let title: String = self.messageTitle
@@ -745,15 +756,14 @@ extension CreateMessageViewController {
             NotificationCenter.default.post(name: NotificationName.NotificationRefreshInboxLists.name, object: nil)
             NotificationCenter.default.post(name: NotificationName.NotificationRefreshOutboxLists.name, object: nil)
             NotificationCenter.default.post(name: NotificationName.NotificationRefreshCalendar.name, object: nil)
-//            let messageVC = self.navigationController?.viewControllers[0] as! MessageViewController
-//            messageVC.tableView.mj_header.beginRefreshing()
+            //            let messageVC = self.navigationController?.viewControllers[0] as! MessageViewController
+            //            messageVC.tableView.mj_header.beginRefreshing()
             self.navigationController?.popViewController(animated: true)
         }, failure: {
             self.sendBtn.isEnabled = true
             self.storeDraftBtn.isEnabled = true
             self.tableView.isUserInteractionEnabled = true
         })
-        
     }
 
     @objc func storeDraft(_ sender: UIButton) {

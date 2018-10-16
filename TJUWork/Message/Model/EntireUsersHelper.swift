@@ -31,7 +31,7 @@ struct EntireUsersHelper {
     }
     
     
-    static func getEntireLabels(success: ((EntireLabelsModel)->())?, failure: (()->())?) {
+    static func getPersonalLabels(success: ((EntireLabelsModel)->())?, failure: (()->())?) {
         
         NetworkManager.getInformation(url: "/user/labels", token: WorkUser.shared.token,success: { dic in
             if let status = dic["status"] as? Bool, status == true {

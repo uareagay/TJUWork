@@ -137,7 +137,8 @@ class MessageViewController: UIViewController {
         self.view.addSubview(selectAllBtn)
        
         let rect = self.menuBtn.convert(self.menuBtn.bounds, to: self.view)
-        menuView = DownMenuView(frame: CGRect(x: rect.origin.x, y: rect.origin.y+rect.size.height+5, width: rect.size.width, height: 0))
+//        menuView = DownMenuView(frame: CGRect(x: rect.origin.x, y: rect.origin.y+rect.size.height+5, width: rect.size.width, height: 0))
+        menuView = DownMenuView(frame: CGRect(x: rect.origin.x-15, y: rect.origin.y+rect.size.height+5, width: rect.size.width+30, height: 0))
         menuView.layer.borderColor = UIColor.gray.cgColor
         menuView.layer.borderWidth = 0.2
         menuView.layer.shadowColor = UIColor.gray.cgColor
@@ -200,7 +201,7 @@ class MessageViewController: UIViewController {
     @objc func dismissMenuView(_ gesture: UITapGestureRecognizer) {
         let rect = self.menuBtn.convert(self.menuBtn.bounds, to: self.view)
         UIView.animate(withDuration: 0.25, animations: {
-            self.menuView.frame = CGRect(x: rect.origin.x, y: rect.origin.y+rect.size.height+5, width: rect.size.width, height: 0)
+            self.menuView.frame = CGRect(x: rect.origin.x-15, y: rect.origin.y+rect.size.height+5, width: rect.size.width+30, height: 0)
             self.menuView.hideMenuView()
         })
         menuBtn.isSelected = false
@@ -250,10 +251,12 @@ class MessageViewController: UIViewController {
             tableView.isScrollEnabled = false
            
             let rect = self.menuBtn.convert(self.menuBtn.bounds, to: self.view)
-            self.menuView.frame = CGRect(x: rect.origin.x, y: rect.origin.y+rect.size.height+5, width: rect.size.width, height: 0)
+//            self.menuView.frame = CGRect(x: rect.origin.x, y: rect.origin.y+rect.size.height+5, width: rect.size.width, height: 0)
+            self.menuView.frame = CGRect(x: rect.origin.x-15, y: rect.origin.y+rect.size.height+5, width: rect.size.width+30, height: 0)
             self.view.bringSubview(toFront: menuView)
             UIView.animate(withDuration: 0.25, animations: {
-                self.menuView.frame = CGRect(x: rect.origin.x, y: rect.origin.y+rect.size.height+5, width: rect.size.width, height: 32.5*2)
+//                self.menuView.frame = CGRect(x: rect.origin.x, y: rect.origin.y+rect.size.height+5, width: rect.size.width, height: 32.5*2)
+                 self.menuView.frame = CGRect(x: rect.origin.x-15, y: rect.origin.y+rect.size.height+5, width: rect.size.width+30, height: 50*2)
             })
             self.menuView.showMenuView()
             menuBtn.isSelected = true
@@ -262,7 +265,8 @@ class MessageViewController: UIViewController {
             
             let rect = self.menuBtn.convert(self.menuBtn.bounds, to: self.view)
             UIView.animate(withDuration: 0.25, animations: {
-                self.menuView.frame = CGRect(x: rect.origin.x, y: rect.origin.y+rect.size.height+5, width: rect.size.width, height: 0)
+//                self.menuView.frame = CGRect(x: rect.origin.x, y: rect.origin.y+rect.size.height+5, width: rect.size.width, height: 0)
+                self.menuView.frame = CGRect(x: rect.origin.x-15, y: rect.origin.y+rect.size.height+5, width: rect.size.width+30, height: 0)
             })
             self.menuView.hideMenuView()
             menuBtn.isSelected = false
@@ -271,6 +275,7 @@ class MessageViewController: UIViewController {
     
     @objc func addMessage(_ sender: UIButton) {
         let createMessageVC = CreateMessageViewController()
+        createMessageVC.hidesBottomBarWhenPushed = true
         self.navigationController?.pushViewController(createMessageVC, animated: true)
     }
     
@@ -478,7 +483,9 @@ extension MessageViewController: UITableViewDelegate {
             let detailVC: DetailMessageViewController
             let isReaded = data.isRead == "0" ? false : true
             if isResponse == 1 {
-                detailVC = DetailMessageViewController(mid: data.mid, isReply: false, messageType: .inbox, isReaded: isReaded)
+                //让他可以进行多次回复
+//                detailVC = DetailMessageViewController(mid: data.mid, isReply: false, messageType: .inbox, isReaded: isReaded)
+                detailVC = DetailMessageViewController(mid: data.mid, isReply: true, messageType: .inbox, isReaded: isReaded)
             } else if isResponse == -1 {
                 detailVC = DetailMessageViewController(mid: data.mid, isReply: false, messageType: .inbox, isReaded: isReaded)
             } else if isResponse == 0 {
@@ -487,23 +494,25 @@ extension MessageViewController: UITableViewDelegate {
                 //不会执行
                 detailVC = DetailMessageViewController()
             }
+            detailVC.hidesBottomBarWhenPushed = true
             self.navigationController?.pushViewController(detailVC, animated: true)
 //            if data.isRead == "0" {
 //                self.refreshInboxLists()
 //            }
         case .outbox:
             let data = self.outboxLists.data[indexPath.section]
+            let detailVC: DetailMessageViewController
             if data.type == "工作消息" {
-                let detailVC = DetailMessageViewController(mid: data.mid, isReply: false, messageType: .outbox, isReaded: true, isDisplayPeople: true)
-                self.navigationController?.pushViewController(detailVC, animated: true)
+                detailVC = DetailMessageViewController(mid: data.mid, isReply: false, messageType: .outbox, isReaded: true, isDisplayPeople: true)
             } else {
-                let detailVC = DetailMessageViewController(mid: data.mid, isReply: false, messageType: .outbox, isReaded: true, isDisplayPeople: false)
-                self.navigationController?.pushViewController(detailVC, animated: true)
+                detailVC = DetailMessageViewController(mid: data.mid, isReply: false, messageType: .outbox, isReaded: true, isDisplayPeople: false)
             }
-            
+            detailVC.hidesBottomBarWhenPushed = true
+            self.navigationController?.pushViewController(detailVC, animated: true)
         case .draft:
             let data = self.draftLists.data[indexPath.section]
             let createMessageVC = CreateMessageViewController(title: data.title, text: data.text, type: data.type)
+            createMessageVC.hidesBottomBarWhenPushed = true
             self.navigationController?.pushViewController(createMessageVC, animated: true)
         }
         
@@ -607,8 +616,6 @@ extension MessageViewController: UITableViewDataSource {
                 cell.percentBtn.isHidden = true
             }
             
-            
-            
             cell.titleLabel.text = data.title
             cell.nameLabel.text = data.type
             let formatter = DateFormatter()
@@ -653,7 +660,7 @@ extension MessageViewController: DropDownDelegate {
     func didSelectCell(_ type: DownMenuView.MenuType) {
         let rect = self.menuBtn.convert(self.menuBtn.bounds, to: self.view)
         UIView.animate(withDuration: 0.25, animations: {
-            self.menuView.frame = CGRect(x: rect.origin.x, y: rect.origin.y+rect.size.height+5, width: rect.size.width, height: 0)
+            self.menuView.frame = CGRect(x: rect.origin.x-15, y: rect.origin.y+rect.size.height+5, width: rect.size.width+30, height: 0)
         })
         
         self.menuView.hideMenuView()

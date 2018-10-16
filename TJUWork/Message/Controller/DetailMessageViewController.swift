@@ -444,11 +444,11 @@ extension DetailMessageViewController: UITableViewDelegate {
         }
         
         if indexPath.section == 3 && indexPath.row == 0 {
-            tableView.deselectRow(at: indexPath, animated: true)
+//            tableView.deselectRow(at: indexPath, animated: true)
             self.isDisplayResponse = !self.isDisplayResponse
             self.tableView.reloadData()
         } else if indexPath.section == 4 && indexPath.row == 0 {
-            tableView.deselectRow(at: indexPath, animated: true)
+//            tableView.deselectRow(at: indexPath, animated: true)
             self.isDisplayRead = !self.isDisplayRead
             self.tableView.reloadData()
         }
@@ -528,6 +528,7 @@ extension DetailMessageViewController: UITableViewDataSource {
                 attStr.addAttribute(.foregroundColor, value: UIColor.lightGray , range: NSMakeRange(3, str.count-3))
                 cell.titleLabel.attributedText = attStr
                 
+                cell.selectionStyle = .none
                 return cell
             case 1:
                 let cell = tableView.dequeueReusableCell(withIdentifier: "SenderTableViewCell") as! SenderTableViewCell
@@ -561,6 +562,8 @@ extension DetailMessageViewController: UITableViewDataSource {
                 default:
                     return UITableViewCell()
                 }
+                
+                cell.selectionStyle = .none
                 return cell
             case 2:
                 switch indexPath.row {
@@ -574,6 +577,7 @@ extension DetailMessageViewController: UITableViewDataSource {
                         cell.contentLabel.text = ""
                     }
                     
+                    cell.selectionStyle = .none
                     return cell
                 case 1...6:
                     let cell = UITableViewCell()
@@ -605,6 +609,8 @@ extension DetailMessageViewController: UITableViewDataSource {
                     btn.addTarget(self, action: #selector(downloadFile(_:)), for: .touchUpInside)
                     
                     cell.contentView.addSubview(contentView)
+                    
+                    cell.selectionStyle = .none
                     return cell
                 default:
                     return UITableViewCell()
@@ -618,6 +624,8 @@ extension DetailMessageViewController: UITableViewDataSource {
                 if let attributedString = try? NSAttributedString(data: HTMLString.data(using: .unicode)!, options: [NSAttributedString.DocumentReadingOptionKey.documentType : NSAttributedString.DocumentType.html], documentAttributes: nil) {
                     cell.contentLabel.attributedText = attributedString
                 }
+                
+                cell.selectionStyle = .none
                 return cell
             default:
                 return UITableViewCell()
@@ -638,6 +646,7 @@ extension DetailMessageViewController: UITableViewDataSource {
             attStr.addAttribute(.foregroundColor, value: UIColor.lightGray , range: NSMakeRange(3, str.count-3))
             cell.titleLabel.attributedText = attStr
             
+            cell.selectionStyle = .none
             return cell
         case 1:
             let cell = tableView.dequeueReusableCell(withIdentifier: "SenderTableViewCell") as! SenderTableViewCell
@@ -671,6 +680,8 @@ extension DetailMessageViewController: UITableViewDataSource {
             default:
                 return UITableViewCell()
             }
+            
+            cell.selectionStyle = .none
             return cell
         case 2:
             switch indexPath.row {
@@ -684,6 +695,7 @@ extension DetailMessageViewController: UITableViewDataSource {
                     cell.contentLabel.text = ""
                 }
                 
+                cell.selectionStyle = .none
                 return cell
             case 1...6:
                 let cell = UITableViewCell()
@@ -715,6 +727,8 @@ extension DetailMessageViewController: UITableViewDataSource {
                 btn.addTarget(self, action: #selector(downloadFile(_:)), for: .touchUpInside)
                 
                 cell.contentView.addSubview(contentView)
+                
+                cell.selectionStyle = .none
                 return cell
             default:
                 return UITableViewCell()
@@ -735,6 +749,7 @@ extension DetailMessageViewController: UITableViewDataSource {
                 }
                 cell.phoneBtn.isHidden = true
                 
+                cell.selectionStyle = .none
                 return cell
             }
             
@@ -758,6 +773,7 @@ extension DetailMessageViewController: UITableViewDataSource {
                 
                 cell.phoneBtn.addTarget(self, action: #selector(phoneTapped(_:)), for: .touchUpInside)
                 
+                cell.selectionStyle = .none
                 return cell
             }
             return getSituationTypeTableViewCell("阅读状态")
@@ -770,6 +786,8 @@ extension DetailMessageViewController: UITableViewDataSource {
             if let attributedString = try? NSAttributedString(data: HTMLString.data(using: .unicode)!, options: [NSAttributedString.DocumentReadingOptionKey.documentType : NSAttributedString.DocumentType.html], documentAttributes: nil) {
                 cell.contentLabel.attributedText = attributedString
             }
+            
+            cell.selectionStyle = .none
             return cell
         default:
             return UITableViewCell()
@@ -834,6 +852,8 @@ extension DetailMessageViewController {
             make.right.equalToSuperview().inset(15)
             make.width.equalTo(20)
         }
+        
+        cell.selectionStyle = .none
         return cell
     }
     

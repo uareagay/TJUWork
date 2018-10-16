@@ -39,8 +39,10 @@ class DownMenuView: UIView {
         super.init(frame: frame)
         
         //32.5*3
+        //50*3
         tableView = UITableView(frame: CGRect(x: 0, y: 0, width: self.frame.size.width, height: 0), style: .plain)
-        tableView.estimatedRowHeight = 32.5
+//        tableView.estimatedRowHeight = 32.5
+        tableView.rowHeight = 50
         tableView.delegate = self
         tableView.dataSource = self
         tableView.separatorStyle = .none
@@ -85,9 +87,9 @@ extension DownMenuView: UITableViewDelegate {
         }
     }
     
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 32.5
-    }
+//    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+//        return 32.5
+//    }
     
 }
 
@@ -102,12 +104,13 @@ extension DownMenuView: UITableViewDataSource {
         let cell = UITableViewCell()
         //cell.selectionStyle = .none
         
-        let label = UILabel(frame: CGRect(x: 0, y: 0, width: 80, height: 32.5))
-        label.font = UIFont.systemFont(ofSize: 15, weight: UIFont.Weight.regular)
+        let label = UILabel(frame: CGRect(x: 0, y: 0, width: 110, height: 50))
+        label.font = UIFont.systemFont(ofSize: 17, weight: UIFont.Weight.semibold)
         label.textAlignment = .center
         label.textColor = UIColor(hex6: 0x8db6d4)
         
-        let lineView = UIView(frame: CGRect(x: 0, y: 32.5-0.5, width: 80, height: 0.5))
+//        let lineView = UIView(frame: CGRect(x: 0, y: 32.5-0.5, width: 80, height: 0.5))
+        let lineView = UIView(frame: CGRect(x: 0, y: 50-0.5, width: 110, height: 0.5))
         lineView.alpha = 0.6
         lineView.backgroundColor = UIColor.gray
         
@@ -138,7 +141,8 @@ extension DownMenuView {
         self.tableView.reloadData()
         self.bringSubview(toFront: tableView)
         UIView.animate(withDuration: 0.25, animations: {
-            self.tableView.frame = CGRect(x: 0, y: 0, width: self.frame.size.width, height: 32.5*2)
+//            self.tableView.frame = CGRect(x: 0, y: 0, width: self.frame.size.width, height: 32.5*2)
+            self.tableView.frame = CGRect(x: 0, y: 0, width: self.frame.size.width, height: 50*2)
         })
     }
     

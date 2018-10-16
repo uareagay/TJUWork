@@ -184,10 +184,11 @@ class LoginViewController: UIViewController {
             
             self.loginBtn.isEnabled = true
             
+            NotificationCenter.default.post(name: NotificationName.NotificationRefreshPersonalInfo.name, object: nil)
             NotificationCenter.default.post(name: NotificationName.NotificationRefreshCalendar.name, object: nil)
-//            NotificationCenter.default.post(name: NotificationName.NotificationRefreshInboxLists.name, object: nil)
-//            NotificationCenter.default.post(name: NotificationName.NotificationRefreshOutboxLists.name, object: nil)
-//            NotificationCenter.default.post(name: NotificationName.NotificationRefreshDraftLists.name, object: nil)
+            NotificationCenter.default.post(name: NotificationName.NotificationRefreshInboxLists.name, object: nil)
+            NotificationCenter.default.post(name: NotificationName.NotificationRefreshOutboxLists.name, object: nil)
+            NotificationCenter.default.post(name: NotificationName.NotificationRefreshDraftLists.name, object: nil)
             
             self.dismiss(animated: true, completion: {
                 SwiftMessages.showSuccessMessage(title: "登录成功", body: "")

@@ -221,19 +221,55 @@ extension SearchViewController: UITableViewDataSource {
         
         switch self.currentType {
         case .inbox:
+//            let data = self.inboxLists[indexPath.row]
+//            cell.titleLabel.text = data.title
+//            cell.nameLabel.text = data.type
+//            let formatter = DateFormatter()
+//            formatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+//            cell.dateLabel.text = formatter.string(from: data.from)
+            cell.percentBtn.isHidden = true
             let data = self.inboxLists[indexPath.row]
             cell.titleLabel.text = data.title
             cell.nameLabel.text = data.type
             let formatter = DateFormatter()
             formatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
             cell.dateLabel.text = formatter.string(from: data.from)
+            if data.isRead == "0" {
+                cell.titleLabel.textColor = UIColor(hex6: 0x00518e)
+                cell.dateLabel.textColor = UIColor(hex6: 0x00518e)
+                cell.lineView.backgroundColor = UIColor(hex6: 0x00518e)
+                cell.nameLabel.textColor = UIColor(hex6: 0x00518e)
+            } else {
+                cell.titleLabel.textColor = UIColor(hex6: 0x16982B)
+                cell.dateLabel.textColor = UIColor(hex6: 0x16982B)
+                cell.lineView.backgroundColor = UIColor(hex6: 0x16982B)
+                cell.nameLabel.textColor = UIColor(hex6: 0x16982B)
+            }
         case .outbox:
+//            let data = self.outboxLists[indexPath.row]
+//            cell.titleLabel.text = data.title
+//            cell.nameLabel.text = data.type == "0" ? "通知信息" : "工作信息"
+//            let formatter = DateFormatter()
+//            formatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+//            cell.dateLabel.text = formatter.string(from: data.from)
             let data = self.outboxLists[indexPath.row]
+            
+//            if let percent = data.percent {
+//                cell.percentBtn.isHidden = false
+//                cell.percentBtn.setTitle(percent, for: .normal)
+//            } else {
+//                cell.percentBtn.isHidden = true
+//            }
+            
             cell.titleLabel.text = data.title
-            cell.nameLabel.text = data.type == "0" ? "通知信息" : "工作信息"
+            cell.nameLabel.text = data.type
             let formatter = DateFormatter()
             formatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
             cell.dateLabel.text = formatter.string(from: data.from)
+            cell.titleLabel.textColor = UIColor(hex6: 0x00518e)
+            cell.dateLabel.textColor = UIColor(hex6: 0x00518e)
+            cell.lineView.backgroundColor = UIColor(hex6: 0x00518e)
+            cell.nameLabel.textColor = UIColor(hex6: 0x00518e)
         }
         
         return cell

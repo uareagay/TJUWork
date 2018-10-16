@@ -18,7 +18,8 @@ class SetInfoViewController: UIViewController {
     fileprivate var offY: CGFloat = 0
     //fileprivate let imgHeight = UIScreen.main.bounds.width*3/10
     fileprivate let imgHeight = 120
-    fileprivate let tagArrs = ["用户名：","姓名：", "工资号：", "手机：", "微信：", "邮箱"]
+//    fileprivate let tagArrs = ["用户名：","姓名：", "工资号：", "手机：", "微信：", "邮箱"]
+    fileprivate let tagArrs = ["用户名：", "工资号：", "姓名：", "微信：", "邮箱：", "手机：", "办公电话："]
     
     var tableView: UITableView!
     var userInfoModel: UserInfoModel!
@@ -92,6 +93,7 @@ class SetInfoViewController: UIViewController {
         tableView.dataSource = self
         tableView.separatorStyle = .none
         tableView.estimatedRowHeight = 44
+        tableView.bounces = false
         
         tableView.register(InfoTableViewCell.self, forCellReuseIdentifier: "InfoTableViewCell")
         tableView.register(SetInfoTableViewCell.self, forCellReuseIdentifier: "SetInfoTableViewCell")
@@ -118,6 +120,7 @@ class SetInfoViewController: UIViewController {
         
         setupFooterView()
         GetUserInfo()
+        NotificationCenter.default.addObserver(self, selector: #selector(GetUserInfo), name: NotificationName.NotificationRefreshPersonalInfo.name, object: nil)
         
     }
     
@@ -176,7 +179,7 @@ class SetInfoViewController: UIViewController {
             return
         }
         
-        self.view.frame.origin.y = -150
+        self.view.frame.origin.y = -80
 
         self.view.setNeedsLayout()
         self.view.layoutIfNeeded()
@@ -321,9 +324,10 @@ extension SetInfoViewController: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
-        guard indexPath.row > 1 else {
+        guard indexPath.row != 0 && indexPath.row != 2 else {
             let cell = tableView.dequeueReusableCell(withIdentifier: "InfoTableViewCell") as! InfoTableViewCell
             cell.nameLabel.text = tagArrs[indexPath.row]
+            cell.selectionStyle = .none
             
             guard userInfoModel != nil else {
                 return cell
@@ -332,7 +336,7 @@ extension SetInfoViewController: UITableViewDataSource {
             switch indexPath.row {
             case 0:
                 cell.infoLabel.text = userInfoModel.data.name
-            case 1:
+            case 2:
                 cell.infoLabel.text = WorkUser.shared.username
             default:
                 return cell
@@ -350,14 +354,16 @@ extension SetInfoViewController: UITableViewDataSource {
         }
         
         switch indexPath.row {
-        case 2:
+        case 1:
             cell.infoTextField.text = userInfoModel.data.payNumber
         case 3:
-            cell.infoTextField.text = userInfoModel.data.phone
-        case 4:
             cell.infoTextField.text = userInfoModel.data.wechat
-        case 5:
+        case 4:
             cell.infoTextField.text = userInfoModel.data.email
+        case 5:
+            cell.infoTextField.text = userInfoModel.data.phone
+        case 6:
+            cell.infoTextField.text = userInfoModel.data.officePhone
         default:
             return cell
         }
@@ -488,23 +494,28 @@ extension SetInfoViewController {
     
     func CheckEditStatus() -> Bool {
         
-        if let cell = tableView.cellForRow(at: IndexPath(row: 2, section: 0)) as? SetInfoTableViewCell {
+        if let cell = tableView.cellForRow(at: IndexPath(row: 1, section: 0)) as? SetInfoTableViewCell {
             if cell.infoTextField.text != userInfoModel.data.payNumber ?? "" {
                 return true
             }
         }
         if let cell = tableView.cellForRow(at: IndexPath(row: 3, section: 0)) as? SetInfoTableViewCell {
-            if cell.infoTextField.text != userInfoModel.data.phone  ?? "" {
-                return true
-            }
-        }
-        if let cell = tableView.cellForRow(at: IndexPath(row: 4, section: 0)) as? SetInfoTableViewCell {
             if cell.infoTextField.text != userInfoModel.data.wechat  ?? "" {
                 return true
             }
         }
-        if let cell = tableView.cellForRow(at: IndexPath(row: 5, section: 0)) as? SetInfoTableViewCell {
+        if let cell = tableView.cellForRow(at: IndexPath(row: 4, section: 0)) as? SetInfoTableViewCell {
             if cell.infoTextField.text != userInfoModel.data.email  ?? "" {
+                return true
+            }
+        }
+        if let cell = tableView.cellForRow(at: IndexPath(row: 5, section: 0)) as? SetInfoTableViewCell {
+            if cell.infoTextField.text != userInfoModel.data.phone  ?? "" {
+                return true
+            }
+        }
+        if let cell = tableView.cellForRow(at: IndexPath(row: 6, section: 0)) as? SetInfoTableViewCell {
+            if cell.infoTextField.text != userInfoModel.data.officePhone  ?? "" {
                 return true
             }
         }
@@ -515,17 +526,20 @@ extension SetInfoViewController {
     
     @objc func cancelChangement(_ sender: UIButton) {
         
-        if let cell = tableView.cellForRow(at: IndexPath(row: 2, section: 0)) as? SetInfoTableViewCell {
+        if let cell = tableView.cellForRow(at: IndexPath(row: 1, section: 0)) as? SetInfoTableViewCell {
             cell.infoTextField.text = userInfoModel.data.payNumber
         }
         if let cell = tableView.cellForRow(at: IndexPath(row: 3, section: 0)) as? SetInfoTableViewCell {
-            cell.infoTextField.text = userInfoModel.data.phone  ?? ""
-        }
-        if let cell = tableView.cellForRow(at: IndexPath(row: 4, section: 0)) as? SetInfoTableViewCell {
             cell.infoTextField.text = userInfoModel.data.wechat  ?? ""
         }
-        if let cell = tableView.cellForRow(at: IndexPath(row: 5, section: 0)) as? SetInfoTableViewCell {
+        if let cell = tableView.cellForRow(at: IndexPath(row: 4, section: 0)) as? SetInfoTableViewCell {
             cell.infoTextField.text = userInfoModel.data.email  ?? ""
+        }
+        if let cell = tableView.cellForRow(at: IndexPath(row: 5, section: 0)) as? SetInfoTableViewCell {
+            cell.infoTextField.text = userInfoModel.data.phone  ?? ""
+        }
+        if let cell = tableView.cellForRow(at: IndexPath(row: 6, section: 0)) as? SetInfoTableViewCell {
+            cell.infoTextField.text = userInfoModel.data.officePhone ?? ""
         }
         
         self.view.endEditing(true)
@@ -537,24 +551,37 @@ extension SetInfoViewController {
     @objc func saveChangement(_ sender: UIButton) {
         var dic: [String:String] = [:]
         
-        if let cell = tableView.cellForRow(at: IndexPath(row: 2, section: 0)) as? SetInfoTableViewCell {
-            if cell.infoTextField.text != userInfoModel.data.payNumber ?? ""{
+        if let cell = tableView.cellForRow(at: IndexPath(row: 1, section: 0)) as? SetInfoTableViewCell {
+            if cell.infoTextField.text != userInfoModel.data.payNumber ?? "" {
+                if cell.infoTextField.text?.count != 6 {
+                    let rvc = UIAlertController(title: nil, message: "工资号必须为6位数字", preferredStyle: .alert)
+                    self.present(rvc, animated: true, completion: nil)
+                    DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 1.5, execute: {
+                        self.presentedViewController?.dismiss(animated: true, completion: nil)
+                    })
+                    return
+                }
                 dic["pay_number"] = cell.infoTextField.text
             }
         }
         if let cell = tableView.cellForRow(at: IndexPath(row: 3, section: 0)) as? SetInfoTableViewCell {
-            if cell.infoTextField.text != userInfoModel.data.phone  ?? ""{
-                dic["phone"] = cell.infoTextField.text
-            }
-        }
-        if let cell = tableView.cellForRow(at: IndexPath(row: 4, section: 0)) as? SetInfoTableViewCell {
             if cell.infoTextField.text != userInfoModel.data.wechat  ?? "" {
                 dic["wechat"] = cell.infoTextField.text
             }
         }
-        if let cell = tableView.cellForRow(at: IndexPath(row: 5, section: 0)) as? SetInfoTableViewCell {
+        if let cell = tableView.cellForRow(at: IndexPath(row: 4, section: 0)) as? SetInfoTableViewCell {
             if cell.infoTextField.text != userInfoModel.data.email  ?? "" {
                 dic["email"] = cell.infoTextField.text
+            }
+        }
+        if let cell = tableView.cellForRow(at: IndexPath(row: 5, section: 0)) as? SetInfoTableViewCell {
+            if cell.infoTextField.text != userInfoModel.data.phone  ?? ""{
+                dic["phone"] = cell.infoTextField.text
+            }
+        }
+        if let cell = tableView.cellForRow(at: IndexPath(row: 6, section: 0)) as? SetInfoTableViewCell {
+            if cell.infoTextField.text != userInfoModel.data.officePhone  ?? "" {
+                dic["office_phone"] = cell.infoTextField.text
             }
         }
         
@@ -563,6 +590,7 @@ extension SetInfoViewController {
             self.userInfoModel.data.phone = dic["phone"] ?? self.userInfoModel.data.phone
             self.userInfoModel.data.wechat = dic["wechat"] ?? self.userInfoModel.data.wechat
             self.userInfoModel.data.email = dic["email"] ?? self.userInfoModel.data.email
+            self.userInfoModel.data.officePhone = dic["office_phone"] ?? self.userInfoModel.data.officePhone
             
             self.cancelBtn.isHidden = true
             self.saveBtn.isHidden = true

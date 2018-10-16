@@ -46,7 +46,19 @@ class RichTextViewController: ZSSRichTextEditor {
 extension RichTextViewController {
     
     @objc func cancelEdit(_ sender: UIButton) {
-        self.navigationController?.popViewController(animated: true)
+        let alertVC = UIAlertController(title: "取消此次更改吗？", message: "", preferredStyle: .alert)
+        let cancelAction = UIAlertAction(title: "取消", style: .default) { _ in
+            self.navigationController?.popViewController(animated: true)
+        }
+        cancelAction.setValue(UIColor.red, forKey: "titleTextColor")
+        let saveChangeAction = UIAlertAction(title: "保存", style: .default) { _ in
+            self.delegate?.transmitText(self.getHTML())
+            self.navigationController?.popViewController(animated: true)
+        }
+        alertVC.addAction(cancelAction)
+        alertVC.addAction(saveChangeAction)
+        
+        self.present(alertVC, animated: true)
     }
     
     @objc func saveEdit(_ sender: UIButton) {
