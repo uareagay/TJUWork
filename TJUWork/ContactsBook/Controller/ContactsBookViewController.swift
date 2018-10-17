@@ -82,6 +82,7 @@ extension ContactsBookViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "PhoneTableViewCell") as! PhoneTableViewCell
         cell.nameLabel.text = PhoneBook.shared.items[indexPath.row].realName
+        cell.academyLabel.text = PhoneBook.shared.items[indexPath.row].academy
         
         //要改一下
         if let phone = PhoneBook.shared.items[indexPath.row].phone, phone.count == 11 {

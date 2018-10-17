@@ -238,7 +238,7 @@ class CreateMessageViewController: UIViewController {
     fileprivate var draftType: String?
     
     
-    convenience init(title: String, text: String, type: String) {
+    convenience init(title: String, text: String, type: String? = nil) {
         self.init()
         self.draftTitle = title
         self.draftText = text
@@ -436,9 +436,7 @@ extension CreateMessageViewController: UITableViewDataSource {
                 self.draftTitle = nil
                 cell.textField.text = title
             }
-//            else {
-//                //cell.textField.text = ""
-//            }
+
             return cell
         case 1:
             let cell = tableView.dequeueReusableCell(withIdentifier: "MessageNameTableViewCell") as! MessageNameTableViewCell
@@ -535,6 +533,7 @@ extension CreateMessageViewController: UIPickerViewDataSource {
 }
 
 extension CreateMessageViewController: AddAndDeleteReceiverProtocol {
+    
     func deleteReceiverCell(_ indexPath: IndexPath) {
 
         let cell = self.tableView.cellForRow(at: IndexPath(row: 2, section: 0)) as! ReceiverTableViewCell

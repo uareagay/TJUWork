@@ -65,9 +65,7 @@ class DetailMessageViewController: UIViewController {
         self.messageType = messageType
         self.isReaded = isReaded
         self.isDisplayPeople = isDisplayPeople
-//        if isReaded == false {
-//            NotificationCenter.default.post(name: NotificationName.NotificationRefreshInboxLists.name, object: nil)
-//        }
+
     }
     
     override func viewDidLoad() {
@@ -173,12 +171,23 @@ class DetailMessageViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         self.navigationController?.navigationBar.tintColor = .white
+        
+        if self.messageType == .inbox {
+            let forwardAction = UIBarButtonItem(barButtonSystemItem: .reply, target: self, action: #selector(forwardMessage(_:)))
+            self.navigationItem.rightBarButtonItem = forwardAction
+        }
     }
    
     
 }
 
 extension DetailMessageViewController {
+    
+    @objc func forwardMessage(_ sender: UIBarButtonItem) {
+//        let ceateMessageVC = CreateMessageViewController(title: "转发：" + self.datailInformation.data.title, text: self.datailInformation.data.text)
+//        let searchPeopleVC = SearchPeopleViewController()
+//        self.navigationController?.pushViewController(searchPeopleVC, animated: true)
+    }
     
     @objc func deleteMessage(_ sender: UIButton) {
         
@@ -466,29 +475,6 @@ extension DetailMessageViewController: UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-//        guard self.isDisplayPeople else {
-//            switch section {
-//            case 1:
-//                return 4
-//            case 2:
-//                return 1 + self.downloadedFiles.count
-//            default:
-//                return 1
-//            }
-//        }
-//
-//        switch section {
-//        case 1:
-//            return 4
-//        case 2:
-//            return 1 + self.downloadedFiles.count
-//        case 3:
-//            return 1 + self.responseArrs.count
-//        case 4:
-//            return 1 + self.readArrs.count
-//        default:
-//            return 1
-//        }
         switch section {
         case 1:
             return 4

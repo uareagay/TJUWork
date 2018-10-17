@@ -105,7 +105,6 @@ struct PersonalMessageHelper {
     }
     
     static func deleteOutbox(mid: [Int], success: (()->())?, failure: (()->())?) {
-        
         var dic: [String:String] = [:]
         for i in 0..<mid.count {
             dic["mid[\(i)]"] = String(mid[i])
@@ -315,7 +314,7 @@ struct PersonalMessageHelper {
     
     static func getReadPeoples(mid: String, success: ((ReadPeopleModel)->())?, failure: (()->())?) {
         NetworkManager.getInformation(url: "/message/read/number", token: WorkUser.shared.token, parameters: ["mid": mid], success: { dic in
-            print(dic)
+//            print(dic)
             if let status = dic["status"] as? Bool, status == true {
                 if let data = try? JSONSerialization.data(withJSONObject: dic, options: JSONSerialization.WritingOptions.init(rawValue: 0)), let model = try? ReadPeopleModel(data: data) {
                     //let nameArrs = model.data.finished.map { $0.name }
@@ -324,6 +323,40 @@ struct PersonalMessageHelper {
             }
         }, failure: { error in
             
+        })
+    }
+    
+    static func markRead(mids: [String], success: (()->())?, failure: (()->())?) {
+        var dic: [String:String] = [:]
+        for i in 0..<mids.count {
+            dic["mid[\(i)]"] = mids[i]
+        }
+        
+        NetworkManager.postInformation(url: "/message/read", token: WorkUser.shared.token, parameters: dic, success: { dic in
+            if let status = dic["status"] as? Bool, status == true {
+                success?()
+            } else {
+                failure?()
+            }
+        }, failure: { error in
+            failure?()
+        })
+    }
+    
+    static func markUnRead(mids: [String], success: (()->())?, failure: (()->())?) {
+        var dic: [String:String] = [:]
+        for i in 0..<mids.count {
+            dic["mid[\(i)]"] = mids[i]
+        }
+        
+        NetworkManager.postInformation(url: "/message/unread", token: WorkUser.shared.token, parameters: dic, success: { dic in
+            if let status = dic["status"] as? Bool, status == true {
+                success?()
+            } else {
+                failure?()
+            }
+        }, failure: { error in
+            failure?()
         })
     }
     

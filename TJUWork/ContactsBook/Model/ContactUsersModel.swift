@@ -22,12 +22,15 @@ struct ContactUsersData: Codable {
     let wechat: String?
     let phone: String?
     let payNumber: String?
+    let officePhone, academy: String?
     
     enum CodingKeys: String, CodingKey {
         case uid
         case realName = "real_name"
         case gender, email, wechat, phone
         case payNumber = "pay_number"
+        case academy
+         case officePhone = "office_phone"
     }
 }
 

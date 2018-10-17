@@ -28,6 +28,9 @@ class MessageViewController: UIViewController {
                 self.selectAllBtn.alpha = 1.0
                 self.deleteBtn.alpha = 1.0
                 
+                if self.currentMenuType == .inbox {
+                    self.navigationController?.setToolbarHidden(false, animated: true)
+                }
             } else {
                 self.tableView.mj_header = MJRefreshNormalHeader(refreshingTarget: self, refreshingAction: #selector(headerRefresh))
                 //self.tableView.mj_footer = MJRefreshAutoNormalFooter(refreshingTarget: self, refreshingAction: #selector(footerLoadMore))
@@ -39,6 +42,10 @@ class MessageViewController: UIViewController {
                 
                 selectedArrs = []
                 self.tableView.reloadData()
+                
+                if self.currentMenuType == .inbox {
+                    self.navigationController?.setToolbarHidden(true, animated: true)
+                }
             }
         }
     }
@@ -79,14 +86,14 @@ class MessageViewController: UIViewController {
     }()
     
     fileprivate let deleteBtn: UIButton = {
-        let btn = UIButton(frame: CGRect(x: UIScreen.main.bounds.size.width/2-30-40, y: UIScreen.main.bounds.size.height-130, width: 60, height: 60))
+        let btn = UIButton(frame: CGRect(x: UIScreen.main.bounds.size.width/2-30-40, y: UIScreen.main.bounds.size.height-130-30, width: 60, height: 60))
         btn.setImage(UIImage.resizedImage(image: UIImage(named: "删除")!, scaledToWidth: 60.0), for: .normal)
         btn.alpha = 0.0
         return btn
     }()
     
     fileprivate let selectAllBtn: UIButton = {
-        let btn = UIButton(frame: CGRect(x: UIScreen.main.bounds.size.width/2-30+40, y: UIScreen.main.bounds.size.height-130, width: 60, height: 60))
+        let btn = UIButton(frame: CGRect(x: UIScreen.main.bounds.size.width/2-30+40, y: UIScreen.main.bounds.size.height-130-30, width: 60, height: 60))
         btn.setImage(UIImage.resizedImage(image: UIImage(named: "全选")!, scaledToWidth: 49.0), for: .normal)
         btn.alpha = 0.0
         return btn
@@ -95,6 +102,8 @@ class MessageViewController: UIViewController {
     fileprivate var draftLists: DraftListModel!
     fileprivate var outboxLists: OutboxListModel!
     fileprivate var inboxLists: InboxListModel!
+    
+fileprivate var entireUsersModel: EntireUsersModel!
     
     override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
         super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
@@ -185,6 +194,56 @@ class MessageViewController: UIViewController {
         NotificationCenter.default.addObserver(self, selector: #selector(refreshOutboxLists), name: NotificationName.NotificationRefreshOutboxLists.name, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(refreshDraftLists), name: NotificationName.NotificationRefreshDraftLists.name, object: nil)
         
+        
+        let forwardAction = UIBarButtonItem(title: "转发", style:  .plain, target: self, action: #selector(forwardMessage(_:)))
+        let readAction = UIBarButtonItem(title: "标记已读", style:  .plain, target: self, action: #selector(markRead(_:)))
+        let unReadAction = UIBarButtonItem(title: "标记未读", style:  .plain, target: self, action: #selector(markUnRead(_:)))
+        let flexItem = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
+        self.toolbarItems = [unReadAction, readAction, flexItem, forwardAction]
+        
+        
+        
+        EntireUsersHelper.getEntireUsersInLabels(success: { model in
+            self.entireUsersModel = model
+        }, failure: {
+            
+        })
+        
+    }
+    
+    @objc func forwardMessage(_ sender: UIBarButtonItem) {
+        guard self.entireUsersModel != nil else {
+            return
+        }
+        let searchPeopleVC = SearchPeopleViewController(self.entireUsersModel)
+        searchPeopleVC.hidesBottomBarWhenPushed = true
+        self.navigationController?.pushViewController(searchPeopleVC, animated: true)
+    }
+    
+    @objc func markRead(_ sender: UIBarButtonItem) {
+        let mids: [String] = self.selectedArrs.map { self.inboxLists.data[$0].mid }
+        
+        PersonalMessageHelper.markRead(mids: mids, success: {
+            self.selectedArrs.forEach {
+                self.inboxLists.data[$0].isRead = "1"
+            }
+            self.isSelecting = false
+        } , failure: {
+            self.isSelecting = false
+        })
+    }
+    
+    @objc func markUnRead(_ sender: UIBarButtonItem) {
+        let mids: [String] = self.selectedArrs.map { self.inboxLists.data[$0].mid }
+        
+        PersonalMessageHelper.markUnRead(mids: mids, success: {
+            self.selectedArrs.forEach {
+                self.inboxLists.data[$0].isRead = "0"
+            }
+            self.isSelecting = false
+        }, failure: {
+            self.isSelecting = false
+        })
     }
     
     @objc func longPressEditing(_ gesture: UILongPressGestureRecognizer) {
@@ -226,6 +285,8 @@ class MessageViewController: UIViewController {
         self.isSelecting = false
         
         self.tableView.mj_header.endRefreshing()
+        
+        self.navigationController?.setToolbarHidden(true, animated: true)
     }
     
     deinit {

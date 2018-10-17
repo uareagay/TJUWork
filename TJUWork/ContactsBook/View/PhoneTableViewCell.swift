@@ -28,6 +28,15 @@ class PhoneTableViewCell: UITableViewCell {
         return label
     }()
     
+    let academyLabel: UILabel = {
+        let label = UILabel()
+        label.text = "智能与计算学部"
+        label.textColor = .black
+        label.textAlignment = .right
+        label.font = UIFont.systemFont(ofSize: 13, weight: UIFont.Weight.semibold)
+        return label
+    }()
+    
     let phoneBtn: UIButton = {
         let btn = UIButton(type: .custom)
         btn.setImage(UIImage.resizedImage(image: UIImage(named: "电话")!, scaledToWidth: 25.0), for: .normal)
@@ -53,18 +62,28 @@ class PhoneTableViewCell: UITableViewCell {
         self.contentView.addSubview(nameLabel)
         self.contentView.addSubview(phoneLabel)
         self.contentView.addSubview(phoneBtn)
+        self.contentView.addSubview(academyLabel)
         
         nameLabel.snp.makeConstraints { make in
             make.left.equalToSuperview().inset(15)
             make.top.equalToSuperview().inset(10)
             make.right.equalToSuperview().inset(75)
+            //make.right.equalTo(academyLabel.snp.left)
             make.bottom.equalTo(self.contentView.snp.centerY)
+        }
+        
+        academyLabel.snp.makeConstraints { make in
+            make.top.equalTo(self.contentView.snp.centerY).offset(5)
+            make.right.equalToSuperview().inset(75)
+            make.left.equalTo(phoneLabel.snp.right)
+            make.bottom.equalToSuperview().inset(5)
         }
         
         phoneLabel.snp.makeConstraints { make in
             make.left.equalToSuperview().inset(15)
             make.bottom.equalToSuperview().inset(5)
-            make.right.equalToSuperview().inset(75)
+//            make.right.equalToSuperview().inset(75)
+            make.width.equalTo(100)
             make.top.equalTo(self.contentView.snp.centerY).offset(5)
         }
         
@@ -73,6 +92,9 @@ class PhoneTableViewCell: UITableViewCell {
             make.top.bottom.equalToSuperview().inset(5)
             make.width.equalTo(55)
         }
+        
+        nameLabel.sizeToFit()
+        academyLabel.sizeToFit()
         
     }
     

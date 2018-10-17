@@ -19,7 +19,8 @@ struct InboxListModel: Codable {
 struct InboxListData: Codable {
     let mid, author, type: String
     let isResponse: Int
-    let responseTo, isRead, title, text: String
+    let responseTo, title, text: String
+    var isRead: String
     let from: Date
     let to: Date?
     let respondedDelete: Int

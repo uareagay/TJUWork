@@ -16,7 +16,21 @@ class PhoneBook {
     var items: [ContactUsersData] = []
     
     func getSearchResult(_ text: String) -> [ContactUsersData] {
-        return self.items.filter { $0.realName.contains(text) }
+        return self.items.filter {
+            if $0.realName.contains(text) {
+                return true
+            }
+            if let academy = $0.academy {
+               
+                if academy.contains(text) {
+                    print(academy)
+                    return true
+                } else {
+                    return false
+                }
+            }
+            return false
+        }
     }
     
     func getPhoneNumber(success: (()->())?, failure: (()->())?) {
