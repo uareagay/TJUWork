@@ -763,7 +763,6 @@ extension CreateMessageViewController {
             dic["response_by"] = "0"
         }
         
-        
         if uidArrs.count == 0 {
             let rvc = UIAlertController(title: nil, message: "请选择收件人", preferredStyle: .alert)
             self.present(rvc, animated: true, completion: nil)

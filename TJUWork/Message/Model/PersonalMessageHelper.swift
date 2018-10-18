@@ -360,4 +360,27 @@ struct PersonalMessageHelper {
         })
     }
     
+    static func forwardMessage(mids: [String], uids: [String], success: (()->())?, failure: (()->())?) {
+        var dic: [String:String] = [:]
+        for i in 0..<mids.count {
+            dic["mid[\(i)]"] = mids[i]
+        }
+        for i in 0..<uids.count {
+            dic["uid[\(i)]"] = uids[i]
+        }
+        
+        NetworkManager.postInformation(url: "/message/forward", token: WorkUser.shared.token, parameters: dic, success: { dic in
+            if let status = dic["status"] as? Bool, status == true {
+                SwiftMessages.showSuccessMessage(title: "转发成功")
+                success?()
+            } else {
+                SwiftMessages.showErrorMessage(title: "转发失败")
+                failure?()
+            }
+        }, failure: { error in
+            SwiftMessages.showErrorMessage(title: "转发失败")
+            failure?()
+        })
+    }
+    
 }

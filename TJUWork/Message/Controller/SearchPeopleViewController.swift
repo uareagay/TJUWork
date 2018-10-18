@@ -30,8 +30,14 @@ class SearchPeopleViewController: UIViewController {
     
     weak var delegate: AddAndDeleteReceiverProtocol?
     
-    convenience init(_ model: EntireUsersModel) {
+    fileprivate var isForward: Bool = false
+    fileprivate var forwardMessages: [String] = []
+    
+    convenience init(_ model: EntireUsersModel, isForward: Bool = false, forwardMessages: [String] = []) {
         self.init()
+        
+        self.isForward = isForward
+        self.forwardMessages = forwardMessages
         
         var dic: [String:String] = [:]
         for index in 0..<model.data.count {
@@ -39,7 +45,6 @@ class SearchPeopleViewController: UIViewController {
             for i in 0..<label.users.count {
                 let user = label.users[i]
                 dic[user.uid] = user.realName
-                //entireUsersTuple.append((user.uid, user.realName))
             }
         }
         for keyValue in dic {
@@ -68,9 +73,7 @@ class SearchPeopleViewController: UIViewController {
         
         self.view.addSubview(self.searchBar)
         
-        
         self.searchBar.delegate = self
-        
         self.view.backgroundColor = .white
     }
     
@@ -151,13 +154,33 @@ extension SearchPeopleViewController {
     }
     
     @objc func addPeople(_ sender: UIBarButtonItem) {
-        var dic: [String:String] = [:]
+        guard let indexPaths = self.tableView.indexPathsForSelectedRows else {
+            let rvc = UIAlertController(title: nil, message: "请选择收件人", preferredStyle: .alert)
+            self.present(rvc, animated: true, completion: nil)
+            DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 1.0, execute: {
+                self.presentedViewController?.dismiss(animated: true, completion: nil)
+            })
+            return
+        }
         
-        if let indexPaths = self.tableView.indexPathsForSelectedRows {
-            for indexPath in indexPaths {
-                let tuple = self.displayUsersTuple[indexPath.row]
-                dic[tuple.0] = tuple.1
-            }
+        guard !self.isForward else {
+            let uids = indexPaths.map { self.displayUsersTuple[$0.row].0 }
+            
+            PersonalMessageHelper.forwardMessage(mids: self.forwardMessages, uids: uids, success: {
+                NotificationCenter.default.post(name: NotificationName.NotificationRefreshInboxLists.name, object: nil)
+                NotificationCenter.default.post(name: NotificationName.NotificationRefreshOutboxLists.name, object: nil)
+                self.navigationController?.popToRootViewController(animated: true)
+            }, failure: {
+                
+            })
+            
+            return
+        }
+        
+        var dic: [String:String] = [:]
+        for indexPath in indexPaths {
+            let tuple = self.displayUsersTuple[indexPath.row]
+            dic[tuple.0] = tuple.1
         }
         
         delegate?.addReceiverCell!(uids: dic)

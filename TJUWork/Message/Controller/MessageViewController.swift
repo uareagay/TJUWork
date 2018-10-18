@@ -215,7 +215,18 @@ fileprivate var entireUsersModel: EntireUsersModel!
         guard self.entireUsersModel != nil else {
             return
         }
-        let searchPeopleVC = SearchPeopleViewController(self.entireUsersModel)
+        guard self.selectedArrs.count > 0 else {
+            let rvc = UIAlertController(title: nil, message: "请选择信息", preferredStyle: .alert)
+            self.present(rvc, animated: true, completion: nil)
+            DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 1.0, execute: {
+                self.presentedViewController?.dismiss(animated: true, completion: nil)
+            })
+            return
+        }
+        let mids = self.selectedArrs.map {
+            self.inboxLists.data[$0].mid
+        }
+        let searchPeopleVC = SearchPeopleViewController(self.entireUsersModel, isForward: true, forwardMessages: mids)
         searchPeopleVC.hidesBottomBarWhenPushed = true
         self.navigationController?.pushViewController(searchPeopleVC, animated: true)
     }

@@ -46,20 +46,38 @@ class TreeTableView: UITableView {
         modelDatas.append(node)
         visibleModelDatas.append(node)
         
-        var id: Int = 3
+        node = TreeNode(name: "学工部", ID: 3, parentID: 1, depth: 1, isVisible: false, isExpand: false, isChild: false, isSelected: false, uid: "")
+        modelDatas.append(node)
+        //visibleModelDatas.append(node)
+        
+        var id: Int = 4
         
         for index in 0..<model.data.count {
             let label = model.data[index]
             if label.type == "0" {
-                node = TreeNode(name: label.labelName, ID: id, parentID: 0, depth: 1, isVisible: false, isExpand: false, isChild: false, isSelected: false, uid: "")
-                modelDatas.append(node)
-                let parID = id
-                id += 1
-                for i in 0..<label.users.count {
-                    let user = label.users[i]
-                    node = TreeNode(name: user.realName, ID: id, parentID: parID, depth: 2, isVisible: false, isExpand: false, isChild: true, isSelected: false, uid: user.uid)
+                let name = label.labelName
+                if name == "本科生教育科" || name == "本科生管理科" || name == "研究生教育管理科" || name == "心理健康教育中心" || name == "就业指导中心" || name == "学生资助管理中心" || name == "武装部" {
+                    node = TreeNode(name: label.labelName, ID: id, parentID: 3, depth: 2, isVisible: false, isExpand: false, isChild: false, isSelected: false, uid: "")
                     modelDatas.append(node)
+                    let parID = id
                     id += 1
+                    for i in 0..<label.users.count {
+                        let user = label.users[i]
+                        node = TreeNode(name: user.realName, ID: id, parentID: parID, depth: 3, isVisible: false, isExpand: false, isChild: true, isSelected: false, uid: user.uid)
+                        modelDatas.append(node)
+                        id += 1
+                    }
+                } else {
+                    node = TreeNode(name: label.labelName, ID: id, parentID: 0, depth: 1, isVisible: false, isExpand: false, isChild: false, isSelected: false, uid: "")
+                    modelDatas.append(node)
+                    let parID = id
+                    id += 1
+                    for i in 0..<label.users.count {
+                        let user = label.users[i]
+                        node = TreeNode(name: user.realName, ID: id, parentID: parID, depth: 2, isVisible: false, isExpand: false, isChild: true, isSelected: false, uid: user.uid)
+                        modelDatas.append(node)
+                        id += 1
+                    }
                 }
             } else {
                 let name = label.labelName
@@ -69,6 +87,16 @@ class TreeTableView: UITableView {
                     modelDatas.append(node)
                     let parID = id
                     id += 1
+                    for i in 0..<label.users.count {
+                        let user = label.users[i]
+                        node = TreeNode(name: user.realName, ID: id, parentID: parID, depth: 2, isVisible: false, isExpand: false, isChild: true, isSelected: false, uid: user.uid)
+                        modelDatas.append(node)
+                        id += 1
+                    }
+                } else if name == "学工部" {
+                    //let parID = id
+                    let parID = 3
+                    //id += 1
                     for i in 0..<label.users.count {
                         let user = label.users[i]
                         node = TreeNode(name: user.realName, ID: id, parentID: parID, depth: 2, isVisible: false, isExpand: false, isChild: true, isSelected: false, uid: user.uid)
@@ -99,44 +127,6 @@ class TreeTableView: UITableView {
         self.separatorStyle = .none
     }
     
-//    override init(frame: CGRect, style: UITableViewStyle) {
-//        super.init(frame: frame, style: style)
-//
-//        node = TreeNode(name: "中国", ID: 0, parentID: -1, depth: 0, isVisible: true, isExpand: false, isChild: false, isSelected: false)
-//        phoneDatas.append(node)
-//
-//        treeDatas.append(node)
-//
-//        node = TreeNode(name: "江苏", ID: 1, parentID: 0, depth: 1, isVisible: false, isExpand: false, isChild: false, isSelected: false)
-//        phoneDatas.append(node)
-//        node = TreeNode(name: "南通", ID: 2, parentID: 1, depth: 2, isVisible: false, isExpand: false, isChild: true, isSelected: false)
-//        phoneDatas.append(node)
-//        node = TreeNode(name: "南京", ID: 3, parentID: 1, depth: 2, isVisible: false, isExpand: false, isChild: true, isSelected: false)
-//        phoneDatas.append(node)
-//        node = TreeNode(name: "苏州", ID: 4, parentID: 1, depth: 2, isVisible: false, isExpand: false, isChild: true, isSelected: false)
-//        phoneDatas.append(node)
-//        node = TreeNode(name: "广东", ID: 5, parentID: 0, depth: 1, isVisible: false, isExpand: false, isChild: false, isSelected: false)
-//        phoneDatas.append(node)
-//        node = TreeNode(name: "深圳", ID: 6, parentID: 5, depth: 2, isVisible: false, isExpand: false, isChild: true, isSelected: false)
-//        phoneDatas.append(node)
-//        node = TreeNode(name: "广州", ID: 7, parentID: 5, depth: 2, isVisible: false, isExpand: false, isChild: true, isSelected: false)
-//        phoneDatas.append(node)
-//        node = TreeNode(name: "浙江", ID: 8, parentID: 0, depth: 1, isVisible: false, isExpand: false, isChild: false, isSelected: false)
-//        phoneDatas.append(node)
-//        node = TreeNode(name: "杭州", ID: 9, parentID: 8, depth: 2, isVisible: false, isExpand: false, isChild: true, isSelected: false)
-//        phoneDatas.append(node)
-//
-//
-//        self.delegate = self
-//        self.dataSource = self
-//
-//        self.register(ContactTableViewCell.self, forCellReuseIdentifier: "ContactTableViewCell")
-//
-//        self.rowHeight = 25
-//        self.allowsSelection = false
-//
-//    }
-//
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
@@ -155,7 +145,6 @@ extension TreeTableView {
     }
     
     func traverseParentNode(parentID: Int, state: Bool) {
-        
         guard parentID != -1 else {
             return
         }
@@ -206,7 +195,6 @@ extension TreeTableView {
     
     
     func removeAllChildrenNodesAtParentNode(parentNodePos: IndexPath) -> Int {
-        
         let parentNode = visibleModelDatas[parentNodePos.row]
         let startPos = parentNodePos.row
         var endPos = startPos
@@ -286,7 +274,6 @@ extension TreeTableView: UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        
         let cell = self.dequeueReusableCell(withIdentifier: "ContactTableViewCell") as! ContactTableViewCell
         
         let node = visibleModelDatas[indexPath.row]
@@ -318,7 +305,6 @@ extension TreeTableView {
     @objc func clickExpandBtn(_ sender: UIButton) {
         
         let selectedCell = sender.superview?.superview as! ContactTableViewCell
-        
         let selectedRow = self.indexPath(for: selectedCell)?.row
         
         guard selectedRow != nil else {
@@ -340,7 +326,6 @@ extension TreeTableView {
     @objc func clickSelectBtn(_ sender: UIButton) {
         
         let selectedCell = sender.superview?.superview as! ContactTableViewCell
-        
         let selectedRow = self.indexPath(for: selectedCell)?.row
         
         guard selectedRow != nil else {

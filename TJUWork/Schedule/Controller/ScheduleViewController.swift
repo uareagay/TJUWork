@@ -27,6 +27,7 @@ class ScheduleViewController: UIViewController {
 //    fileprivate var calendarLists: WorkCalendarModel!
 //    fileprivate var selectedList: [WorkCalendarData] = []
     fileprivate var calendarLists: ScheduleListsModel!
+    fileprivate var unSelectedList: [ScheduleListsData] = []
     fileprivate var selectedList: [ScheduleListsData] = []
     fileprivate var messageDisplay: [Date] = []
     
@@ -59,10 +60,8 @@ class ScheduleViewController: UIViewController {
                 self.selectAllBtn.alpha = 1.0
                 
                 self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "完成", style: .plain, target: self, action: #selector(cancelEditStatus(_:)))
-                
-                
             } else {
-                
+
                 self.calendar.isUserInteractionEnabled = true
                 self.tableView.mj_header = MJRefreshNormalHeader(refreshingTarget: self, refreshingAction: #selector(headerRefresh))
                 
@@ -85,13 +84,24 @@ class ScheduleViewController: UIViewController {
             guard self.calendarLists != nil else {
                 return
             }
-            self.selectedList = self.calendarLists.data.filter({ data in
+            
+            self.selectedList = self.calendarLists.data.filter { data in
                 if self.selectedDate <= data.to &&  tomorrowDate > data.to {
                     return true
                 } else {
                     return false
                 }
-            })
+            }
+            self.selectedList.sort { $0.to < $1.to }
+            self.unSelectedList = self.calendarLists.data.filter { data in
+                if self.selectedDate > data.to || tomorrowDate <= data.to {
+                    return true
+                } else {
+                    return false
+                }
+            }
+            self.unSelectedList.sort { $0.to < $1.to }
+            
             self.tableView.reloadData()
         }
     }
@@ -121,9 +131,8 @@ class ScheduleViewController: UIViewController {
         let components = currentCalendar.dateComponents([.year, .month, .day], from: Date())
         let currentDate = currentCalendar.date(from: components)!
         self.selectedDate = currentDate
+        
         super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
-        
-        
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -137,7 +146,7 @@ class ScheduleViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        tableView = UITableView(frame: self.view.bounds, style: .plain)
+        tableView = UITableView(frame: self.view.bounds, style: .grouped)
         tableView.delegate = self
         tableView.dataSource = self
         tableView.register(ScheduleMessageTableViewCell.self, forCellReuseIdentifier: "ScheduleMessageTableViewCell")
@@ -179,10 +188,7 @@ class ScheduleViewController: UIViewController {
             WorkUser.shared.token = token
             WorkUser.shared.save()
             
-            
-//            self.tableView.mj_header.beginRefreshing()
             self.headerRefresh()
-            
         }, failure: { error in
             if error is NetworkManager.NetworkNotExist {
                 SwiftMessages.showErrorMessage(title: "您似乎已断开与互联网连接", body: "")
@@ -243,7 +249,6 @@ extension ScheduleViewController {
                 let fetchCalendarEvents = self?.eventStore.predicateForEvents(withStart: startDate, end: endDate, calendars: calendars)
                 
                 self?.events = self?.eventStore.events(matching: fetchCalendarEvents!) ?? []
-                
             }
             
         })
@@ -287,6 +292,15 @@ extension ScheduleViewController {
                     return false
                 }
             })
+            self.selectedList.sort { $0.to < $1.to }
+            self.unSelectedList = self.calendarLists.data.filter { data in
+                if self.selectedDate > data.to || tomorrowDate <= data.to {
+                    return true
+                } else {
+                    return false
+                }
+            }
+            self.unSelectedList.sort { $0.to < $1.to }
             
             if self.tableView.mj_header.isRefreshing {
                 self.tableView.mj_header.endRefreshing()
@@ -300,7 +314,6 @@ extension ScheduleViewController {
             }
             
         })
-        
     }
     
     @objc func presentLoginView() {
@@ -320,7 +333,6 @@ extension ScheduleViewController {
     }
     
     @objc func deleteMessage(_ sender: UIButton) {
-        
         let alertVC = UIAlertController(title: "删除", message: "确定要删除吗？", preferredStyle: .alert)
         let cancelAction = UIAlertAction(title: "不了", style: .default, handler: nil)
         cancelAction.setValue(UIColor.red, forKey: "titleTextColor")
@@ -357,7 +369,6 @@ extension ScheduleViewController {
         alertVC.addAction(cancelAction)
         alertVC.addAction(outAction)
         self.present(alertVC, animated: true, completion: nil)
-        
     }
     
 }
@@ -377,24 +388,47 @@ extension ScheduleViewController: UITableViewDelegate {
             view.backgroundColor = .clear
             let contentView = UIView(frame: CGRect(x: 10, y: 0, width: UIScreen.main.bounds.size.width-20, height: 50))
             contentView.backgroundColor = .white
-
-            self.titleLabel.removeFromSuperview()
-            self.dateLabel.removeFromSuperview()
-            contentView.addSubview(titleLabel)
-            contentView.addSubview(dateLabel)
-            view.addSubview(contentView)
-            dateLabel.snp.makeConstraints { make in
-                make.top.bottom.right.equalToSuperview().inset(15)
-                make.width.equalTo(120)
-            }
+            contentView.layer.masksToBounds = true
+            contentView.layer.cornerRadius = 10
             
+            let titleLabel = UILabel(frame: CGRect(x: 15, y: 10, width: 80, height: 30))
+            titleLabel.font = UIFont.systemFont(ofSize: 16, weight: UIFont.Weight.semibold)
+            titleLabel.textAlignment = .left
+            titleLabel.textColor = UIColor(hex6: 0x00518e)
+            
+            contentView.addSubview(titleLabel)
+            view.addSubview(contentView)
+            
+            if section == 1 {
+                titleLabel.text = "今日事件"
+                self.dateLabel.removeFromSuperview()
+                contentView.addSubview(dateLabel)
+                dateLabel.snp.makeConstraints { make in
+                    make.top.bottom.right.equalToSuperview().inset(15)
+                    make.width.equalTo(120)
+                }
+            } else {
+                titleLabel.text = "提醒事项"
+            }
             return view
         }
+        
         let view = UIView(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.size.width, height: 390))
         view.backgroundColor = .clear
         calendar.removeFromSuperview()
         view.addSubview(calendar)
         return view
+    }
+    
+    func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
+        guard section == 0 else {
+            return 20
+        }
+        return 10
+    }
+    
+    func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
+        return UIView()
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
@@ -437,21 +471,35 @@ extension ScheduleViewController: UITableViewDelegate {
 extension ScheduleViewController: UITableViewDataSource {
     
     func numberOfSections(in tableView: UITableView) -> Int {
-        return 2
+        return 3
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        guard section == 1 else {
+        switch section {
+        case 0:
+            return 0
+        case 1:
+            return self.selectedList.count
+        case 2:
+            return self.unSelectedList.count
+        default:
             return 0
         }
-        return self.selectedList.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "ScheduleMessageTableViewCell") as! ScheduleMessageTableViewCell
         cell.selectionStyle = .none
         
-        let data = self.selectedList[indexPath.row]
+        var data: ScheduleListsData
+        if indexPath.section == 1 {
+            data = self.selectedList[indexPath.row]
+        } else {
+            data = self.unSelectedList[indexPath.row]
+        }
+        
+        //let data = self.selectedList[indexPath.row]
+        
         cell.titleLabel.text = data.title
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd  HH:mm:ss"

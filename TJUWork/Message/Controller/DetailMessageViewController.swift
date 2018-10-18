@@ -58,6 +58,8 @@ class DetailMessageViewController: UIViewController {
     fileprivate var isDisplayResponse: Bool = false
     fileprivate var responsePercent: Float = 0.0
     
+    fileprivate var entireUsersModel: EntireUsersModel!
+    
     convenience init(mid: String, isReply: Bool, messageType: DownMenuView.MenuType, isReaded: Bool, isDisplayPeople: Bool = false) {
         self.init()
         self.mid = mid
@@ -166,6 +168,15 @@ class DetailMessageViewController: UIViewController {
 
         }
         
+        
+        
+        
+        EntireUsersHelper.getEntireUsersInLabels(success: { model in
+            self.entireUsersModel = model
+        }, failure: {
+            
+        })
+        
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -184,9 +195,15 @@ class DetailMessageViewController: UIViewController {
 extension DetailMessageViewController {
     
     @objc func forwardMessage(_ sender: UIBarButtonItem) {
-//        let ceateMessageVC = CreateMessageViewController(title: "转发：" + self.datailInformation.data.title, text: self.datailInformation.data.text)
-//        let searchPeopleVC = SearchPeopleViewController()
-//        self.navigationController?.pushViewController(searchPeopleVC, animated: true)
+        guard self.datailInformation != nil else {
+            return
+        }
+        guard self.entireUsersModel != nil else {
+            return
+        }
+        
+        let searchPeopleVC = SearchPeopleViewController(self.entireUsersModel, isForward: true, forwardMessages: [self.datailInformation.data.mid])
+        self.navigationController?.pushViewController(searchPeopleVC, animated: true)
     }
     
     @objc func deleteMessage(_ sender: UIButton) {
