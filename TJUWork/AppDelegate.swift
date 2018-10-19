@@ -38,6 +38,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         let mainVC = MainTanBarController()
         
+        //UIApplication.shared.statusBarStyle = .lightContent
+        
 //        if let remoteDic = launchOptions?[UIApplicationLaunchOptionsKey.remoteNotification] {
 //            mainVC.selectedIndex = 1
 //            AccountManager.getToken(username: WorkUser.shared.username, password: WorkUser.shared.password, success: { token in

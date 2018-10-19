@@ -29,6 +29,9 @@ class WorkUser: Codable {
     
     var admin: String = ""
     
+    var entireUsersModel: EntireUsersModel?
+    
+    
     func save() {
         let queue = DispatchQueue(label: "com.tjuwork.cache")
         queue.async {
@@ -59,6 +62,26 @@ class WorkUser: Codable {
         print(Storage.remove("user.json", from: .documents))
         WorkUser.shared = WorkUser()
     }
+    
+//    EntireUsersHelper.getEntireUsersInLabels(success: { model in
+//    self.entireUsersModel = model
+//    }, failure: {
+//    
+//    })
+    
+//    func getEntireUsers() {
+//        guard self.entireUsersModel != nil else {
+//            EntireUsersHelper.getEntireUsersInLabels(success: { model in
+//                self.entireUsersModel = model
+//                
+//            }, failure: {
+//                
+//            })
+//
+//            return
+//        }
+//        return self.entireUsersModel!
+//    }
     
     
 }

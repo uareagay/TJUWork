@@ -129,8 +129,8 @@ struct PersonalMessageHelper {
         })
     }
     
-    static func getDraftList(success: ((DraftListModel)->())?, failure: (()->())?) {
-        NetworkManager.getInformation(url: "/draft/list", token: WorkUser.shared.token, success: { dic in
+    static func getDraftList(page: Int = 1, success: ((DraftListModel)->())?, failure: (()->())?) {
+        NetworkManager.getInformation(url: "/draft/web/list?page=\(page)", token: WorkUser.shared.token, success: { dic in
             if let status = dic["status"] as? Bool, status == true {
                 if let data = try? JSONSerialization.data(withJSONObject: dic, options: JSONSerialization.WritingOptions.init(rawValue: 0)), let model = try? DraftListModel(data: data) {
                     //SwiftMessages.showSuccessMessage(title: "获取草稿列表成功")
@@ -153,8 +153,8 @@ struct PersonalMessageHelper {
         })
     }
     
-    static func getOutboxList(success: ((OutboxListModel)->())?, failure: (()->())?) {
-        NetworkManager.getInformation(url: "/message/outbox", token: WorkUser.shared.token, success: { dic in
+    static func getOutboxList(page: Int = 1, success: ((OutboxListModel)->())?, failure: (()->())?) {
+        NetworkManager.getInformation(url: "/message/web/outbox?page=\(page)", token: WorkUser.shared.token, success: { dic in
             if let status = dic["status"] as? Bool, status == true {
                 if let data = try? JSONSerialization.data(withJSONObject: dic, options: JSONSerialization.WritingOptions.init(rawValue: 0)), let model = try? OutboxListModel(data: data) {
                     //SwiftMessages.showSuccessMessage(title: "获取发件列表成功")
@@ -177,8 +177,8 @@ struct PersonalMessageHelper {
         })
     }
     
-    static func getInboxList(success: ((InboxListModel)->())?, failure: (()->())?) {
-        NetworkManager.getInformation(url: "/message/inbox", token: WorkUser.shared.token, success: { dic in
+    static func getInboxList(page: Int = 1, success: ((InboxListModel)->())?, failure: (()->())?) {
+        NetworkManager.getInformation(url: "/message/web/inbox?page=\(page)", token: WorkUser.shared.token, success: { dic in
             if let status = dic["status"] as? Bool, status == true {
                 if let data = try? JSONSerialization.data(withJSONObject: dic, options: JSONSerialization.WritingOptions.init(rawValue: 0)), let model = try? InboxListModel(data: data) {
                     //SwiftMessages.showSuccessMessage(title: "获取收件列表成功")

@@ -15,6 +15,7 @@ class MainTanBarController: UITabBarController {
         
         
         let one = ScheduleViewController()
+//        let one = DisplayPeopleViewController()
         one.tabBarItem.image = self.resizedTabBarItemImage(img: UIImage(named: "日历")!)
         one.tabBarItem.selectedImage = self.resizedTabBarItemImage(img: UIImage(named: "日历选中")!)
         one.tabBarItem.imageInsets = UIEdgeInsets(top: 6, left: 0, bottom: -6, right: 0)

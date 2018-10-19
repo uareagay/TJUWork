@@ -436,7 +436,6 @@ extension ScheduleViewController: UITableViewDelegate {
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-
         guard indexPath.section == 1 else {
             return
         }

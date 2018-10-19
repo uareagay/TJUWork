@@ -202,7 +202,8 @@ extension DetailMessageViewController {
             return
         }
         
-        let searchPeopleVC = SearchPeopleViewController(self.entireUsersModel, isForward: true, forwardMessages: [self.datailInformation.data.mid])
+//        let searchPeopleVC = SearchPeopleViewController(self.entireUsersModel, isForward: true, forwardMessages: [self.datailInformation.data.mid])
+        let searchPeopleVC = DisplayPeopleViewController(self.entireUsersModel, mids: [self.datailInformation.data.mid])
         self.navigationController?.pushViewController(searchPeopleVC, animated: true)
     }
     

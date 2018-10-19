@@ -29,6 +29,7 @@ class SearchPeopleViewController: UIViewController {
     }()
     
     weak var delegate: AddAndDeleteReceiverProtocol?
+    weak var searchDelegate: TransmitPeopleInformationProtocol?
     
     fileprivate var isForward: Bool = false
     fileprivate var forwardMessages: [String] = []
@@ -103,6 +104,13 @@ extension SearchPeopleViewController: UISearchBarDelegate {
         if let text = self.searchBar.text {
             searchMessage(text)
         }
+        
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "取消", style: .plain, target: self, action: #selector(cancelEditStyle(_:)))
+        self.tableView.setEditing(true, animated: true)
+        self.navigationController?.setToolbarHidden(false, animated: true)
+        self.searchBar.resignFirstResponder()
+        self.searchBar.isHidden = true
+        self.topConstraint?.update(inset: 64)
     }
     
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
@@ -113,6 +121,7 @@ extension SearchPeopleViewController: UISearchBarDelegate {
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
         searchMessage(searchText)
     }
+    
     
 }
 
@@ -164,16 +173,23 @@ extension SearchPeopleViewController {
         }
         
         guard !self.isForward else {
-            let uids = indexPaths.map { self.displayUsersTuple[$0.row].0 }
+//            let uids = indexPaths.map { self.displayUsersTuple[$0.row].0 }
             
-            PersonalMessageHelper.forwardMessage(mids: self.forwardMessages, uids: uids, success: {
-                NotificationCenter.default.post(name: NotificationName.NotificationRefreshInboxLists.name, object: nil)
-                NotificationCenter.default.post(name: NotificationName.NotificationRefreshOutboxLists.name, object: nil)
-                self.navigationController?.popToRootViewController(animated: true)
-            }, failure: {
-                
-            })
+            let tuples = indexPaths.map {
+                (self.displayUsersTuple[$0.row].0, self.displayUsersTuple[$0.row].1)
+            }
             
+            searchDelegate?.transmit(tuples)
+            
+//            PersonalMessageHelper.forwardMessage(mids: self.forwardMessages, uids: uids, success: {
+//                NotificationCenter.default.post(name: NotificationName.NotificationRefreshInboxLists.name, object: nil)
+//                NotificationCenter.default.post(name: NotificationName.NotificationRefreshOutboxLists.name, object: nil)
+//                self.navigationController?.popToRootViewController(animated: true)
+//            }, failure: {
+//
+//            })
+            
+            self.navigationController?.popViewController(animated: true)
             return
         }
         

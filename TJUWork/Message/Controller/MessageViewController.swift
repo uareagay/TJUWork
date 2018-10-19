@@ -76,6 +76,7 @@ class MessageViewController: UIViewController {
             case .draft:
                 self.menuBtn.setTitle("草稿箱", for: .normal)
             }
+            self.tableView.mj_footer.resetNoMoreData()
         }
     }
     
@@ -103,7 +104,16 @@ class MessageViewController: UIViewController {
     fileprivate var outboxLists: OutboxListModel!
     fileprivate var inboxLists: InboxListModel!
     
-fileprivate var entireUsersModel: EntireUsersModel!
+    //MARK: 增加分页功能
+    
+    fileprivate var inboxCurPage: Int = 1
+    fileprivate var outboxCurPage: Int = 1
+    fileprivate var draftCurPage: Int = 1
+    fileprivate var inboxList: [InboxMessageModel] = []
+    fileprivate var outboxList: [OutboxListData] = []
+    fileprivate var draftList: [DraftListData] = []
+    
+    fileprivate var entireUsersModel: EntireUsersModel!
     
     override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
         super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
@@ -138,7 +148,6 @@ fileprivate var entireUsersModel: EntireUsersModel!
         longPress.delegate = self
         longPress.delaysTouchesBegan = true
         tableView.addGestureRecognizer(longPress)
-        
         
         self.view.backgroundColor = .white
         self.view.addSubview(tableView)
@@ -186,9 +195,11 @@ fileprivate var entireUsersModel: EntireUsersModel!
         self.tableView.mj_header = MJRefreshNormalHeader(refreshingTarget: self, refreshingAction: #selector(headerRefresh))
 //        self.tableView.mj_header.beginRefreshing()
         
-        headerRefresh()
         
-        //self.tableView.mj_footer = MJRefreshAutoNormalFooter(refreshingTarget: self, refreshingAction: #selector(footerLoadMore))
+        
+        self.tableView.mj_footer = MJRefreshAutoNormalFooter(refreshingTarget: self, refreshingAction: #selector(footerLoadMore))
+        
+        headerRefresh()
         
         NotificationCenter.default.addObserver(self, selector: #selector(refreshInboxLists), name: NotificationName.NotificationRefreshInboxLists.name, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(refreshOutboxLists), name: NotificationName.NotificationRefreshOutboxLists.name, object: nil)
@@ -224,7 +235,8 @@ fileprivate var entireUsersModel: EntireUsersModel!
             return
         }
         let mids = self.selectedArrs.map {
-            self.inboxLists.data[$0].mid
+//            self.inboxLists.data.data[$0].mid
+            self.inboxList[$0].mid
         }
         let searchPeopleVC = SearchPeopleViewController(self.entireUsersModel, isForward: true, forwardMessages: mids)
         searchPeopleVC.hidesBottomBarWhenPushed = true
@@ -232,11 +244,15 @@ fileprivate var entireUsersModel: EntireUsersModel!
     }
     
     @objc func markRead(_ sender: UIBarButtonItem) {
-        let mids: [String] = self.selectedArrs.map { self.inboxLists.data[$0].mid }
+        let mids: [String] = self.selectedArrs.map {
+//            self.inboxLists.data.data[$0].mid
+            self.inboxList[$0].mid
+        }
         
         PersonalMessageHelper.markRead(mids: mids, success: {
             self.selectedArrs.forEach {
-                self.inboxLists.data[$0].isRead = "1"
+//                self.inboxLists.data.data[$0].isRead = "1"
+                self.inboxList[$0].isRead = "1"
             }
             self.isSelecting = false
         } , failure: {
@@ -245,11 +261,15 @@ fileprivate var entireUsersModel: EntireUsersModel!
     }
     
     @objc func markUnRead(_ sender: UIBarButtonItem) {
-        let mids: [String] = self.selectedArrs.map { self.inboxLists.data[$0].mid }
+        let mids: [String] = self.selectedArrs.map {
+//            self.inboxLists.data.data[$0].mid
+            self.inboxList[$0].mid
+        }
         
         PersonalMessageHelper.markUnRead(mids: mids, success: {
             self.selectedArrs.forEach {
-                self.inboxLists.data[$0].isRead = "0"
+//                self.inboxLists.data.data[$0].isRead = "0"
+                self.inboxList[$0].isRead = "0"
             }
             self.isSelecting = false
         }, failure: {
@@ -360,15 +380,24 @@ fileprivate var entireUsersModel: EntireUsersModel!
         
         switch self.currentMenuType {
         case .inbox:
-            for index in 0..<self.inboxLists.data.count {
+//            for index in 0..<self.inboxLists.data.data.count {
+//                selectedArrs.append(index)
+//            }
+            for index in 0..<self.inboxList.count {
                 selectedArrs.append(index)
             }
         case .outbox:
-            for index in 0..<self.outboxLists.data.count {
+//            for index in 0..<self.outboxLists.data.data.count {
+//                selectedArrs.append(index)
+//            }
+            for index in 0..<self.inboxList.count {
                 selectedArrs.append(index)
             }
         case .draft:
-            for index in 0..<self.draftLists.data.count {
+//            for index in 0..<self.draftLists.data.count {
+//                selectedArrs.append(index)
+//            }
+            for index in 0..<self.draftList.count {
                 selectedArrs.append(index)
             }
         }
@@ -385,7 +414,8 @@ fileprivate var entireUsersModel: EntireUsersModel!
             switch self.currentMenuType {
             case .inbox:
                 for i in 0..<self.selectedArrs.count {
-                    arr.append(Int(self.inboxLists.data[self.selectedArrs[i]].mid)!)
+//                    arr.append(Int(self.inboxLists.data.data[self.selectedArrs[i]].mid)!)
+                    arr.append(Int(self.inboxList[self.selectedArrs[i]].mid)!)
                 }
 //                self.inboxLists.data = self.inboxLists.data.filter({ data in
 //                    if dic.contains(Int(data.mid)!) {
@@ -395,7 +425,12 @@ fileprivate var entireUsersModel: EntireUsersModel!
 //                    }
 //
 //                })
-                self.inboxLists.data = self.inboxLists.data.filter { return !(arr.contains(Int($0.mid)!)) }
+                
+//                self.inboxLists.data.data = self.inboxLists.data.data.filter { return !(arr.contains(Int($0.mid)!)) }
+                self.inboxList = self.inboxList.filter {
+                    !(arr.contains(Int($0.mid)!))
+                }
+                
                 self.isSelecting = false
                 PersonalMessageHelper.deleteInbox(mid: arr, success: {
                     NotificationCenter.default.post(name: NotificationName.NotificationRefreshCalendar.name, object: nil)
@@ -406,7 +441,8 @@ fileprivate var entireUsersModel: EntireUsersModel!
                 
             case .outbox:
                 for i in 0..<self.selectedArrs.count {
-                    arr.append(Int(self.outboxLists.data[self.selectedArrs[i]].mid)!)
+//                    arr.append(Int(self.outboxLists.data.data [self.selectedArrs[i]].mid)!)
+                    arr.append(Int(self.outboxList[self.selectedArrs[i]].mid)!)
                 }
 //                self.outboxLists.data = self.outboxLists.data.filter({ data in
 //                    if arr.contains(Int(data.mid)!) {
@@ -415,7 +451,13 @@ fileprivate var entireUsersModel: EntireUsersModel!
 //                        return true
 //                    }
 //                })
-                self.outboxLists.data = self.outboxLists.data.filter { !(arr.contains(Int($0.mid)!)) }
+                
+//                self.outboxLists.data.data = self.outboxLists.data.data.filter { !(arr.contains(Int($0.mid)!)) }
+                
+                self.outboxList = self.outboxList.filter {
+                    !(arr.contains(Int($0.mid)!))
+                }
+                
                 self.isSelecting = false
                 PersonalMessageHelper.deleteOutbox(mid: arr, success: {
                     NotificationCenter.default.post(name: NotificationName.NotificationRefreshCalendar.name, object: nil)
@@ -426,7 +468,8 @@ fileprivate var entireUsersModel: EntireUsersModel!
                 
             case .draft:
                 for i in 0..<self.selectedArrs.count {
-                    arr.append(Int(self.draftLists.data[self.selectedArrs[i]].did)!)
+//                    arr.append(Int(self.draftLists.data[self.selectedArrs[i]].did)!)
+                    arr.append(Int(self.draftList[self.selectedArrs[i]].did)!)
                 }
 //                self.draftLists.data = self.draftLists.data.filter({ data in
 //                    if arr.contains(Int(data.did)!) {
@@ -435,7 +478,12 @@ fileprivate var entireUsersModel: EntireUsersModel!
 //                        return true
 //                    }
 //                })
-                self.draftLists.data = self.draftLists.data.filter { !(arr.contains(Int($0.did)!)) }
+                
+//                self.draftLists.data = self.draftLists.data.filter { !(arr.contains(Int($0.did)!)) }
+                self.draftList = self.draftList.filter {
+                    !(arr.contains(Int($0.did)!))
+                }
+                
                 self.isSelecting = false
                 PersonalMessageHelper.deleteDraft(did: arr, success: {
                     //NotificationCenter.default.post(name: NotificationName.NotificationRefreshDraftLists.name, object: nil)
@@ -549,7 +597,8 @@ extension MessageViewController: UITableViewDelegate {
         
         switch self.currentMenuType {
         case .inbox:
-            let data = self.inboxLists.data[indexPath.section]
+//            let data = self.inboxLists.data.data[indexPath.section]
+            let data = self.inboxList[indexPath.section]
             let isResponse = data.isResponse
             //1为已回复，0为未回复；-1为通知消息，可以回复，但是不必要回复
             let detailVC: DetailMessageViewController
@@ -572,7 +621,8 @@ extension MessageViewController: UITableViewDelegate {
 //                self.refreshInboxLists()
 //            }
         case .outbox:
-            let data = self.outboxLists.data[indexPath.section]
+//            let data = self.outboxLists.data.data[indexPath.section]
+            let data = self.outboxList[indexPath.section]
             let detailVC: DetailMessageViewController
             if data.type == "工作消息" {
                 detailVC = DetailMessageViewController(mid: data.mid, isReply: false, messageType: .outbox, isReaded: true, isDisplayPeople: true)
@@ -582,7 +632,8 @@ extension MessageViewController: UITableViewDelegate {
             detailVC.hidesBottomBarWhenPushed = true
             self.navigationController?.pushViewController(detailVC, animated: true)
         case .draft:
-            let data = self.draftLists.data[indexPath.section]
+//            let data = self.draftLists.data[indexPath.section]
+            let data = self.draftList[indexPath.section]
             let createMessageVC = CreateMessageViewController(title: data.title, text: data.text, type: data.type)
             createMessageVC.hidesBottomBarWhenPushed = true
             self.navigationController?.pushViewController(createMessageVC, animated: true)
@@ -597,11 +648,14 @@ extension MessageViewController: UITableViewDataSource {
     func numberOfSections(in tableView: UITableView) -> Int {
         switch self.currentMenuType {
         case .inbox:
-            return self.inboxLists != nil ? self.inboxLists.data.count : 0
+//            return self.inboxLists != nil ? self.inboxLists.data.data.count : 0
+            return self.inboxList.count
         case .outbox:
-            return self.outboxLists != nil ? self.outboxLists.data.count : 0
+//            return self.outboxLists != nil ? self.outboxLists.data.data.count : 0
+            return self.outboxList.count
         case .draft:
-            return self.draftLists != nil ? self.draftLists.data.count : 0
+//            return self.draftLists != nil ? self.draftLists.data.count : 0
+            return self.draftList.count
         }
         
     }
@@ -661,7 +715,8 @@ extension MessageViewController: UITableViewDataSource {
         switch self.currentMenuType {
         case .inbox:
             cell.percentBtn.isHidden = true
-            let data = self.inboxLists.data[indexPath.section]
+//            let data = self.inboxLists.data.data[indexPath.section]
+            let data = self.inboxList[indexPath.section]
             cell.titleLabel.text = data.title
             cell.nameLabel.text = data.type
             let formatter = DateFormatter()
@@ -679,7 +734,8 @@ extension MessageViewController: UITableViewDataSource {
                 cell.nameLabel.textColor = UIColor(hex6: 0x16982B)
             }
         case .outbox:
-            let data = self.outboxLists.data[indexPath.section]
+//            let data = self.outboxLists.data.data[indexPath.section]
+            let data = self.outboxList[indexPath.section]
             
             if let percent = data.percent {
                 cell.percentBtn.isHidden = false
@@ -699,7 +755,8 @@ extension MessageViewController: UITableViewDataSource {
             cell.nameLabel.textColor = UIColor(hex6: 0x00518e)
         case .draft:
             cell.percentBtn.isHidden = true
-            let data = self.draftLists.data[indexPath.section]
+//            let data = self.draftLists.data[indexPath.section]
+            let data = self.draftList[indexPath.section]
             cell.titleLabel.text = data.title
             if data.type == "0" {
                 cell.nameLabel.text = "通知信息"
@@ -748,9 +805,14 @@ extension MessageViewController {
     @objc func headerRefresh() {
         let group = DispatchGroup()
         
+        self.draftCurPage = 1
+        self.inboxCurPage = 1
+        self.outboxCurPage = 1
+        
         group.enter()
         PersonalMessageHelper.getDraftList(success: { model in
-            self.draftLists = model
+//            self.draftLists = model
+            self.draftList = model.data.data
             self.tableView.reloadData()
             group.leave()
         }, failure: {
@@ -759,7 +821,8 @@ extension MessageViewController {
         
         group.enter()
         PersonalMessageHelper.getOutboxList(success: { model in
-            self.outboxLists = model
+//            self.outboxLists = model
+            self.outboxList = model.data.data
             self.tableView.reloadData()
             group.leave()
         }, failure: {
@@ -768,15 +831,23 @@ extension MessageViewController {
         
         group.enter()
         PersonalMessageHelper.getInboxList(success: { model in
-            self.inboxLists = model
-            self.inboxLists.data = self.inboxLists.data.filter({ data in
-                //0为未被删除，1为被删除了
+//            self.inboxLists = model
+            self.inboxList = model.data.data
+//            self.inboxLists.data.data = self.inboxLists.data.data.filter({ data in
+//                //0为未被删除，1为被删除了
+//                if data.respondedDelete == 0 {
+//                    return true
+//                } else {
+//                    return false
+//                }
+//            })
+            self.inboxList = self.inboxList.filter { data in
                 if data.respondedDelete == 0 {
                     return true
                 } else {
                     return false
                 }
-            })
+            }
             self.tableView.reloadData()
             group.leave()
         }, failure: {
@@ -789,16 +860,15 @@ extension MessageViewController {
             }
         })
         
-    }
-    
-    @objc func footerLoadMore() {
         
+        self.tableView.mj_footer.resetNoMoreData()
         
     }
     
     @objc func refreshDraftLists() {
         PersonalMessageHelper.getDraftList(success: { model in
-            self.draftLists = model
+//            self.draftLists = model
+            self.draftList = model.data.data
             self.headerRefresh()
 //            self.tableView.reloadData()
         }, failure: {
@@ -808,7 +878,8 @@ extension MessageViewController {
     
     @objc func refreshOutboxLists() {
         PersonalMessageHelper.getOutboxList(success: { model in
-            self.outboxLists = model
+//            self.outboxLists = model
+            self.outboxList = model.data.data
             self.headerRefresh()
 //            self.tableView.reloadData()
         }, failure: {
@@ -819,15 +890,23 @@ extension MessageViewController {
    @objc func refreshInboxLists() {
     
         PersonalMessageHelper.getInboxList(success: { model in
-            self.inboxLists = model
-            self.inboxLists.data = self.inboxLists.data.filter({ data in
-                //0为未被删除，1为被删除了
+//            self.inboxLists = model
+            self.inboxList = model.data.data
+//            self.inboxLists.data.data = self.inboxLists.data.data.filter({ data in
+//                //0为未被删除，1为被删除了
+//                if data.respondedDelete == 0 {
+//                    return true
+//                } else {
+//                    return false
+//                }
+//            })
+            self.inboxList = self.inboxList.filter { data in
                 if data.respondedDelete == 0 {
                     return true
                 } else {
                     return false
                 }
-            })
+            }
             self.headerRefresh()
             self.tableView.reloadData()
         }, failure: {
@@ -835,4 +914,82 @@ extension MessageViewController {
         })
     }
     
+}
+
+// MARK: 上拉加载
+
+extension MessageViewController {
+    
+    @objc func loadInbox() {
+        inboxCurPage += 1
+        PersonalMessageHelper.getInboxList(page: inboxCurPage, success: { model in
+            if self.tableView.mj_footer.isRefreshing {
+                self.tableView.mj_footer.endRefreshing()
+            }
+            
+            if model.data.data.count == 0 {
+                self.inboxCurPage -= 1
+                self.tableView.mj_footer.endRefreshingWithNoMoreData()
+            }
+            
+            self.inboxList += model.data.data
+            self.tableView.reloadData()
+        }, failure: {
+            self.inboxCurPage -= 1
+        })
+        
+    }
+
+    @objc func loadOutbox() {
+        outboxCurPage += 1
+        PersonalMessageHelper.getOutboxList(page: outboxCurPage, success: { model in
+            if self.tableView.mj_footer.isRefreshing {
+                self.tableView.mj_footer.endRefreshing()
+            }
+            
+            if model.data.data.count == 0 {
+                self.outboxCurPage -= 1
+                self.tableView.mj_footer.endRefreshingWithNoMoreData()
+            }
+            
+            self.outboxList += model.data.data
+            self.tableView.reloadData()
+        }, failure: {
+            self.outboxCurPage -= 1
+        })
+        
+    }
+    
+    @objc func loadDraft() {
+        draftCurPage += 1
+        PersonalMessageHelper.getDraftList(page: draftCurPage, success: { model in
+            if self.tableView.mj_footer.isRefreshing {
+                self.tableView.mj_footer.endRefreshing()
+            }
+            
+            if model.data.data.count == 0 {
+                self.draftCurPage -= 1
+                self.tableView.mj_footer.endRefreshingWithNoMoreData()
+            }
+            
+            self.draftList += model.data.data
+            self.tableView.reloadData()
+        }, failure: {
+            self.draftCurPage -= 1
+        })
+        
+    }
+    
+    @objc func footerLoadMore() {
+        switch self.currentMenuType {
+        case .inbox:
+            loadInbox()
+        case .outbox:
+            loadOutbox()
+        case .draft:
+            loadDraft()
+        }
+        
+    }
+
 }
