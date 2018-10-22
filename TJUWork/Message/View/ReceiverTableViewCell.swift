@@ -179,7 +179,7 @@ extension ReceiverTableViewCell: AddAndDeleteReceiverProtocol {
         collectionView.performBatchUpdates({
             
             var indexPaths: [IndexPath] = []
-            for i in 0..<addedArrs.count {
+            for _ in 0..<addedArrs.count {
                 indexPaths.append(IndexPath(item: endPos, section: 0))
                 endPos += 1
             }

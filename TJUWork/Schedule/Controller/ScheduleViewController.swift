@@ -15,6 +15,25 @@ import EventKit
 
 class ScheduleViewController: UIViewController {
     
+    fileprivate let titleLabel: UILabel = {
+        let label = UILabel(frame: CGRect(x: 15, y: 10, width: 80, height: 30))
+        label.text = "当日事件"
+        label.font = UIFont.systemFont(ofSize: 16, weight: UIFont.Weight.semibold)
+        label.textAlignment = .left
+        label.textColor = UIColor(hex6: 0x00518e)
+        return label
+    }()
+    
+    fileprivate let dateLabel: UILabel = {
+        let label = UILabel(frame: CGRect(x: (UIScreen.main.bounds.size.width-20)*2/3, y: 15, width: 100, height: 20))
+        let formatter = DateFormatter()
+        formatter.dateFormat = "YYYY / MM / dd"
+        label.text = formatter.string(from: Date())
+        label.font = UIFont.systemFont(ofSize: 13, weight: UIFont.Weight.regular)
+        label.textAlignment = .right
+        label.textColor = UIColor(hex6: 0x8db6d4)
+        return label
+    }()
     
     fileprivate let eventStore = EKEventStore()
     fileprivate var events: [EKEvent] = []
@@ -24,8 +43,7 @@ class ScheduleViewController: UIViewController {
     fileprivate let lunarDays = ["初一", "初二", "初三", "初四", "初五", "初六", "初七", "初八", "初九", "初十", "十一", "十二", "十三", "十四", "十五", "十六", "十七", "十八", "十九", "二十", "廿一", "廿二", "廿三", "廿四", "廿五", "廿六", "廿七", "廿八", "廿九", "三十"]
     
     fileprivate var tableView: UITableView!
-//    fileprivate var calendarLists: WorkCalendarModel!
-//    fileprivate var selectedList: [WorkCalendarData] = []
+
     fileprivate var calendarLists: ScheduleListsModel!
     fileprivate var unSelectedList: [ScheduleListsData] = []
     fileprivate var selectedList: [ScheduleListsData] = []
@@ -48,7 +66,7 @@ class ScheduleViewController: UIViewController {
         return btn
     }()
     
-    fileprivate var selectedArrs: [Int] = []
+    fileprivate var selectedArrs: [[Int]] = [[], []]
     
     fileprivate var isSelecting: Bool = false {
         didSet {
@@ -61,7 +79,6 @@ class ScheduleViewController: UIViewController {
                 
                 self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "完成", style: .plain, target: self, action: #selector(cancelEditStatus(_:)))
             } else {
-
                 self.calendar.isUserInteractionEnabled = true
                 self.tableView.mj_header = MJRefreshNormalHeader(refreshingTarget: self, refreshingAction: #selector(headerRefresh))
                 
@@ -70,9 +87,8 @@ class ScheduleViewController: UIViewController {
                 self.deleteBtn.alpha = 0.0
                 self.selectAllBtn.alpha = 0.0
                 
-                selectedArrs = []
+                selectedArrs = [[], []]
                 self.tableView.reloadData()
-                
             }
         }
     }
@@ -80,51 +96,10 @@ class ScheduleViewController: UIViewController {
     
     fileprivate var selectedDate: Date {
         didSet {
-            let tomorrowDate = Date(timeInterval: 24*60*60, since: selectedDate)
-            guard self.calendarLists != nil else {
-                return
-            }
-            
-            self.selectedList = self.calendarLists.data.filter { data in
-                if self.selectedDate <= data.to &&  tomorrowDate > data.to {
-                    return true
-                } else {
-                    return false
-                }
-            }
-            self.selectedList.sort { $0.to < $1.to }
-            self.unSelectedList = self.calendarLists.data.filter { data in
-                if self.selectedDate > data.to || tomorrowDate <= data.to {
-                    return true
-                } else {
-                    return false
-                }
-            }
-            self.unSelectedList.sort { $0.to < $1.to }
-            
+            getSelectedData()
             self.tableView.reloadData()
         }
     }
-    
-    fileprivate let titleLabel: UILabel = {
-        let label = UILabel(frame: CGRect(x: 15, y: 10, width: 80, height: 30))
-        label.text = "当日事件"
-        label.font = UIFont.systemFont(ofSize: 16, weight: UIFont.Weight.semibold)
-        label.textAlignment = .left
-        label.textColor = UIColor(hex6: 0x00518e)
-        return label
-    }()
-    
-    fileprivate let dateLabel: UILabel = {
-        let label = UILabel(frame: CGRect(x: (UIScreen.main.bounds.size.width-20)*2/3, y: 15, width: 100, height: 20))
-        let formatter = DateFormatter()
-        formatter.dateFormat = "YYYY / MM / dd"
-        label.text = formatter.string(from: Date())
-        label.font = UIFont.systemFont(ofSize: 13, weight: UIFont.Weight.regular)
-        label.textAlignment = .right
-        label.textColor = UIColor(hex6: 0x8db6d4)
-        return label
-    }()
     
     override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
         let currentCalendar = Calendar.current
@@ -150,14 +125,11 @@ class ScheduleViewController: UIViewController {
         tableView.delegate = self
         tableView.dataSource = self
         tableView.register(ScheduleMessageTableViewCell.self, forCellReuseIdentifier: "ScheduleMessageTableViewCell")
-        //tableView.register(MessageTableViewCell.self, forCellReuseIdentifier: "MessageTableViewCell")
         tableView.estimatedRowHeight = 80
         tableView.separatorStyle = .none
         tableView.showsVerticalScrollIndicator = false
-        //tableView.backgroundColor = UITableView(frame: CGRect.zero, style: .grouped).backgroundColor
         tableView.backgroundColor = UIColor(red: 0.937255, green: 0.937255, blue: 0.956863, alpha: 1.0)
         self.view.addSubview(tableView)
-        self.view.backgroundColor = .red
         
         calendar = FSCalendar(frame: CGRect(x: 10, y: 10, width: UIScreen.main.bounds.size.width-20, height: 370))
         calendar.delegate = self
@@ -179,6 +151,8 @@ class ScheduleViewController: UIViewController {
         calendar.layer.cornerRadius = 10
         calendar.locale = Locale(identifier: "zh-CN")
         calendar.appearance.subtitleOffset = CGPoint(x: 0.0, y: 3.0)
+        calendar.appearance.eventDefaultColor = .red
+        calendar.appearance.eventSelectionColor = .red
         
         chineseCalendar = Calendar(identifier: .chinese)
         
@@ -213,6 +187,7 @@ class ScheduleViewController: UIViewController {
         deleteBtn.addTarget(self, action: #selector(deleteMessage(_:)), for: .touchUpInside)
         
         requestEvents()
+        
         NotificationCenter.default.addObserver(self, selector: #selector(presentLoginView), name: NotificationName.NotificationLoginFail.name, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(headerRefresh), name: NotificationName.NotificationRefreshCalendar.name, object: nil)
     }
@@ -237,23 +212,6 @@ class ScheduleViewController: UIViewController {
 
 extension ScheduleViewController {
     
-    func requestEvents() {
-        eventStore.requestAccess(to: .event, completion: { [weak self] granted, error in
-            if granted {
-                let calendars = self?.eventStore.calendars(for: .event).filter { calendar in
-                    return calendar.type == EKCalendarType.subscription
-                }
-                
-                let startDate = Date().addingTimeInterval(-2*365*24*60*60)
-                let endDate = Date().addingTimeInterval(2*365*24*60*60)
-                let fetchCalendarEvents = self?.eventStore.predicateForEvents(withStart: startDate, end: endDate, calendars: calendars)
-                
-                self?.events = self?.eventStore.events(matching: fetchCalendarEvents!) ?? []
-            }
-            
-        })
-    }
-    
     @objc func addCalendar(_ sender: UIButton) {
         let addVC = AddScheduleViewController()
         self.navigationController?.pushViewController(addVC, animated: true)
@@ -262,9 +220,13 @@ extension ScheduleViewController {
     @objc func longPressEditing(_ gesture: UILongPressGestureRecognizer) {
         if gesture.state == .began {
             let pressPoint = gesture.location(in: self.tableView)
-            if let indexPath = self.tableView.indexPathForRow(at: pressPoint), indexPath.section == 1 {
+            if let indexPath = self.tableView.indexPathForRow(at: pressPoint), indexPath.section != 0 {
                 isSelecting = true
-                selectedArrs.append(indexPath.row)
+                if indexPath.section == 1 {
+                    selectedArrs[0].append(indexPath.row)
+                } else if indexPath.section == 2 {
+                    selectedArrs[1].append(indexPath.row)
+                }
                 self.tableView.reloadData()
             }
         }
@@ -273,7 +235,6 @@ extension ScheduleViewController {
     @objc func headerRefresh() {
         ScheduleHelper.getCalendarList(success: { model in
             self.calendarLists = model
-            
             let currentCalendar = Calendar.current
             let datas = model.data
             self.messageDisplay = []
@@ -284,23 +245,7 @@ extension ScheduleViewController {
                 self.messageDisplay.append(currentDate)
             }
             
-            let tomorrowDate = Date(timeInterval: 24*60*60, since: self.selectedDate)
-            self.selectedList = self.calendarLists.data.filter({ data in
-                if self.selectedDate <= data.to && tomorrowDate > data.to {
-                    return true
-                } else {
-                    return false
-                }
-            })
-            self.selectedList.sort { $0.to < $1.to }
-            self.unSelectedList = self.calendarLists.data.filter { data in
-                if self.selectedDate > data.to || tomorrowDate <= data.to {
-                    return true
-                } else {
-                    return false
-                }
-            }
-            self.unSelectedList.sort { $0.to < $1.to }
+            self.getSelectedData()
             
             if self.tableView.mj_header.isRefreshing {
                 self.tableView.mj_header.endRefreshing()
@@ -312,7 +257,6 @@ extension ScheduleViewController {
             if self.tableView.mj_header.isRefreshing {
                 self.tableView.mj_header.endRefreshing()
             }
-            
         })
     }
     
@@ -325,9 +269,12 @@ extension ScheduleViewController {
     }
 
     @objc func selectAllMessage(_ sender: UIButton) {
-        self.selectedArrs = []
+        self.selectedArrs = [[], []]
         for index in 0..<self.selectedList.count {
-            selectedArrs.append(index)
+            selectedArrs[0].append(index)
+        }
+        for index in 0..<self.unSelectedList.count {
+            selectedArrs[1].append(index)
         }
         self.tableView.reloadData()
     }
@@ -337,11 +284,11 @@ extension ScheduleViewController {
         let cancelAction = UIAlertAction(title: "不了", style: .default, handler: nil)
         cancelAction.setValue(UIColor.red, forKey: "titleTextColor")
         let outAction = UIAlertAction(title: "删除", style: .default, handler: { _ in
-            var idArrs: [String] = []
-            var typeArrs: [String] = []
             
-            idArrs = self.selectedArrs.map { String(self.selectedList[$0].id) }
-            typeArrs = self.selectedArrs.map {
+            var idArrs: [String] = self.selectedArrs[0].map { String(self.selectedList[$0].id) }
+            idArrs += self.selectedArrs[1].map { String(self.unSelectedList[$0].id) }
+            
+            var typeArrs: [String] = self.selectedArrs[0].map {
                 let type = self.selectedList[$0].type
                 switch type {
                 case .integer(let value):
@@ -350,13 +297,27 @@ extension ScheduleViewController {
                     return value
                 }
             }
-            
-            var tmp: [ScheduleListsData] = []
-            self.selectedList = self.selectedList.filter { !(self.selectedArrs.contains($0.id)) }
-            for (index,value) in self.selectedList.enumerated() where !self.selectedArrs.contains(index) {
-                tmp.append(value)
+            typeArrs += self.selectedArrs[1].map {
+                let type = self.unSelectedList[$0].type
+                switch type {
+                case .integer(let value):
+                    return String(value)
+                case .string(let value):
+                    return value
+                }
             }
-            self.selectedList = tmp
+            
+            var tmpList: [ScheduleListsData] = []
+            for (index, value) in self.selectedList.enumerated() where !self.selectedArrs[0].contains(index) {
+                tmpList.append(value)
+            }
+            self.selectedList = tmpList
+            
+            tmpList = []
+            for (index, value) in self.unSelectedList.enumerated() where !self.selectedArrs[1].contains(index) {
+                tmpList.append(value)
+            }
+            self.unSelectedList = tmpList
             
             self.isSelecting = false
             ScheduleHelper.deleteCalendarList(idArrs: idArrs, typeArrs: typeArrs, success: {
@@ -369,6 +330,38 @@ extension ScheduleViewController {
         alertVC.addAction(cancelAction)
         alertVC.addAction(outAction)
         self.present(alertVC, animated: true, completion: nil)
+    }
+    
+}
+
+extension ScheduleViewController {
+    
+    func getSelectedData() {
+        guard self.calendarLists != nil else {
+            return
+        }
+        let tomorrowDate = Date(timeInterval: 24*60*60, since: self.selectedDate)
+        
+        self.selectedList = self.calendarLists.data.filter { self.selectedDate <= $0.to && tomorrowDate > $0.to }
+        self.selectedList.sort { $0.to < $1.to }
+        
+        self.unSelectedList = self.calendarLists.data.filter { self.selectedDate > $0.to || tomorrowDate <= $0.to }
+        self.unSelectedList.sort { $0.to < $1.to }
+    }
+    
+    func requestEvents() {
+        eventStore.requestAccess(to: .event, completion: { [weak self] granted, error in
+            if granted {
+                let calendars = self?.eventStore.calendars(for: .event).filter { calendar in
+                    return calendar.type == EKCalendarType.subscription
+                }
+                let startDate = Date().addingTimeInterval(-2*365*24*60*60)
+                let endDate = Date().addingTimeInterval(2*365*24*60*60)
+                let fetchCalendarEvents = self?.eventStore.predicateForEvents(withStart: startDate, end: endDate, calendars: calendars)
+                self?.events = self?.eventStore.events(matching: fetchCalendarEvents!) ?? []
+            }
+            
+        })
     }
     
 }
@@ -400,7 +393,7 @@ extension ScheduleViewController: UITableViewDelegate {
             view.addSubview(contentView)
             
             if section == 1 {
-                titleLabel.text = "今日事件"
+                titleLabel.text = "当日事件"
                 self.dateLabel.removeFromSuperview()
                 contentView.addSubview(dateLabel)
                 dateLabel.snp.makeConstraints { make in
@@ -436,23 +429,42 @@ extension ScheduleViewController: UITableViewDelegate {
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        guard indexPath.section == 1 else {
+        guard indexPath.section != 0 else {
             return
         }
         
         guard self.isSelecting == false else {
             let cell = tableView.cellForRow(at: indexPath) as! ScheduleMessageTableViewCell
-            if let index = selectedArrs.index(of: indexPath.row) {
-                selectedArrs.remove(at: index)
-                cell.imgView.image = cell.unselectedImg
-            } else {
-                selectedArrs.append(indexPath.row)
-                cell.imgView.image = cell.selectedImg
+            
+            if indexPath.section == 1 {
+                if let index = selectedArrs[0].index(of: indexPath.row) {
+                    selectedArrs[0].remove(at: index)
+                    cell.imgView.image = cell.unselectedImg
+                } else {
+                    selectedArrs[0].append(indexPath.row)
+                    cell.imgView.image = cell.selectedImg
+                }
+            } else if indexPath.section == 2 {
+                if let index = selectedArrs[1].index(of: indexPath.row) {
+                    selectedArrs[1].remove(at: index)
+                    cell.imgView.image = cell.unselectedImg
+                } else {
+                    selectedArrs[1].append(indexPath.row)
+                    cell.imgView.image = cell.selectedImg
+                }
             }
+            
+            
             return
         }
         
-        let data = self.selectedList[indexPath.row]
+        var data: ScheduleListsData
+        if indexPath.section == 1 {
+            data = self.selectedList[indexPath.row]
+        } else {
+            data = self.unSelectedList[indexPath.row]
+        }
+        
         // 0: integer 自创日程
         // 1: string 工作消息
         switch data.type {
@@ -497,8 +509,6 @@ extension ScheduleViewController: UITableViewDataSource {
             data = self.unSelectedList[indexPath.row]
         }
         
-        //let data = self.selectedList[indexPath.row]
-        
         cell.titleLabel.text = data.title
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd  HH:mm:ss"
@@ -506,8 +516,7 @@ extension ScheduleViewController: UITableViewDataSource {
         
         if let author = data.author {
             cell.nameLabel.text = author
-        }
-        if let className = data.className {
+        } else if let className = data.className {
             cell.nameLabel.text = className
         }
         
@@ -517,10 +526,18 @@ extension ScheduleViewController: UITableViewDataSource {
         }
 
         cell.imgView.alpha  = 1.0
-        if selectedArrs.contains(indexPath.row) {
-            cell.imgView.image = cell.selectedImg
+        if indexPath.section == 1 {
+            if selectedArrs[0].contains(indexPath.row) {
+                cell.imgView.image = cell.selectedImg
+            } else {
+                cell.imgView.image = cell.unselectedImg
+            }
         } else {
-            cell.imgView.image = cell.unselectedImg
+            if selectedArrs[1].contains(indexPath.row) {
+                cell.imgView.image = cell.selectedImg
+            } else {
+                cell.imgView.image = cell.unselectedImg
+            }
         }
         
         return cell
@@ -535,22 +552,18 @@ extension ScheduleViewController: FSCalendarDelegate {
         dateFormatter.dateFormat = "YYYY / MM / dd"
         self.dateLabel.text = dateFormatter.string(from: date)
         self.selectedDate = date
-        
-        if let today = self.calendar.today {
-            let result = today.compare(date)
-            switch result {
-            case .orderedSame:
-                self.titleLabel.text = "当日事件"
-            case .orderedAscending:
-                self.titleLabel.text = "未来事件"
-            case .orderedDescending:
-                self.titleLabel.text = "过去事件"
-            }
-        }
-        
-        
+//        if let today = self.calendar.today {
+//            let result = today.compare(date)
+//            switch result {
+//            case .orderedSame:
+//                self.titleLabel.text = "当日事件"
+//            case .orderedAscending:
+//                self.titleLabel.text = "未来事件"
+//            case .orderedDescending:
+//                self.titleLabel.text = "过去事件"
+//            }
+//        }
     }
-    
     
     func calendar(_ calendar: FSCalendar, subtitleFor date: Date) -> String? {
         let currentDateEvents = self.events.filter { event in
@@ -569,13 +582,19 @@ extension ScheduleViewController: FSCalendarDelegate {
 extension ScheduleViewController: FSCalendarDataSource {
     
     func calendar(_ calendar: FSCalendar, numberOfEventsFor date: Date) -> Int {
-        var number = 0
+//        var number = 0
+//        for i in 0..<self.messageDisplay.count {
+//            if self.messageDisplay[i] == date {
+//                number += 1
+//            }
+//        }
+//        return number
         for i in 0..<self.messageDisplay.count {
             if self.messageDisplay[i] == date {
-                number += 1
+                return 1
             }
         }
-        return number
+        return 0
     }
     
 }

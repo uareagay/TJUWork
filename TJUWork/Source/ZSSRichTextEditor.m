@@ -1702,18 +1702,37 @@ static CGFloat kDefaultScale = 1;
      Callback for when text is changed, solution posted by richardortiz84 https://github.com/nnhubbard/ZSSRichTextEditor/issues/5
      
      */
+    
+    // MARK: 内存泄漏了
+    __block bool receiveEditorDidChangeEvents = _receiveEditorDidChangeEvents;
+    __weak typeof(self) weakSelf = self;
     JSContext *ctx = [webView valueForKeyPath:@"documentView.webView.mainFrame.javaScriptContext"];
     ctx[@"contentUpdateCallback"] = ^(JSValue *msg) {
-        
-        if (_receiveEditorDidChangeEvents) {
+        __weak typeof(weakSelf) StrongSelf = weakSelf;
+        if (receiveEditorDidChangeEvents) {
             
-            [self editorDidChangeWithText:[self getText] andHTML:[self getHTML]];
+            [StrongSelf editorDidChangeWithText:[StrongSelf getText] andHTML:[StrongSelf getHTML]];
             
         }
         
-        [self checkForMentionOrHashtagInText:[self getText]];
+        [StrongSelf checkForMentionOrHashtagInText:[StrongSelf getText]];
         
     };
+    
+//    JSContext *ctx = [webView valueForKeyPath:@"documentView.webView.mainFrame.javaScriptContext"];
+//    ctx[@"contentUpdateCallback"] = ^(JSValue *msg) {
+//
+//        if (_receiveEditorDidChangeEvents) {
+//
+//            [self editorDidChangeWithText:[self getText] andHTML:[self getHTML]];
+//
+//        }
+//
+//        [self checkForMentionOrHashtagInText:[self getText]];
+//
+//    };
+    
+    
     [ctx evaluateScript:@"document.getElementById('zss_editor_content').addEventListener('input', contentUpdateCallback, false);"];
     
     

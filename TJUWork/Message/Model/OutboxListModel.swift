@@ -25,7 +25,7 @@ struct OutboxListData: Codable {
     let text: String
     let from: Date
     let to: Date?
-    let percent: String?
+    let fraction: String?
 }
 
 // MARK: Convenience initializers and mutators

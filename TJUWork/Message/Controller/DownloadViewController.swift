@@ -165,11 +165,11 @@ extension DownloadViewController {
     
     func handleDownloadResponse(_ response: DownloadResponse<Data>) {
         switch response.result {
-        case .success(let data):
-            print(response.destinationURL)
+        case .success:
+            //print(response.destinationURL)
             //self.downloadURL = response.destinationURL
             self.downloadedFileURL = response.destinationURL
-            print("文件下载完毕: \(response)")
+            //print("文件下载完毕: \(response)")
             
             self.documentController = UIDocumentInteractionController(url: response.destinationURL!)
             documentController?.delegate = self

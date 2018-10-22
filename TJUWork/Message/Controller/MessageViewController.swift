@@ -14,26 +14,26 @@ class MessageViewController: UIViewController {
     
     var tableView: UITableView!
     var menuView: DownMenuView!
-//    var activityIndicator: UIActivityIndicatorView!
     
     fileprivate var selectedArrs: [Int] = []
     var isSelecting: Bool = false {
         didSet {
             if isSelecting == true {
                 self.tableView.mj_header = nil
-                //self.tableView.mj_footer = nil
+                self.tableView.mj_footer = nil
                 menuBtn.isEnabled = false
                 addBtn.isEnabled = false
                 self.navigationItem.rightBarButtonItem = cancelBarButtonItem
                 self.selectAllBtn.alpha = 1.0
                 self.deleteBtn.alpha = 1.0
                 
+                self.tableView.reloadData()
                 if self.currentMenuType == .inbox {
                     self.navigationController?.setToolbarHidden(false, animated: true)
                 }
             } else {
                 self.tableView.mj_header = MJRefreshNormalHeader(refreshingTarget: self, refreshingAction: #selector(headerRefresh))
-                //self.tableView.mj_footer = MJRefreshAutoNormalFooter(refreshingTarget: self, refreshingAction: #selector(footerLoadMore))
+                self.tableView.mj_footer = MJRefreshAutoNormalFooter(refreshingTarget: self, refreshingAction: #selector(footerLoadMore))
                 menuBtn.isEnabled = true
                 addBtn.isEnabled = true
                 self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .search, target: self, action: #selector(clickSearching(_:)))
@@ -115,18 +115,6 @@ class MessageViewController: UIViewController {
     
     fileprivate var entireUsersModel: EntireUsersModel!
     
-    override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
-        super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
-        
-//        NotificationCenter.default.addObserver(self, selector: #selector(refreshInboxLists), name: NotificationName.NotificationRefreshInboxLists.name, object: nil)
-//        NotificationCenter.default.addObserver(self, selector: #selector(refreshOutboxLists), name: NotificationName.NotificationRefreshOutboxLists.name, object: nil)
-//        NotificationCenter.default.addObserver(self, selector: #selector(refreshDraftLists), name: NotificationName.NotificationRefreshDraftLists.name, object: nil)
-    }
-    
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -134,7 +122,7 @@ class MessageViewController: UIViewController {
         tableView.register(MessageTableViewCell.self, forCellReuseIdentifier: "MessageTableViewCell")
         tableView.delegate = self
         tableView.dataSource = self
-        tableView.estimatedRowHeight = 65
+        tableView.rowHeight = 65
         tableView.separatorStyle = .none
         
         let hideGesture = UITapGestureRecognizer(target: self, action: #selector(dismissMenuView(_:)))
@@ -192,10 +180,11 @@ class MessageViewController: UIViewController {
         }
         self.tableView.tableHeaderView = view
         
+        self.tableView.estimatedSectionFooterHeight = 0
+        self.tableView.estimatedSectionHeaderHeight = 0
+        
         self.tableView.mj_header = MJRefreshNormalHeader(refreshingTarget: self, refreshingAction: #selector(headerRefresh))
 //        self.tableView.mj_header.beginRefreshing()
-        
-        
         
         self.tableView.mj_footer = MJRefreshAutoNormalFooter(refreshingTarget: self, refreshingAction: #selector(footerLoadMore))
         
@@ -211,8 +200,6 @@ class MessageViewController: UIViewController {
         let unReadAction = UIBarButtonItem(title: "标记未读", style:  .plain, target: self, action: #selector(markUnRead(_:)))
         let flexItem = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
         self.toolbarItems = [unReadAction, readAction, flexItem, forwardAction]
-        
-        
         
         EntireUsersHelper.getEntireUsersInLabels(success: { model in
             self.entireUsersModel = model
@@ -234,26 +221,18 @@ class MessageViewController: UIViewController {
             })
             return
         }
-        let mids = self.selectedArrs.map {
-//            self.inboxLists.data.data[$0].mid
-            self.inboxList[$0].mid
-        }
-        let searchPeopleVC = SearchPeopleViewController(self.entireUsersModel, isForward: true, forwardMessages: mids)
+        let mids = self.selectedArrs.map { self.inboxList[$0].mid }
+
+        let searchPeopleVC = DisplayPeopleViewController(self.entireUsersModel, mids: mids)
         searchPeopleVC.hidesBottomBarWhenPushed = true
         self.navigationController?.pushViewController(searchPeopleVC, animated: true)
     }
     
     @objc func markRead(_ sender: UIBarButtonItem) {
-        let mids: [String] = self.selectedArrs.map {
-//            self.inboxLists.data.data[$0].mid
-            self.inboxList[$0].mid
-        }
+        let mids: [String] = self.selectedArrs.map { self.inboxList[$0].mid }
         
         PersonalMessageHelper.markRead(mids: mids, success: {
-            self.selectedArrs.forEach {
-//                self.inboxLists.data.data[$0].isRead = "1"
-                self.inboxList[$0].isRead = "1"
-            }
+            self.selectedArrs.forEach { self.inboxList[$0].isRead = "1" }
             self.isSelecting = false
         } , failure: {
             self.isSelecting = false
@@ -261,16 +240,10 @@ class MessageViewController: UIViewController {
     }
     
     @objc func markUnRead(_ sender: UIBarButtonItem) {
-        let mids: [String] = self.selectedArrs.map {
-//            self.inboxLists.data.data[$0].mid
-            self.inboxList[$0].mid
-        }
+        let mids: [String] = self.selectedArrs.map { self.inboxList[$0].mid }
         
         PersonalMessageHelper.markUnRead(mids: mids, success: {
-            self.selectedArrs.forEach {
-//                self.inboxLists.data.data[$0].isRead = "0"
-                self.inboxList[$0].isRead = "0"
-            }
+            self.selectedArrs.forEach { self.inboxList[$0].isRead = "0" }
             self.isSelecting = false
         }, failure: {
             self.isSelecting = false
@@ -281,9 +254,8 @@ class MessageViewController: UIViewController {
         if gesture.state == .began {
             let pressPoint = gesture.location(in: self.tableView)
             if let indexPath = self.tableView.indexPathForRow(at: pressPoint) {
-                isSelecting = true
                 selectedArrs.append(indexPath.section)
-                self.tableView.reloadData()
+                isSelecting = true
             }
         }
     }
@@ -291,7 +263,7 @@ class MessageViewController: UIViewController {
     @objc func dismissMenuView(_ gesture: UITapGestureRecognizer) {
         let rect = self.menuBtn.convert(self.menuBtn.bounds, to: self.view)
         UIView.animate(withDuration: 0.25, animations: {
-            self.menuView.frame = CGRect(x: rect.origin.x-15, y: rect.origin.y+rect.size.height+5, width: rect.size.width+30, height: 0)
+            self.menuView.frame = CGRect(x: rect.origin.x-15, y: rect.origin.y+rect.size.height + 5, width: rect.size.width + 30, height: 0)
             self.menuView.hideMenuView()
         })
         menuBtn.isSelected = false
@@ -303,27 +275,21 @@ class MessageViewController: UIViewController {
         self.navigationItem.title = "消息"
         self.navigationController?.navigationBar.barTintColor = UIColor(hex6: 0x00518e)
         self.navigationController?.navigationBar.titleTextAttributes = [NSAttributedStringKey.foregroundColor: UIColor.white]
-        //self.navigationItem.rightBarButtonItem = nil
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .search, target: self, action: #selector(clickSearching(_:)))
         self.navigationController?.navigationBar.tintColor = .white
-        
-        
     }
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         self.navigationItem.rightBarButtonItem = nil
         self.isSelecting = false
-        
         self.tableView.mj_header.endRefreshing()
-        
         self.navigationController?.setToolbarHidden(true, animated: true)
     }
     
     deinit {
          NotificationCenter.default.removeObserver(self)
     }
-    
     
     @objc func clickSearching(_ sender: UIBarButtonItem) {
         switch currentMenuType {
@@ -377,26 +343,16 @@ class MessageViewController: UIViewController {
     
     @objc func selectAllMessage(_ sender: UIButton) {
         self.selectedArrs = []
-        
         switch self.currentMenuType {
         case .inbox:
-//            for index in 0..<self.inboxLists.data.data.count {
-//                selectedArrs.append(index)
-//            }
             for index in 0..<self.inboxList.count {
                 selectedArrs.append(index)
             }
         case .outbox:
-//            for index in 0..<self.outboxLists.data.data.count {
-//                selectedArrs.append(index)
-//            }
             for index in 0..<self.inboxList.count {
                 selectedArrs.append(index)
             }
         case .draft:
-//            for index in 0..<self.draftLists.data.count {
-//                selectedArrs.append(index)
-//            }
             for index in 0..<self.draftList.count {
                 selectedArrs.append(index)
             }
@@ -413,89 +369,43 @@ class MessageViewController: UIViewController {
             
             switch self.currentMenuType {
             case .inbox:
-                for i in 0..<self.selectedArrs.count {
-//                    arr.append(Int(self.inboxLists.data.data[self.selectedArrs[i]].mid)!)
-                    arr.append(Int(self.inboxList[self.selectedArrs[i]].mid)!)
-                }
-//                self.inboxLists.data = self.inboxLists.data.filter({ data in
-//                    if dic.contains(Int(data.mid)!) {
-//                        return false
-//                    } else {
-//                        return true
-//                    }
-//
-//                })
-                
-//                self.inboxLists.data.data = self.inboxLists.data.data.filter { return !(arr.contains(Int($0.mid)!)) }
-                self.inboxList = self.inboxList.filter {
-                    !(arr.contains(Int($0.mid)!))
-                }
+                self.selectedArrs.forEach { arr.append(Int(self.inboxList[$0].mid)!) }
+                self.inboxList = self.inboxList.filter { !(arr.contains(Int($0.mid)!)) }
                 
                 self.isSelecting = false
                 PersonalMessageHelper.deleteInbox(mid: arr, success: {
                     NotificationCenter.default.post(name: NotificationName.NotificationRefreshCalendar.name, object: nil)
-                    NotificationCenter.default.post(name: NotificationName.NotificationRefreshOutboxLists.name, object: nil)
+                    self.headerRefresh()
                 }, failure: {
                     
                 })
-                
             case .outbox:
-                for i in 0..<self.selectedArrs.count {
-//                    arr.append(Int(self.outboxLists.data.data [self.selectedArrs[i]].mid)!)
-                    arr.append(Int(self.outboxList[self.selectedArrs[i]].mid)!)
-                }
-//                self.outboxLists.data = self.outboxLists.data.filter({ data in
-//                    if arr.contains(Int(data.mid)!) {
-//                        return false
-//                    } else {
-//                        return true
-//                    }
-//                })
-                
-//                self.outboxLists.data.data = self.outboxLists.data.data.filter { !(arr.contains(Int($0.mid)!)) }
-                
-                self.outboxList = self.outboxList.filter {
-                    !(arr.contains(Int($0.mid)!))
-                }
+                self.selectedArrs.forEach { arr.append(Int(self.outboxList[$0].mid)!) }
+                self.outboxList = self.outboxList.filter { !(arr.contains(Int($0.mid)!)) }
                 
                 self.isSelecting = false
                 PersonalMessageHelper.deleteOutbox(mid: arr, success: {
                     NotificationCenter.default.post(name: NotificationName.NotificationRefreshCalendar.name, object: nil)
-                    NotificationCenter.default.post(name: NotificationName.NotificationRefreshInboxLists.name, object: nil)
+                    self.headerRefresh()
                 }, failure: {
                     
                 })
-                
             case .draft:
-                for i in 0..<self.selectedArrs.count {
-//                    arr.append(Int(self.draftLists.data[self.selectedArrs[i]].did)!)
-                    arr.append(Int(self.draftList[self.selectedArrs[i]].did)!)
-                }
-//                self.draftLists.data = self.draftLists.data.filter({ data in
-//                    if arr.contains(Int(data.did)!) {
-//                        return false
-//                    } else {
-//                        return true
-//                    }
-//                })
-                
-//                self.draftLists.data = self.draftLists.data.filter { !(arr.contains(Int($0.did)!)) }
-                self.draftList = self.draftList.filter {
-                    !(arr.contains(Int($0.did)!))
-                }
+                self.selectedArrs.forEach { arr.append(Int(self.draftList[$0].did)!) }
+                self.draftList = self.draftList.filter { !(arr.contains(Int($0.did)!)) }
                 
                 self.isSelecting = false
                 PersonalMessageHelper.deleteDraft(did: arr, success: {
-                    //NotificationCenter.default.post(name: NotificationName.NotificationRefreshDraftLists.name, object: nil)
+                    self.headerRefresh()
                 }, failure: {
                     
                 })
             }
         })
+        
         alertVC.addAction(cancelAction)
         alertVC.addAction(outAction)
         self.present(alertVC, animated: true, completion: nil)
-        
     }
     
 }
@@ -532,42 +442,6 @@ extension MessageViewController: UIGestureRecognizerDelegate {
 
 extension MessageViewController: UITableViewDelegate {
     
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 65
-    }
-    
-    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        return nil
-//        guard section == 0 else {
-//            return nil
-//        }
-//        
-//        let view = UIView(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.size.width, height: 65))
-//        view.backgroundColor = .clear
-//        let contenView = UIView(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.size.width, height: 50))
-//        contenView.backgroundColor = .white
-//        contenView.layer.masksToBounds = true
-//        contenView.layer.cornerRadius = 10
-//        
-//        addBtn.removeFromSuperview()
-//        menuBtn.removeFromSuperview()
-//        downwardBtn.removeFromSuperview()
-//        
-//        view.addSubview(contenView)
-//        contenView.addSubview(menuBtn)
-//        contenView.addSubview(addBtn)
-//        contenView.addSubview(downwardBtn)
-//        
-//        contenView.snp.makeConstraints { make in
-//            make.left.right.equalToSuperview().inset(10)
-//            make.top.equalToSuperview().inset(10)
-//            make.bottom.equalToSuperview().inset(5)
-//        }
-//
-//        return view
-    }
-    
-    
     func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
         return UIView()
     }
@@ -582,7 +456,6 @@ extension MessageViewController: UITableViewDelegate {
     
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        
         guard isSelecting == false else {
             let cell = tableView.cellForRow(at: indexPath) as! MessageTableViewCell
             if let index = selectedArrs.index(of: indexPath.section) {
@@ -597,7 +470,6 @@ extension MessageViewController: UITableViewDelegate {
         
         switch self.currentMenuType {
         case .inbox:
-//            let data = self.inboxLists.data.data[indexPath.section]
             let data = self.inboxList[indexPath.section]
             let isResponse = data.isResponse
             //1为已回复，0为未回复；-1为通知消息，可以回复，但是不必要回复
@@ -606,22 +478,18 @@ extension MessageViewController: UITableViewDelegate {
             if isResponse == 1 {
                 //让他可以进行多次回复
 //                detailVC = DetailMessageViewController(mid: data.mid, isReply: false, messageType: .inbox, isReaded: isReaded)
-                detailVC = DetailMessageViewController(mid: data.mid, isReply: true, messageType: .inbox, isReaded: isReaded)
+                detailVC = DetailMessageViewController(mid: data.mid, isReply: true, messageType: .inbox, isReaded: isReaded, isDisplayPeople: true)
             } else if isResponse == -1 {
                 detailVC = DetailMessageViewController(mid: data.mid, isReply: false, messageType: .inbox, isReaded: isReaded)
             } else if isResponse == 0 {
-                detailVC = DetailMessageViewController(mid: data.mid, isReply: true, messageType: .inbox, isReaded: isReaded)
+                detailVC = DetailMessageViewController(mid: data.mid, isReply: true, messageType: .inbox, isReaded: isReaded, isDisplayPeople: true)
             } else {
                 //不会执行
                 detailVC = DetailMessageViewController()
             }
             detailVC.hidesBottomBarWhenPushed = true
             self.navigationController?.pushViewController(detailVC, animated: true)
-//            if data.isRead == "0" {
-//                self.refreshInboxLists()
-//            }
         case .outbox:
-//            let data = self.outboxLists.data.data[indexPath.section]
             let data = self.outboxList[indexPath.section]
             let detailVC: DetailMessageViewController
             if data.type == "工作消息" {
@@ -632,13 +500,11 @@ extension MessageViewController: UITableViewDelegate {
             detailVC.hidesBottomBarWhenPushed = true
             self.navigationController?.pushViewController(detailVC, animated: true)
         case .draft:
-//            let data = self.draftLists.data[indexPath.section]
             let data = self.draftList[indexPath.section]
             let createMessageVC = CreateMessageViewController(title: data.title, text: data.text, type: data.type)
             createMessageVC.hidesBottomBarWhenPushed = true
             self.navigationController?.pushViewController(createMessageVC, animated: true)
         }
-        
     }
     
 }
@@ -648,16 +514,12 @@ extension MessageViewController: UITableViewDataSource {
     func numberOfSections(in tableView: UITableView) -> Int {
         switch self.currentMenuType {
         case .inbox:
-//            return self.inboxLists != nil ? self.inboxLists.data.data.count : 0
             return self.inboxList.count
         case .outbox:
-//            return self.outboxLists != nil ? self.outboxLists.data.data.count : 0
             return self.outboxList.count
         case .draft:
-//            return self.draftLists != nil ? self.draftLists.data.count : 0
             return self.draftList.count
         }
-        
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -668,54 +530,9 @@ extension MessageViewController: UITableViewDataSource {
         let cell = tableView.dequeueReusableCell(withIdentifier: "MessageTableViewCell", for: indexPath) as! MessageTableViewCell
         cell.selectionStyle = .none
         
-//        if self.currentMenuType == .draft {
-//            let data = self.draftLists.data[indexPath.section]
-//            cell.titleLabel.text = data.title
-//            if data.type == "0" {
-//                cell.nameLabel.text = "通知信息"
-//            } else {
-//                cell.nameLabel.text = "工作信息"
-//            }
-//            cell.dateLabel.text = data.createdAt
-//
-//            guard self.isSelecting == true else {
-//                cell.imgView.alpha  = 0.0
-//                return cell
-//            }
-//            cell.imgView.alpha  = 1.0
-//            if selectedArrs.contains(indexPath.section) {
-//                cell.imgView.image = cell.selectedImg
-//            } else {
-//                cell.imgView.image = cell.unselectedImg
-//            }
-//            return cell
-//        }
-        
-//        if self.currentMenuType == .outbox {
-//            let data = self.outboxLists.data[indexPath.section]
-//            cell.titleLabel.text = data.title
-//            cell.nameLabel.text = data.type
-//            let formatter = DateFormatter()
-//            formatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
-//            cell.dateLabel.text = formatter.string(from: data.from)
-//
-//            guard self.isSelecting == true else {
-//                cell.imgView.alpha  = 0.0
-//                return cell
-//            }
-//            cell.imgView.alpha  = 1.0
-//            if selectedArrs.contains(indexPath.section) {
-//                cell.imgView.image = cell.selectedImg
-//            } else {
-//                cell.imgView.image = cell.unselectedImg
-//            }
-//            return cell
-//        }
-        
         switch self.currentMenuType {
         case .inbox:
             cell.percentBtn.isHidden = true
-//            let data = self.inboxLists.data.data[indexPath.section]
             let data = self.inboxList[indexPath.section]
             cell.titleLabel.text = data.title
             cell.nameLabel.text = data.type
@@ -734,10 +551,9 @@ extension MessageViewController: UITableViewDataSource {
                 cell.nameLabel.textColor = UIColor(hex6: 0x16982B)
             }
         case .outbox:
-//            let data = self.outboxLists.data.data[indexPath.section]
             let data = self.outboxList[indexPath.section]
             
-            if let percent = data.percent {
+            if let percent = data.fraction {
                 cell.percentBtn.isHidden = false
                 cell.percentBtn.setTitle(percent, for: .normal)
             } else {
@@ -755,7 +571,6 @@ extension MessageViewController: UITableViewDataSource {
             cell.nameLabel.textColor = UIColor(hex6: 0x00518e)
         case .draft:
             cell.percentBtn.isHidden = true
-//            let data = self.draftLists.data[indexPath.section]
             let data = self.draftList[indexPath.section]
             cell.titleLabel.text = data.title
             if data.type == "0" {
@@ -811,9 +626,7 @@ extension MessageViewController {
         
         group.enter()
         PersonalMessageHelper.getDraftList(success: { model in
-//            self.draftLists = model
             self.draftList = model.data.data
-            self.tableView.reloadData()
             group.leave()
         }, failure: {
             group.leave()
@@ -821,9 +634,7 @@ extension MessageViewController {
         
         group.enter()
         PersonalMessageHelper.getOutboxList(success: { model in
-//            self.outboxLists = model
             self.outboxList = model.data.data
-            self.tableView.reloadData()
             group.leave()
         }, failure: {
             group.leave()
@@ -831,23 +642,7 @@ extension MessageViewController {
         
         group.enter()
         PersonalMessageHelper.getInboxList(success: { model in
-//            self.inboxLists = model
-            self.inboxList = model.data.data
-//            self.inboxLists.data.data = self.inboxLists.data.data.filter({ data in
-//                //0为未被删除，1为被删除了
-//                if data.respondedDelete == 0 {
-//                    return true
-//                } else {
-//                    return false
-//                }
-//            })
-            self.inboxList = self.inboxList.filter { data in
-                if data.respondedDelete == 0 {
-                    return true
-                } else {
-                    return false
-                }
-            }
+            self.inboxList = model.data.data.filter { return $0.respondedDelete == 0 }
             self.tableView.reloadData()
             group.leave()
         }, failure: {
@@ -858,66 +653,60 @@ extension MessageViewController {
             if self.tableView.mj_header.isRefreshing {
                 self.tableView.mj_header.endRefreshing()
             }
+            self.tableView.reloadData()
         })
         
-        
         self.tableView.mj_footer.resetNoMoreData()
-        
     }
     
     @objc func refreshDraftLists() {
-        PersonalMessageHelper.getDraftList(success: { model in
-//            self.draftLists = model
-            self.draftList = model.data.data
-            self.headerRefresh()
+//        PersonalMessageHelper.getDraftList(success: { model in
+//            self.draftList = model.data.data
+////            self.headerRefresh()
+//            self.tableView.mj_header = nil
+//            self.tableView.mj_footer = nil
 //            self.tableView.reloadData()
-        }, failure: {
-            
-        })
+//            self.tableView.mj_header = MJRefreshNormalHeader(refreshingTarget: self, refreshingAction: #selector(self.headerRefresh))
+//            self.tableView.mj_footer = MJRefreshAutoNormalFooter(refreshingTarget: self, refreshingAction: #selector(self.footerLoadMore))
+//        }, failure: {
+//
+//        })
+        self.headerRefresh()
     }
     
     @objc func refreshOutboxLists() {
-        PersonalMessageHelper.getOutboxList(success: { model in
-//            self.outboxLists = model
-            self.outboxList = model.data.data
-            self.headerRefresh()
+//        PersonalMessageHelper.getOutboxList(success: { model in
+//            self.outboxList = model.data.data
+////            self.headerRefresh()
+//            self.tableView.mj_header = nil
+//            self.tableView.mj_footer = nil
 //            self.tableView.reloadData()
-        }, failure: {
-            
-        })
+//            self.tableView.mj_header = MJRefreshNormalHeader(refreshingTarget: self, refreshingAction: #selector(self.headerRefresh))
+//            self.tableView.mj_footer = MJRefreshAutoNormalFooter(refreshingTarget: self, refreshingAction: #selector(self.footerLoadMore))
+//        }, failure: {
+//
+//        })
+        self.headerRefresh()
     }
     
-   @objc func refreshInboxLists() {
+    @objc func refreshInboxLists() {
+//        PersonalMessageHelper.getInboxList(success: { model in
+//            self.inboxList = model.data.data.filter { return $0.respondedDelete == 0 }
+////            self.headerRefresh()
+//            self.tableView.mj_header = nil
+//            self.tableView.mj_footer = nil
+//            self.tableView.reloadData()
+//            self.tableView.mj_header = MJRefreshNormalHeader(refreshingTarget: self, refreshingAction: #selector(self.headerRefresh))
+//            self.tableView.mj_footer = MJRefreshAutoNormalFooter(refreshingTarget: self, refreshingAction: #selector(self.footerLoadMore))
+//        }, failure: {
+//
+//        })
+        self.headerRefresh()
     
-        PersonalMessageHelper.getInboxList(success: { model in
-//            self.inboxLists = model
-            self.inboxList = model.data.data
-//            self.inboxLists.data.data = self.inboxLists.data.data.filter({ data in
-//                //0为未被删除，1为被删除了
-//                if data.respondedDelete == 0 {
-//                    return true
-//                } else {
-//                    return false
-//                }
-//            })
-            self.inboxList = self.inboxList.filter { data in
-                if data.respondedDelete == 0 {
-                    return true
-                } else {
-                    return false
-                }
-            }
-            self.headerRefresh()
-            self.tableView.reloadData()
-        }, failure: {
-            
-        })
     }
-    
 }
 
 // MARK: 上拉加载
-
 extension MessageViewController {
     
     @objc func loadInbox() {
@@ -989,7 +778,6 @@ extension MessageViewController {
         case .draft:
             loadDraft()
         }
-        
     }
 
 }

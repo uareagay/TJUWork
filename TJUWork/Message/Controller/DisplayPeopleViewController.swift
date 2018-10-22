@@ -49,12 +49,15 @@ class DisplayPeopleViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
-        let searchItem = UIBarButtonItem(title: "搜索发件人", style: .done, target: self, action: #selector(addPeople(_:)))
-        let forwardItem = UIBarButtonItem(title: "转发", style: .done, target: self, action: #selector(forwardMessage(_:)))
+        self.title = "收件人列表"
+        
+        //let searchItem = UIBarButtonItem(title: "搜索发件人", style: .done, target: self, action: #selector(addPeople(_:)))
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addPeople(_:)))
+        let forwardItem = UIBarButtonItem(title: "转发消息", style: .done, target: self, action: #selector(forwardMessage(_:)))
         let flexItem = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
         //无效
         //self.navigationController?.toolbarItems = [cancelItem, flexItem, doneItem]
-        self.toolbarItems = [forwardItem, flexItem, searchItem]
+        self.toolbarItems = [flexItem, forwardItem, flexItem]
         
         self.navigationController?.setToolbarHidden(false, animated: true)
     }

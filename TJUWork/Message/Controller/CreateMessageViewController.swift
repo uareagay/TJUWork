@@ -133,9 +133,71 @@ class CreateMessageViewController: UIViewController {
         return btn
     }()
     
+    var HTMLString: String = "<p>编辑内容</p>" {
+        didSet {
+//            if let attributedString = try? NSAttributedString(data: (HTMLString.data(using: .unicode))!, options: [NSAttributedString.DocumentReadingOptionKey.documentType : NSAttributedString.DocumentType.html], documentAttributes: nil) {
+//                self.textView.attributedText = attributedString
+//            }
+        }
+    }
+    
+    fileprivate var authorID: Int = 0
+    
+    fileprivate var textView: UITextView = {
+        let textView = UITextView()
+        textView.text = "编辑内容"
+        textView.textColor = .lightGray
+        textView.backgroundColor = .white
+        textView.isUserInteractionEnabled = true
+        textView.isScrollEnabled = true
+        textView.font = UIFont.systemFont(ofSize: 15)
+        textView.contentInset = UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 10)
+        return textView
+    }()
+    
+    fileprivate var messageTitle: String {
+        if let cell = self.tableView.cellForRow(at: IndexPath(row: 0, section: 0)) as? TitleTableViewCell {
+            return cell.textField.text ?? ""
+        }
+        if let cell = self.tableView.dequeueReusableCell(withIdentifier: "TitleTableViewCell") as? TitleTableViewCell {
+            return cell.textField.text ?? ""
+        }
+        return ""
+    }
+    
+    fileprivate var messageName: MessageNameTableViewCell.MessageNameType? {
+        if let cell = self.tableView.cellForRow(at: IndexPath(row: 1, section: 0)) as? MessageNameTableViewCell {
+            return cell.nameStatus
+        }
+        if let cell = self.tableView.dequeueReusableCell(withIdentifier: "MessageNameTableViewCell") as? MessageNameTableViewCell {
+            return cell.nameStatus
+        }
+        return nil
+    }
+    
+    fileprivate var selectedDatas: [String] {
+        if let cell = self.tableView.cellForRow(at: IndexPath(row: 2, section: 0)) as? ReceiverTableViewCell {
+            return cell.selectedDatas
+        }
+        if let cell = self.tableView.dequeueReusableCell(withIdentifier: "ReceiverTableViewCell") as? ReceiverTableViewCell {
+            return cell.selectedDatas
+        }
+        return []
+    }
+    
+    fileprivate var isCopyMessage: Bool {
+        if let cell = self.tableView.cellForRow(at: IndexPath(row: 3, section: 0)) as? CopyTableViewCell {
+            return cell.isCopy
+        }
+        if let cell = self.tableView.dequeueReusableCell(withIdentifier: "ReceiverTableViewCell") as? CopyTableViewCell {
+            return cell.isCopy
+        }
+        return false
+    }
+    
     fileprivate var messageType: Int? {
         //0位通知，1为工作
-        if let cell = self.tableView.cellForRow(at: IndexPath(row: 3, section: 0)) as? MessageCategoryTableViewCell {
+        if let cell = self.tableView.cellForRow(at: IndexPath(row: 4, section: 0)) as? MessageCategoryTableViewCell {
             if let status = cell.categoryStatus {
                 if status == .inform {
                     return 0
@@ -160,38 +222,8 @@ class CreateMessageViewController: UIViewController {
         return nil
     }
     
-    fileprivate var messageTitle: String {
-        if let cell = self.tableView.cellForRow(at: IndexPath(row: 0, section: 0)) as? TitleTableViewCell {
-            return cell.textField.text ?? ""
-        }
-        if let cell = self.tableView.dequeueReusableCell(withIdentifier: "TitleTableViewCell") as? TitleTableViewCell {
-            return cell.textField.text ?? ""
-        }
-        return ""
-    }
-    
-    var HTMLString: String = "<p>编辑内容</p>" {
-        didSet {
-//            if let attributedString = try? NSAttributedString(data: (HTMLString.data(using: .unicode))!, options: [NSAttributedString.DocumentReadingOptionKey.documentType : NSAttributedString.DocumentType.html], documentAttributes: nil) {
-//                self.textView.attributedText = attributedString
-//            }
-        }
-    }
-    
-    fileprivate var authorID: Int = 0
-    
-    fileprivate var messageName: MessageNameTableViewCell.MessageNameType? {
-        if let cell = self.tableView.cellForRow(at: IndexPath(row: 1, section: 0)) as? MessageNameTableViewCell {
-            return cell.nameStatus
-        }
-        if let cell = self.tableView.dequeueReusableCell(withIdentifier: "MessageNameTableViewCell") as? MessageNameTableViewCell {
-            return cell.nameStatus
-        }
-        return nil
-    }
-    
     fileprivate var replyRequirement: ReplyRequirementTableViewCell.ReplyType? {
-        if let cell = self.tableView.cellForRow(at: IndexPath(row: 4, section: 0)) as? ReplyRequirementTableViewCell {
+        if let cell = self.tableView.cellForRow(at: IndexPath(row: 5, section: 0)) as? ReplyRequirementTableViewCell {
             return cell.typeStatus
         }
         if let cell = self.tableView.dequeueReusableCell(withIdentifier: "ReplyRequirementTableViewCell") as? ReplyRequirementTableViewCell {
@@ -201,36 +233,13 @@ class CreateMessageViewController: UIViewController {
     }
     
     fileprivate var messageDeadline: String {
-        if let cell = self.tableView.cellForRow(at: IndexPath(row: 5, section: 0)) as? DeadlineTableViewCell {
+        if let cell = self.tableView.cellForRow(at: IndexPath(row: 6, section: 0)) as? DeadlineTableViewCell {
             return cell.dateLabel.text ?? ""
         }
         if let cell = self.tableView.dequeueReusableCell(withIdentifier: "DeadlineTableViewCell") as? DeadlineTableViewCell {
             return cell.dateLabel.text ?? ""
         }
         return ""
-    }
-    
-    
-    fileprivate var textView: UITextView = {
-        let textView = UITextView()
-        textView.text = "编辑内容"
-        textView.textColor = .lightGray
-        textView.backgroundColor = .white
-        textView.isUserInteractionEnabled = true
-        textView.isScrollEnabled = true
-        textView.font = UIFont.systemFont(ofSize: 15)
-        textView.contentInset = UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 10)
-        return textView
-    }()
-    
-    fileprivate var selectedDatas: [String] {
-        if let cell = self.tableView.cellForRow(at: IndexPath(row: 2, section: 0)) as? ReceiverTableViewCell {
-            return cell.selectedDatas
-        }
-        if let cell = self.tableView.dequeueReusableCell(withIdentifier: "ReceiverTableViewCell") as? ReceiverTableViewCell {
-            return cell.selectedDatas
-        }
-        return []
     }
     
     fileprivate var draftTitle: String?
@@ -266,6 +275,7 @@ class CreateMessageViewController: UIViewController {
         tableView.register(MessageCategoryTableViewCell.self, forCellReuseIdentifier: "MessageCategoryTableViewCell")
         tableView.register(ReplyRequirementTableViewCell.self, forCellReuseIdentifier: "ReplyRequirementTableViewCell")
         tableView.register(DeadlineTableViewCell.self, forCellReuseIdentifier: "DeadlineTableViewCell")
+        tableView.register(CopyTableViewCell.self, forCellReuseIdentifier: "CopyTableViewCell")
         tableView.delegate = self
         tableView.dataSource = self
         self.view.addSubview(tableView)
@@ -298,6 +308,8 @@ class CreateMessageViewController: UIViewController {
         self.navigationItem.title = "新建消息"
         self.navigationController?.navigationBar.barTintColor = UIColor(hex6: 0x00518e)
         self.navigationController?.navigationBar.titleTextAttributes = [NSAttributedStringKey.foregroundColor: UIColor.white]
+        
+        self.navigationItem.leftBarButtonItem = UIBarButtonItem(title: "取消", style: .plain, target: self, action: #selector(cancelSendMessage(_:)))
         
         topLabel.removeFromSuperview()
         topLineView.removeFromSuperview()
@@ -403,9 +415,9 @@ extension CreateMessageViewController: UITableViewDataSource {
             return 1
         }
         if isReply == true {
-            return 6
+            return 7
         } else {
-            return 4
+            return 5
         }
     }
 
@@ -468,6 +480,9 @@ extension CreateMessageViewController: UITableViewDataSource {
             self.delegete = cell
             return cell
         case 3:
+            let cell = tableView.dequeueReusableCell(withIdentifier: "CopyTableViewCell") as! CopyTableViewCell
+            return cell
+        case 4:
             let cell = tableView.dequeueReusableCell(withIdentifier: "MessageCategoryTableViewCell") as! MessageCategoryTableViewCell
             cell.delegate = self
             if let type = self.draftType {
@@ -481,10 +496,10 @@ extension CreateMessageViewController: UITableViewDataSource {
                 }
             }
             return cell
-        case 4:
+        case 5:
             let cell = tableView.dequeueReusableCell(withIdentifier: "ReplyRequirementTableViewCell") as! ReplyRequirementTableViewCell
             return cell
-        case 5:
+        case 6:
             let cell = tableView.dequeueReusableCell(withIdentifier: "DeadlineTableViewCell") as! DeadlineTableViewCell
 
             let toolBar = UIToolbar(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.size.width, height: 44))
@@ -789,6 +804,13 @@ extension CreateMessageViewController {
             dic["receive_labels"] = []
         }
         
+        let isCopy = self.isCopyMessage
+        if isCopy == true {
+            dic["copy"] = "1"
+        } else {
+            dic["copy"] = "0"
+        }
+        
         self.sendBtn.isEnabled = false
         self.storeDraftBtn.isEnabled = false
         self.tableView.isUserInteractionEnabled = false
@@ -808,7 +830,6 @@ extension CreateMessageViewController {
     }
 
     @objc func storeDraft(_ sender: UIButton) {
-        
         var dic: [String:Any] = [:]
         let type: Int? = self.messageType
         let title: String = self.messageTitle
@@ -835,7 +856,6 @@ extension CreateMessageViewController {
         dic["title"] = title
         dic["text"] = self.HTMLString
         dic["response_to"] = "0"
-        
         
         self.sendBtn.isEnabled = false
         self.storeDraftBtn.isEnabled = false
@@ -864,6 +884,18 @@ extension CreateMessageViewController {
             
         }
         return nil
+    }
+    
+    @objc func cancelSendMessage(_ sender: UIBarButtonItem) {
+        let alertVC = UIAlertController(title: "取消发送吗？", message: "", preferredStyle: .alert)
+        let cancelAction = UIAlertAction(title: "取消", style: .default) { _ in
+            self.navigationController?.popViewController(animated: true)
+        }
+        let saveChangeAction = UIAlertAction(title: "继续编辑", style: .default)
+        alertVC.addAction(cancelAction)
+        alertVC.addAction(saveChangeAction)
+        
+        self.present(alertVC, animated: true)
     }
 
 }

@@ -51,6 +51,7 @@ class SearchPeopleViewController: UIViewController {
         for keyValue in dic {
             self.entireUsersTuple.append((keyValue.key, keyValue.value))
         }
+        self.displayUsersTuple = self.entireUsersTuple
     }
     
     override func viewDidLoad() {
@@ -104,13 +105,6 @@ extension SearchPeopleViewController: UISearchBarDelegate {
         if let text = self.searchBar.text {
             searchMessage(text)
         }
-        
-        self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "取消", style: .plain, target: self, action: #selector(cancelEditStyle(_:)))
-        self.tableView.setEditing(true, animated: true)
-        self.navigationController?.setToolbarHidden(false, animated: true)
-        self.searchBar.resignFirstResponder()
-        self.searchBar.isHidden = true
-        self.topConstraint?.update(inset: 64)
     }
     
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
@@ -180,15 +174,6 @@ extension SearchPeopleViewController {
             }
             
             searchDelegate?.transmit(tuples)
-            
-//            PersonalMessageHelper.forwardMessage(mids: self.forwardMessages, uids: uids, success: {
-//                NotificationCenter.default.post(name: NotificationName.NotificationRefreshInboxLists.name, object: nil)
-//                NotificationCenter.default.post(name: NotificationName.NotificationRefreshOutboxLists.name, object: nil)
-//                self.navigationController?.popToRootViewController(animated: true)
-//            }, failure: {
-//
-//            })
-            
             self.navigationController?.popViewController(animated: true)
             return
         }

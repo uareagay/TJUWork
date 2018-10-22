@@ -34,6 +34,7 @@ class DeadlineTableViewCell: UITableViewCell {
         let datePicker = UIDatePicker()
         datePicker.datePickerMode = UIDatePickerMode.dateAndTime
         datePicker.locale = Locale(identifier: "zh_CN")
+        datePicker.minimumDate = Date()
         return datePicker
     }()
     

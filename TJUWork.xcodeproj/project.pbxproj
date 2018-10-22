@@ -143,6 +143,7 @@
 		DD7627AD214F9D51005A3A97 /* DownloadViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD7627AC214F9D51005A3A97 /* DownloadViewController.swift */; };
 		DD775FB02175CAAC00B3F5CA /* SearchPeopleViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD775FAF2175CAAC00B3F5CA /* SearchPeopleViewController.swift */; };
 		DD775FB2217A3CEE00B3F5CA /* DisplayPeopleViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD775FB1217A3CEE00B3F5CA /* DisplayPeopleViewController.swift */; };
+		DD775FB6217CE0DE00B3F5CA /* CopyTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD775FB5217CE0DE00B3F5CA /* CopyTableViewCell.swift */; };
 		DD796D2621383FB10042D058 /* NetworkManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD796D2521383FB10042D058 /* NetworkManager.swift */; };
 		DD796D282138F8840042D058 /* WorkUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD796D272138F8840042D058 /* WorkUser.swift */; };
 		DD796D2A2138F9FB0042D058 /* AccountManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD796D292138F9FB0042D058 /* AccountManager.swift */; };
@@ -358,6 +359,7 @@
 		DD7627AC214F9D51005A3A97 /* DownloadViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DownloadViewController.swift; sourceTree = "<group>"; };
 		DD775FAF2175CAAC00B3F5CA /* SearchPeopleViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchPeopleViewController.swift; sourceTree = "<group>"; };
 		DD775FB1217A3CEE00B3F5CA /* DisplayPeopleViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DisplayPeopleViewController.swift; sourceTree = "<group>"; };
+		DD775FB5217CE0DE00B3F5CA /* CopyTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CopyTableViewCell.swift; sourceTree = "<group>"; };
 		DD796D2521383FB10042D058 /* NetworkManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkManager.swift; sourceTree = "<group>"; };
 		DD796D272138F8840042D058 /* WorkUser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkUser.swift; sourceTree = "<group>"; };
 		DD796D292138F9FB0042D058 /* AccountManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountManager.swift; sourceTree = "<group>"; };
@@ -793,6 +795,7 @@
 				DDB9CE672112FD7900E63211 /* AddReceiverCollectionViewCell.swift */,
 				DDB9CE6321119EB100E63211 /* ReceiverTableViewCell.swift */,
 				DDEFCF8E2171D6AA00B26A13 /* PeopleSituationTableViewCell.swift */,
+				DD775FB5217CE0DE00B3F5CA /* CopyTableViewCell.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -961,6 +964,7 @@
 				TargetAttributes = {
 					DD0AA73F20F8B6200011F1EE = {
 						CreatedOnToolsVersion = 9.4.1;
+						LastSwiftMigration = 1000;
 						SystemCapabilities = {
 							com.apple.BackgroundModes = {
 								enabled = 1;
@@ -972,10 +976,12 @@
 					};
 					DD0AA75320F8B6230011F1EE = {
 						CreatedOnToolsVersion = 9.4.1;
+						LastSwiftMigration = 1000;
 						TestTargetID = DD0AA73F20F8B6200011F1EE;
 					};
 					DD0AA75E20F8B6230011F1EE = {
 						CreatedOnToolsVersion = 9.4.1;
+						LastSwiftMigration = 1000;
 						TestTargetID = DD0AA73F20F8B6200011F1EE;
 					};
 				};
@@ -1216,6 +1222,7 @@
 				DD145836214193B60018BC07 /* UserInfoHelper.swift in Sources */,
 				DD43E30C216ED3D900AC573F /* AddScheduleViewController.swift in Sources */,
 				DD145834214182700018BC07 /* UserInfoModel.swift in Sources */,
+				DD775FB6217CE0DE00B3F5CA /* CopyTableViewCell.swift in Sources */,
 				DD0AA77F20F917B90011F1EE /* MainTabBarController.swift in Sources */,
 				DD0AA78420F9B9F40011F1EE /* SetInfoViewController.swift in Sources */,
 				DD1459D62146D4B50018BC07 /* HRColorPickerView.m in Sources */,
