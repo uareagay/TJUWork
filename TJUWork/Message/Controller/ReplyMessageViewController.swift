@@ -203,32 +203,41 @@ extension ReplyMessageViewController: UITextViewDelegate {
 extension ReplyMessageViewController {
     
     @objc func replyMessageAction(_ sender: UIButton) {
-        var dic: [String:Any] = [:]
         
-        dic["type"] = "0"
-        dic["title"] = self.titleText
-        dic["text"] = self.HTMLString
-        dic["author"] = "0"
-        //dic["deadline"] = ""
-        dic["response_by"] = "0"
-        dic["response_to"] = self.mid
-        dic["receive_labels"] = []
-        dic["receivers[0]"] = self.sendUID
+        let alertVC = UIAlertController(title: "确认回复吗？", message: "", preferredStyle: .alert)
+        let cancelAction = UIAlertAction(title: "取消", style: .default)
+        let saveChangeAction = UIAlertAction(title: "发送", style: .default) { _ in
+            var dic: [String:Any] = [:]
+            
+            dic["type"] = "0"
+            dic["title"] = self.titleText
+            dic["text"] = self.HTMLString
+            dic["author"] = "0"
+            //dic["deadline"] = ""
+            dic["response_by"] = "0"
+            dic["response_to"] = self.mid
+            dic["receive_labels"] = []
+            dic["receivers[0]"] = self.sendUID
+            
+            self.replyBtn.isEnabled = false
+            self.textView.isUserInteractionEnabled = false
+            
+            PersonalMessageHelper.sendMessage(dictionary: dic, success: {
+                NotificationCenter.default.post(name: NotificationName.NotificationRefreshInboxLists.name, object: nil)
+                NotificationCenter.default.post(name: NotificationName.NotificationRefreshOutboxLists.name, object: nil)
+                NotificationCenter.default.post(name: NotificationName.NotificationRefreshCalendar.name, object: nil)
+                
+                self.navigationController?.popToRootViewController(animated: true)
+            }, failure: {
+                self.replyBtn.isEnabled = true
+                self.textView.isUserInteractionEnabled = true
+            })
+        }
+        alertVC.addAction(cancelAction)
+        alertVC.addAction(saveChangeAction)
         
-        self.replyBtn.isEnabled = false
-        self.textView.isUserInteractionEnabled = false
+        self.present(alertVC, animated: true)
         
-        PersonalMessageHelper.sendMessage(dictionary: dic, success: {
-            NotificationCenter.default.post(name: NotificationName.NotificationRefreshInboxLists.name, object: nil)
-            NotificationCenter.default.post(name: NotificationName.NotificationRefreshOutboxLists.name, object: nil)
-            NotificationCenter.default.post(name: NotificationName.NotificationRefreshCalendar.name, object: nil)
-//            let messageVC = self.navigationController?.viewControllers[0] as! MessageViewController
-//            messageVC.tableView.mj_header.beginRefreshing()
-            self.navigationController?.popToRootViewController(animated: true)
-        }, failure: {
-            self.replyBtn.isEnabled = true
-            self.textView.isUserInteractionEnabled = true
-        })
     }
     
 }

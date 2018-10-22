@@ -79,20 +79,15 @@ class DetailMessageViewController: UIViewController {
         tableView.estimatedRowHeight = 100
         tableView.rowHeight = UITableViewAutomaticDimension
         tableView.separatorStyle = .none
-        //tableView.allowsSelection = false
-       
         tableView.register(SenderTableViewCell.self, forCellReuseIdentifier: "SenderTableViewCell")
         tableView.register(SenderMultiLinesTableViewCell.self, forCellReuseIdentifier: "SenderMultiLinesTableViewCell")
         tableView.register(BodyContentsTableViewCell.self, forCellReuseIdentifier: "BodyContentsTableViewCell")
-        
         tableView.delegate = self
         tableView.dataSource = self
-        
         self.view.addSubview(tableView)
         
         deleteBtn.addTarget(self, action: #selector(deleteMessage(_:)), for: .touchUpInside)
         replyBtn.addTarget(self, action: #selector(replyMessage(_:)), for: .touchUpInside)
-        
         
         PersonalMessageHelper.getDetailMessage(mid: mid!, success: { model in
             
@@ -121,7 +116,6 @@ class DetailMessageViewController: UIViewController {
             }
             
             self.tableView.reloadData()
-            
         }, failure: {
             
         })
@@ -168,9 +162,6 @@ class DetailMessageViewController: UIViewController {
 
         }
         
-        
-        
-        
         EntireUsersHelper.getEntireUsersInLabels(success: { model in
             self.entireUsersModel = model
         }, failure: {
@@ -202,7 +193,6 @@ extension DetailMessageViewController {
             return
         }
         
-//        let searchPeopleVC = SearchPeopleViewController(self.entireUsersModel, isForward: true, forwardMessages: [self.datailInformation.data.mid])
         let searchPeopleVC = DisplayPeopleViewController(self.entireUsersModel, mids: [self.datailInformation.data.mid])
         self.navigationController?.pushViewController(searchPeopleVC, animated: true)
     }
@@ -311,32 +301,20 @@ extension DetailMessageViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         guard self.isDisplayPeople else {
             switch section {
-            case 0:
+            case 0, 3:
                 return 10
-            case 1:
+            case 1, 2:
                 return 7.5
-            case 2:
-                return 7.5
-            case 3:
-                return 10
             default:
                 return 0.1
             }
         }
         
         switch section {
-        case 0:
+        case 0, 5:
             return 10
-        case 1:
+        case 1...4:
             return 7.5
-        case 2:
-            return 7.5
-        case 3:
-            return 7.5
-        case 4:
-            return 7.5
-        case 5:
-            return 10
         default:
             return 0.1
         }
@@ -344,68 +322,34 @@ extension DetailMessageViewController: UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         guard self.isDisplayPeople else {
-            switch section {
-            case 0:
-                return UIView()
-            case 1:
-                let view = UIView(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.size.width, height: 7.5))
-                let contentView = UIView(frame: CGRect(x: 10, y: 0, width: UIScreen.main.bounds.size.width-20, height: 7.5))
-                let lineView = UIView(frame: CGRect(x: 50+20, y: 3, width: UIScreen.main.bounds.size.width-20-50-20-15, height: 1.5))
-                contentView.backgroundColor = .white
-                lineView.backgroundColor = UIColor(hex6: 0xe5edf3)
-                
-                view.addSubview(contentView)
-                contentView.addSubview(lineView)
-                return view
-            case 2:
-                let view = UIView(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.size.width, height: 7.5))
-                let contentView = UIView(frame: CGRect(x: 10, y: 0, width: UIScreen.main.bounds.size.width-20, height: 7.5))
-                let lineView = UIView(frame: CGRect(x: 50+20, y: 3, width: UIScreen.main.bounds.size.width-20-50-20-15, height: 1.5))
-                contentView.backgroundColor = .white
-                lineView.backgroundColor = UIColor(hex6: 0xe5edf3)
-                
-                view.addSubview(contentView)
-                contentView.addSubview(lineView)
-                return view
-            case 3:
-                return UIView()
-            default:
+            if section == 1 || section == 2 {
+                return displayLineView()
+            } else {
                 return UIView()
             }
         }
         
-        switch section {
-        case 0:
+        if section < 1 || section > 4 {
             return UIView()
-        case 1...4:
-            let view = UIView(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.size.width, height: 7.5))
-            let contentView = UIView(frame: CGRect(x: 10, y: 0, width: UIScreen.main.bounds.size.width-20, height: 7.5))
-            let lineView = UIView(frame: CGRect(x: 50+20, y: 3, width: UIScreen.main.bounds.size.width-20-50-20-15, height: 1.5))
-            contentView.backgroundColor = .white
-            lineView.backgroundColor = UIColor(hex6: 0xe5edf3)
-            
-            view.addSubview(contentView)
-            contentView.addSubview(lineView)
-            return view
-        case 5:
-            return UIView()
-        default:
-            return UIView()
+        } else {
+            return displayLineView()
         }
     }
     
     func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
         guard self.isDisplayPeople else {
-            guard section == 3 else {
+            if section == 3 {
+                return 55
+            } else {
                 return 0.0
             }
-            return 55
         }
         
-        guard section == 5 else {
+        if section == 5 {
+            return 55
+        } else {
             return 0.0
         }
-        return 55
     }
     
     func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
@@ -417,45 +361,40 @@ extension DetailMessageViewController: UITableViewDelegate {
             return nil
         }
         
-        if self.datailInformation == nil {
-            return nil
-        }
-        
         deleteBtn.removeFromSuperview()
         replyBtn.removeFromSuperview()
         
-        let view = UIView(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.size.width, height: 55))
-        view.backgroundColor = .clear
-        
-        if let reply = self.isReply {
-            if reply == true {
-                view.addSubview(deleteBtn)
-                view.addSubview(replyBtn)
-                deleteBtn.snp.makeConstraints { make in
-                    make.top.equalToSuperview().inset(15)
-                    make.height.equalTo(30)
-                    make.width.equalTo(90)
-                    make.right.equalTo(view.snp.centerX).offset(-17)
-                }
-                replyBtn.snp.makeConstraints { make in
-                    make.top.equalToSuperview().inset(15)
-                    make.height.equalTo(30)
-                    make.width.equalTo(90)
-                    make.left.equalTo(view.snp.centerX).offset(17)
-                }
-            } else {
-                view.addSubview(deleteBtn)
-                deleteBtn.snp.makeConstraints { make in
-                    make.top.equalToSuperview().inset(15)
-                    make.height.equalTo(30)
-                    make.width.equalTo(100)
-                    make.centerX.equalToSuperview()
-                }
-            }
-            return view
-        } else {
+        guard let reply = self.isReply else {
             return nil
         }
+        
+        let view = UIView(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.size.width, height: 55))
+        view.backgroundColor = .clear
+        if reply == true {
+            view.addSubview(deleteBtn)
+            view.addSubview(replyBtn)
+            deleteBtn.snp.makeConstraints { make in
+                make.top.equalToSuperview().inset(15)
+                make.height.equalTo(30)
+                make.width.equalTo(90)
+                make.right.equalTo(view.snp.centerX).offset(-17)
+            }
+            replyBtn.snp.makeConstraints { make in
+                make.top.equalToSuperview().inset(15)
+                make.height.equalTo(30)
+                make.width.equalTo(90)
+                make.left.equalTo(view.snp.centerX).offset(17)
+            }
+        } else {
+            view.addSubview(deleteBtn)
+            deleteBtn.snp.makeConstraints { make in
+                make.top.equalToSuperview().inset(15)
+                make.height.equalTo(30)
+                make.width.equalTo(100)
+                make.centerX.equalToSuperview()
+            }
+        }
+        return view
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
@@ -471,11 +410,9 @@ extension DetailMessageViewController: UITableViewDelegate {
         }
         
         if indexPath.section == 3 && indexPath.row == 0 {
-//            tableView.deselectRow(at: indexPath, animated: true)
             self.isDisplayResponse = !self.isDisplayResponse
             self.tableView.reloadData()
         } else if indexPath.section == 4 && indexPath.row == 0 {
-//            tableView.deselectRow(at: indexPath, animated: true)
             self.isDisplayRead = !self.isDisplayRead
             self.tableView.reloadData()
         }
@@ -495,7 +432,7 @@ extension DetailMessageViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         switch section {
         case 1:
-            return 4
+            return self.isDisplayPeople ? 5 : 4
         case 2:
             return 1 + self.downloadedFiles.count
         case 3:
@@ -516,131 +453,12 @@ extension DetailMessageViewController: UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard self.isDisplayPeople else {
-            switch indexPath.section {
-            case 0:
-                guard self.datailInformation != nil else {
-                    return UITableViewCell()
-                }
-                
-                let cell = tableView.dequeueReusableCell(withIdentifier: "SenderMultiLinesTableViewCell") as! SenderMultiLinesTableViewCell
-                let paragraphStyle = NSMutableParagraphStyle()
-                paragraphStyle.headIndent = 49
-                let str = "标题：" + self.datailInformation.data.title
-                let attStr = NSMutableAttributedString(string: str)
-                attStr.addAttribute(.paragraphStyle, value: paragraphStyle, range: NSMakeRange(0, str.count))
-                attStr.addAttribute(.foregroundColor, value: UIColor.lightGray , range: NSMakeRange(3, str.count-3))
-                cell.titleLabel.attributedText = attStr
-                
-                cell.selectionStyle = .none
-                return cell
-            case 1:
-                let cell = tableView.dequeueReusableCell(withIdentifier: "SenderTableViewCell") as! SenderTableViewCell
-                switch indexPath.row {
-                case 0:
-                    cell.titleLabel.text = "作者："
-                    guard self.datailInformation != nil else {
-                        return UITableViewCell()
-                    }
-                    cell.contentLabel.text = self.datailInformation.data.author
-                case 1:
-                    cell.titleLabel.text = "发送单位："
-                    guard self.datailInformation != nil else {
-                        return UITableViewCell()
-                    }
-                    cell.contentLabel.text = self.datailInformation.data.unit
-                case 2:
-                    cell.titleLabel.text = "消息类别："
-                    guard self.datailInformation != nil else {
-                        return UITableViewCell()
-                    }
-                    cell.contentLabel.text = self.datailInformation.data.type
-                case 3:
-                    cell.titleLabel.text = "发送时间："
-                    guard self.datailInformation != nil else {
-                        return UITableViewCell()
-                    }
-                    let formatter = DateFormatter()
-                    formatter.dateFormat = "YYYY-MM-dd   HH:mm:ss"
-                    cell.contentLabel.text = formatter.string(from: self.datailInformation.data.from)
-                default:
-                    return UITableViewCell()
-                }
-                
-                cell.selectionStyle = .none
-                return cell
-            case 2:
-                switch indexPath.row {
-                case 0:
-                    let cell = tableView.dequeueReusableCell(withIdentifier: "SenderTableViewCell") as! SenderTableViewCell
-                    cell.titleLabel.text = "附件："
-                    
-                    if self.downloadedFiles.count == 0 {
-                        cell.contentLabel.text = "无"
-                    } else {
-                        cell.contentLabel.text = ""
-                    }
-                    
-                    cell.selectionStyle = .none
-                    return cell
-                case 1...6:
-                    let cell = UITableViewCell()
-                    let contentView = UIView(frame: CGRect(x: 10, y: 0, width: UIScreen.main.bounds.size.width-20, height: 25))
-                    contentView.backgroundColor = .white
-                    cell.backgroundColor = .clear
-                    
-                    let maxWidth = UIScreen.main.bounds.size.width-20-90-20
-                    let imgView = UIImageView(frame: CGRect(x: 70, y: 0, width: 15, height: 15))
-                    imgView.image = UIImage.resizedImage(image: UIImage(named: "附件")!, scaledToWidth: 15.0)
-                    let btn = UIButton(frame: CGRect(x: 90, y: 0, width: maxWidth, height: 15))
-                    //self.downloadedFiles[indexPath.row-1].originName+self.downloadedFiles[indexPath.row-1].href
-                    //btn.setTitle("sefiwehv.pdf", for: .normal)
-                    let file = self.downloadedFiles[indexPath.row-1]
-                    btn.setTitle(file.originName + "（" + file.size + "）", for: .normal)
-                    btn.titleLabel?.font = UIFont.systemFont(ofSize: 11, weight: UIFont.Weight.regular)
-                    btn.setTitleColor(UIColor(hex6: 0x003A65), for: .normal)
-                    btn.titleLabel?.textAlignment = .left
-                    btn.contentHorizontalAlignment = .left
-                    contentView.addSubview(btn)
-                    contentView.addSubview(imgView)
-                    
-                    let btnSize = btn.sizeThatFits(CGSize(width: 400, height: 15))
-                    if btnSize.width < maxWidth {
-                        btn.frame.size = CGSize(width: btnSize.width, height: 15)
-                    }
-                    
-                    btn.tag = indexPath.row-1
-                    btn.addTarget(self, action: #selector(downloadFile(_:)), for: .touchUpInside)
-                    
-                    cell.contentView.addSubview(contentView)
-                    
-                    cell.selectionStyle = .none
-                    return cell
-                default:
-                    return UITableViewCell()
-                }
-            case 3:
-                guard self.datailInformation != nil else {
-                    return UITableViewCell()
-                }
-                let cell = tableView.dequeueReusableCell(withIdentifier: "BodyContentsTableViewCell") as! BodyContentsTableViewCell
-                let HTMLString: String = self.datailInformation.data.text
-                if let attributedString = try? NSAttributedString(data: HTMLString.data(using: .unicode)!, options: [NSAttributedString.DocumentReadingOptionKey.documentType : NSAttributedString.DocumentType.html], documentAttributes: nil) {
-                    cell.contentLabel.attributedText = attributedString
-                }
-                
-                cell.selectionStyle = .none
-                return cell
-            default:
-                return UITableViewCell()
-            }
+        guard self.datailInformation != nil else {
+            return UITableViewCell()
         }
+        
         switch indexPath.section {
         case 0:
-            guard self.datailInformation != nil else {
-                return UITableViewCell()
-            }
-            
             let cell = tableView.dequeueReusableCell(withIdentifier: "SenderMultiLinesTableViewCell") as! SenderMultiLinesTableViewCell
             let paragraphStyle = NSMutableParagraphStyle()
             paragraphStyle.headIndent = 49
@@ -657,30 +475,28 @@ extension DetailMessageViewController: UITableViewDataSource {
             switch indexPath.row {
             case 0:
                 cell.titleLabel.text = "作者："
-                guard self.datailInformation != nil else {
-                    return UITableViewCell()
-                }
                 cell.contentLabel.text = self.datailInformation.data.author
             case 1:
                 cell.titleLabel.text = "发送单位："
-                guard self.datailInformation != nil else {
-                    return UITableViewCell()
-                }
                 cell.contentLabel.text = self.datailInformation.data.unit
             case 2:
                 cell.titleLabel.text = "消息类别："
-                guard self.datailInformation != nil else {
-                    return UITableViewCell()
-                }
                 cell.contentLabel.text = self.datailInformation.data.type
             case 3:
                 cell.titleLabel.text = "发送时间："
-                guard self.datailInformation != nil else {
-                    return UITableViewCell()
-                }
                 let formatter = DateFormatter()
                 formatter.dateFormat = "YYYY-MM-dd   HH:mm:ss"
                 cell.contentLabel.text = formatter.string(from: self.datailInformation.data.from)
+            case 4:
+                cell.titleLabel.text = "截止时间："
+                
+                if let deadline = self.datailInformation.data.to {
+                    let formatter = DateFormatter()
+                    formatter.dateFormat = "YYYY-MM-dd   HH:mm:ss"
+                    cell.contentLabel.text = formatter.string(from: deadline)
+                } else {
+                    cell.contentLabel.text = "无"
+                }
             default:
                 return UITableViewCell()
             }
@@ -702,42 +518,15 @@ extension DetailMessageViewController: UITableViewDataSource {
                 cell.selectionStyle = .none
                 return cell
             case 1...6:
-                let cell = UITableViewCell()
-                let contentView = UIView(frame: CGRect(x: 10, y: 0, width: UIScreen.main.bounds.size.width-20, height: 25))
-                contentView.backgroundColor = .white
-                cell.backgroundColor = .clear
-                
-                let maxWidth = UIScreen.main.bounds.size.width-20-90-20
-                let imgView = UIImageView(frame: CGRect(x: 70, y: 0, width: 15, height: 15))
-                imgView.image = UIImage.resizedImage(image: UIImage(named: "附件")!, scaledToWidth: 15.0)
-                let btn = UIButton(frame: CGRect(x: 90, y: 0, width: maxWidth, height: 15))
-                //self.downloadedFiles[indexPath.row-1].originName+self.downloadedFiles[indexPath.row-1].href
-                //btn.setTitle("sefiwehv.pdf", for: .normal)
-                let file = self.downloadedFiles[indexPath.row-1]
-                btn.setTitle(file.originName + "（" + file.size + "）", for: .normal)
-                btn.titleLabel?.font = UIFont.systemFont(ofSize: 11, weight: UIFont.Weight.regular)
-                btn.setTitleColor(UIColor(hex6: 0x003A65), for: .normal)
-                btn.titleLabel?.textAlignment = .left
-                btn.contentHorizontalAlignment = .left
-                contentView.addSubview(btn)
-                contentView.addSubview(imgView)
-                
-                let btnSize = btn.sizeThatFits(CGSize(width: 400, height: 15))
-                if btnSize.width < maxWidth {
-                    btn.frame.size = CGSize(width: btnSize.width, height: 15)
-                }
-                
-                btn.tag = indexPath.row-1
-                btn.addTarget(self, action: #selector(downloadFile(_:)), for: .touchUpInside)
-                
-                cell.contentView.addSubview(contentView)
-                
-                cell.selectionStyle = .none
-                return cell
+                return displayDownloadLinkTableViewCell(indexPath.row - 1)
             default:
                 return UITableViewCell()
             }
         case 3:
+            guard self.isDisplayPeople else {
+                return displayBodyContentsTableViewCell()
+            }
+            
             guard indexPath.row == 0 else {
                 let cell = PeopleSituationTableViewCell()
                 if indexPath.row <= self.responseArrs.count {
@@ -752,13 +541,16 @@ extension DetailMessageViewController: UITableViewDataSource {
                     cell.flagLabel.textColor = .red
                 }
                 cell.phoneBtn.isHidden = true
-                
                 cell.selectionStyle = .none
                 return cell
             }
             
             return getSituationTypeTableViewCell("回复状态")
         case 4:
+            guard self.isDisplayPeople else {
+                return UITableViewCell()
+            }
+            
             guard indexPath.row == 0 else {
                 let cell = PeopleSituationTableViewCell()
                 if indexPath.row <= self.readArrs.count {
@@ -782,17 +574,11 @@ extension DetailMessageViewController: UITableViewDataSource {
             }
             return getSituationTypeTableViewCell("阅读状态")
         case 5:
-            guard self.datailInformation != nil else {
+            guard self.isDisplayPeople else {
                 return UITableViewCell()
             }
-            let cell = tableView.dequeueReusableCell(withIdentifier: "BodyContentsTableViewCell") as! BodyContentsTableViewCell
-            let HTMLString: String = self.datailInformation.data.text
-            if let attributedString = try? NSAttributedString(data: HTMLString.data(using: .unicode)!, options: [NSAttributedString.DocumentReadingOptionKey.documentType : NSAttributedString.DocumentType.html], documentAttributes: nil) {
-                cell.contentLabel.attributedText = attributedString
-            }
             
-            cell.selectionStyle = .none
-            return cell
+            return displayBodyContentsTableViewCell()
         default:
             return UITableViewCell()
         }
@@ -801,6 +587,7 @@ extension DetailMessageViewController: UITableViewDataSource {
 }
 
 extension DetailMessageViewController {
+    
     func getSituationTypeTableViewCell(_ text: String) -> UITableViewCell {
         let cell = UITableViewCell()
         cell.backgroundColor = .clear
@@ -872,5 +659,68 @@ extension DetailMessageViewController {
         }
         
     }
+    
+}
+
+extension DetailMessageViewController {
+    
+    func displayLineView() -> UIView {
+        let view = UIView(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.size.width, height: 7.5))
+        let contentView = UIView(frame: CGRect(x: 10, y: 0, width: UIScreen.main.bounds.size.width-20, height: 7.5))
+        let lineView = UIView(frame: CGRect(x: 50+20, y: 3, width: UIScreen.main.bounds.size.width-20-50-20-15, height: 1.5))
+        contentView.backgroundColor = .white
+        lineView.backgroundColor = UIColor(hex6: 0xe5edf3)
+        
+        view.addSubview(contentView)
+        contentView.addSubview(lineView)
+        return view
+    }
+    
+    
+    // MARK: guard self.datailInformation != nil !!!!!!
+    func displayDownloadLinkTableViewCell(_ index: Int) -> UITableViewCell {
+        let cell = UITableViewCell()
+        let contentView = UIView(frame: CGRect(x: 10, y: 0, width: UIScreen.main.bounds.size.width-20, height: 25))
+        contentView.backgroundColor = .white
+        cell.backgroundColor = .clear
+        
+        let maxWidth = UIScreen.main.bounds.size.width-20-90-20
+        let imgView = UIImageView(frame: CGRect(x: 70, y: 0, width: 15, height: 15))
+        imgView.image = UIImage.resizedImage(image: UIImage(named: "附件")!, scaledToWidth: 15.0)
+        let btn = UIButton(frame: CGRect(x: 90, y: 0, width: maxWidth, height: 15))
+        let file = self.downloadedFiles[index]
+        btn.setTitle(file.originName + "（" + file.size + "）", for: .normal)
+        btn.titleLabel?.font = UIFont.systemFont(ofSize: 11, weight: UIFont.Weight.regular)
+        btn.setTitleColor(UIColor(hex6: 0x003A65), for: .normal)
+        btn.titleLabel?.textAlignment = .left
+        btn.contentHorizontalAlignment = .left
+        contentView.addSubview(btn)
+        contentView.addSubview(imgView)
+        
+        let btnSize = btn.sizeThatFits(CGSize(width: 400, height: 15))
+        if btnSize.width < maxWidth {
+            btn.frame.size = CGSize(width: btnSize.width, height: 15)
+        }
+        
+        btn.tag = index
+        btn.addTarget(self, action: #selector(downloadFile(_:)), for: .touchUpInside)
+        
+        cell.contentView.addSubview(contentView)
+        cell.selectionStyle = .none
+        return cell
+    }
+    
+    // MARK: guard self.datailInformation != nil !!!!!!
+    func displayBodyContentsTableViewCell() -> BodyContentsTableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "BodyContentsTableViewCell") as! BodyContentsTableViewCell
+        let HTMLString: String = self.datailInformation.data.text
+        if let attributedString = try? NSAttributedString(data: HTMLString.data(using: .unicode)!, options: [NSAttributedString.DocumentReadingOptionKey.documentType : NSAttributedString.DocumentType.html], documentAttributes: nil) {
+            cell.contentLabel.attributedText = attributedString
+        }
+        
+        cell.selectionStyle = .none
+        return cell
+    }
+    
     
 }

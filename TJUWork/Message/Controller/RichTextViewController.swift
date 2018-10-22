@@ -46,7 +46,7 @@ class RichTextViewController: ZSSRichTextEditor {
 extension RichTextViewController {
     
     @objc func cancelEdit(_ sender: UIButton) {
-        let alertVC = UIAlertController(title: "取消此次更改吗？", message: "", preferredStyle: .alert)
+        let alertVC = UIAlertController(title: "放弃此次更改吗？", message: "", preferredStyle: .alert)
         let cancelAction = UIAlertAction(title: "取消", style: .default) { _ in
             self.navigationController?.popViewController(animated: true)
         }
