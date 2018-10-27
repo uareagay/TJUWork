@@ -71,10 +71,13 @@ class MessageViewController: UIViewController {
             switch currentMenuType {
             case .inbox:
                 self.menuBtn.setTitle("收件箱", for: .normal)
+                self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .search, target: self, action: #selector(clickSearching(_:)))
             case .outbox:
                 self.menuBtn.setTitle("发件箱", for: .normal)
+                self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .search, target: self, action: #selector(clickSearching(_:)))
             case .draft:
                 self.menuBtn.setTitle("草稿箱", for: .normal)
+                self.navigationItem.rightBarButtonItem = nil
             }
             self.tableView.mj_footer.resetNoMoreData()
         }
@@ -193,7 +196,9 @@ class MessageViewController: UIViewController {
         NotificationCenter.default.addObserver(self, selector: #selector(refreshInboxLists), name: NotificationName.NotificationRefreshInboxLists.name, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(refreshOutboxLists), name: NotificationName.NotificationRefreshOutboxLists.name, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(refreshDraftLists), name: NotificationName.NotificationRefreshDraftLists.name, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(presentLoginView), name: NotificationName.NotificationLoginFail.name, object: nil)
         
+        semGlobal.signal()
         
         let forwardAction = UIBarButtonItem(title: "转发", style:  .plain, target: self, action: #selector(forwardMessage(_:)))
         let readAction = UIBarButtonItem(title: "标记已读", style:  .plain, target: self, action: #selector(markRead(_:)))
@@ -207,6 +212,10 @@ class MessageViewController: UIViewController {
             
         })
         
+    }
+    
+    @objc func presentLoginView() {
+        self.present(LoginViewController(), animated: true, completion: nil)
     }
     
     @objc func forwardMessage(_ sender: UIBarButtonItem) {
@@ -295,9 +304,11 @@ class MessageViewController: UIViewController {
         switch currentMenuType {
         case .inbox:
             let searchVC = SearchViewController(SearchViewController.SearchType.inbox)
+            searchVC.hidesBottomBarWhenPushed = true
             self.navigationController?.pushViewController(searchVC, animated: true)
         case .outbox:
             let searchVC = SearchViewController(SearchViewController.SearchType.outbox)
+            searchVC.hidesBottomBarWhenPushed = true
             self.navigationController?.pushViewController(searchVC, animated: true)
         default: break
         }
@@ -643,7 +654,6 @@ extension MessageViewController {
         group.enter()
         PersonalMessageHelper.getInboxList(success: { model in
             self.inboxList = model.data.data.filter { return $0.respondedDelete == 0 }
-            self.tableView.reloadData()
             group.leave()
         }, failure: {
             group.leave()
@@ -654,6 +664,8 @@ extension MessageViewController {
                 self.tableView.mj_header.endRefreshing()
             }
             self.tableView.reloadData()
+            
+            NotificationCenter.default.post(name: NotificationName.NotificationRefreshCalendar.name, object: nil)
         })
         
         self.tableView.mj_footer.resetNoMoreData()

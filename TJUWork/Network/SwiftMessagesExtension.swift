@@ -11,7 +11,6 @@ import SwiftMessages
 
 
 extension SwiftMessages {
-    
     static func showSuccessMessage(title: String = "", body: String = "") {
         SwiftMessages.show {
             let view = MessageView.viewFromNib(layout: .cardView)
@@ -31,5 +30,4 @@ extension SwiftMessages {
             return view
         }
     }
-    
 }

@@ -14,11 +14,9 @@ import MJRefresh
 import SwiftMessages
 
 class SetInfoViewController: UIViewController {
-    
     fileprivate var offY: CGFloat = 0
     //fileprivate let imgHeight = UIScreen.main.bounds.width*3/10
     fileprivate let imgHeight = 120
-//    fileprivate let tagArrs = ["用户名：","姓名：", "工资号：", "手机：", "微信：", "邮箱"]
     fileprivate let tagArrs = ["用户名：", "工资号：", "姓名：", "微信：", "邮箱：", "手机：", "办公电话："]
     
     var tableView: UITableView!
@@ -121,7 +119,7 @@ class SetInfoViewController: UIViewController {
         setupFooterView()
         GetUserInfo()
         NotificationCenter.default.addObserver(self, selector: #selector(GetUserInfo), name: NotificationName.NotificationRefreshPersonalInfo.name, object: nil)
-        
+        NotificationCenter.default.addObserver(self, selector: #selector(presentLoginView), name: NotificationName.NotificationLoginFail.name, object: nil)
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -149,12 +147,15 @@ class SetInfoViewController: UIViewController {
         logoutBtn.addTarget(self, action: #selector(logout(_:)), for: .touchUpInside)
     }
     
+    @objc func presentLoginView() {
+        self.present(LoginViewController(), animated: true, completion: nil)
+    }
+    
     @objc func logout(_ sender: UIButton) {
         let alertVC = UIAlertController(title: "退出", message: "确定要退出吗？", preferredStyle: .alert)
         let cancelAction = UIAlertAction(title: "不了", style: .default, handler: nil)
         cancelAction.setValue(UIColor.red, forKey: "titleTextColor")
         let outAction = UIAlertAction(title: "退出", style: .default, handler: { action in
-            
             AccountManager.logout(success: {
                 SwiftMessages.showSuccessMessage(title: "退出成功", body: "")
                 let loginVC = LoginViewController()
@@ -209,8 +210,6 @@ class SetInfoViewController: UIViewController {
     override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
         self.view.endEditing(true)
     }
-    
-    
 }
 
 extension SetInfoViewController: UIScrollViewDelegate {
@@ -456,22 +455,17 @@ extension SetInfoViewController: UIImagePickerControllerDelegate, UINavigationCo
         alertVC.addAction(photoAction)
         alertVC.addAction(cancelAction)
         
-        
         alertVC.popoverPresentationController?.sourceView = self.view
         alertVC.popoverPresentationController?.sourceRect = CGRect(x: 0, y: 0, width: 1, height: 1)
         
         self.present(alertVC, animated: true, completion: nil)
-        
     }
-    
-    
 }
 
 extension SetInfoViewController {
     
     @objc func GetUserInfo() {
         NetworkManager.getInformation(url: "/user/info", token: WorkUser.shared.token, success: { dic in
-            
             if let data = try? JSONSerialization.data(withJSONObject: dic, options: JSONSerialization.WritingOptions.init(rawValue: 0)), let userInfo = try? UserInfoModel(data: data) {
                 
                 self.userInfoModel = userInfo
@@ -493,7 +487,6 @@ extension SetInfoViewController {
     }
     
     func CheckEditStatus() -> Bool {
-        
         if let cell = tableView.cellForRow(at: IndexPath(row: 1, section: 0)) as? SetInfoTableViewCell {
             if cell.infoTextField.text != userInfoModel.data.payNumber ?? "" {
                 return true
@@ -521,11 +514,9 @@ extension SetInfoViewController {
         }
         
         return false
-        
     }
     
     @objc func cancelChangement(_ sender: UIButton) {
-        
         if let cell = tableView.cellForRow(at: IndexPath(row: 1, section: 0)) as? SetInfoTableViewCell {
             cell.infoTextField.text = userInfoModel.data.payNumber
         }
@@ -545,7 +536,6 @@ extension SetInfoViewController {
         self.view.endEditing(true)
         self.cancelBtn.isHidden = true
         self.saveBtn.isHidden = true
-        
     }
     
     @objc func saveChangement(_ sender: UIButton) {
@@ -599,5 +589,4 @@ extension SetInfoViewController {
             self.saveBtn.isHidden = true
         })
     }
-    
 }

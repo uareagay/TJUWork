@@ -12,7 +12,6 @@ import SwiftMessages
 
 
 class LoginViewController: UIViewController {
-    
     fileprivate let tjuImageView: UIImageView = {
         let imgView = UIImageView()
         imgView.image = UIImage.resizedImage(image: UIImage(named: "TJULogo")!, scaledToWidth: UIScreen.main.bounds.width/3)
@@ -26,7 +25,7 @@ class LoginViewController: UIViewController {
     }()
     
     
-    let usernameLabel: UILabel = {
+    fileprivate let usernameLabel: UILabel = {
         let label = UILabel()
         label.text = "用户名："
         label.textColor = UIColor(hex6: 0x00518e)
@@ -36,7 +35,7 @@ class LoginViewController: UIViewController {
         return label
     }()
     
-    let passwordLabel: UILabel = {
+    fileprivate let passwordLabel: UILabel = {
         let label = UILabel()
         label.text = "密码 ："
         label.textColor = UIColor(hex6: 0x00518e)
@@ -46,8 +45,7 @@ class LoginViewController: UIViewController {
         return label
     }()
 
-    
-    let usernameTextField: UITextField = {
+    fileprivate let usernameTextField: UITextField = {
         let textField = UITextField()
         textField.clearButtonMode = .whileEditing
         textField.borderStyle = .roundedRect
@@ -58,7 +56,7 @@ class LoginViewController: UIViewController {
         return textField
     }()
     
-    let passwordTextField: UITextField = {
+    fileprivate let passwordTextField: UITextField = {
         let textField = UITextField()
         textField.isSecureTextEntry = true
         textField.borderStyle = .roundedRect
@@ -69,7 +67,7 @@ class LoginViewController: UIViewController {
         return textField
     }()
 
-    let loginBtn: UIButton = {
+    fileprivate let loginBtn: UIButton = {
         let btn = UIButton(type: .custom)
         btn.setTitle("登录", for: .normal)
         btn.setTitleColor(.white, for: .normal)
@@ -81,10 +79,10 @@ class LoginViewController: UIViewController {
         return btn
     }()
     
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        self.view.backgroundColor = .white
         self.view.addSubview(tjuImageView)
         self.view.addSubview(usernameLabel)
         self.view.addSubview(passwordLabel)
@@ -151,19 +149,13 @@ class LoginViewController: UIViewController {
             //make.bottom.equalToSuperview().inset(UIScreen.main.bounds.height/5)
         }
         
-        
-        
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow(_:)), name: .UIKeyboardWillShow, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide(_:)), name: .UIKeyboardWillHide, object: nil)
-        
-        self.view.backgroundColor = .white
-        
     }
     
 
     @objc func login(_ sender: UIButton) {
         self.view.endEditing(true)
-        
         guard let username = usernameTextField.text, !username.isEmpty else {
             SwiftMessages.showErrorMessage(title: "", body: "请填写用户名")
             return
@@ -175,6 +167,8 @@ class LoginViewController: UIViewController {
         }
         
         loginBtn.isEnabled = false
+        usernameTextField.isUserInteractionEnabled = false
+        passwordTextField.isUserInteractionEnabled = false
         
         AccountManager.getToken(username: username, password: password, success: { token in
             WorkUser.shared.token = token
@@ -182,13 +176,18 @@ class LoginViewController: UIViewController {
             WorkUser.shared.password = password
             WorkUser.shared.save()
             
-            self.loginBtn.isEnabled = true
-            
             NotificationCenter.default.post(name: NotificationName.NotificationRefreshPersonalInfo.name, object: nil)
             NotificationCenter.default.post(name: NotificationName.NotificationRefreshCalendar.name, object: nil)
             NotificationCenter.default.post(name: NotificationName.NotificationRefreshInboxLists.name, object: nil)
-            NotificationCenter.default.post(name: NotificationName.NotificationRefreshOutboxLists.name, object: nil)
-            NotificationCenter.default.post(name: NotificationName.NotificationRefreshDraftLists.name, object: nil)
+//            NotificationCenter.default.post(name: NotificationName.NotificationRefreshOutboxLists.name, object: nil)
+//            NotificationCenter.default.post(name: NotificationName.NotificationRefreshDraftLists.name, object: nil)
+            if let clientID = WorkUser.shared.clientID {
+                NetworkManager.postInformation(url: "/user/device", token: WorkUser.shared.token, parameters: ["cid": clientID], success:{ dic in
+                    print(dic)
+                }, failure:{ error in
+                    
+                })
+            }
             
             self.dismiss(animated: true, completion: {
                 SwiftMessages.showSuccessMessage(title: "登录成功", body: "")
@@ -196,20 +195,17 @@ class LoginViewController: UIViewController {
         }, failure: { errorMeg in
             SwiftMessages.showErrorMessage(title: "登录失败", body: "")
             self.loginBtn.isEnabled = true
+            self.usernameTextField.isUserInteractionEnabled = true
+            self.passwordTextField.isUserInteractionEnabled = true
         })
-        
-        //self.present(MainTanBarController(), animated: true, completion: nil)
     }
     
     deinit {
         NotificationCenter.default.removeObserver(self)
     }
-    
 }
 
-
 extension LoginViewController: UITextFieldDelegate {
-    
     @objc func keyboardWillShow(_ notification: NSNotification) {
         self.view.frame.origin.y = -100
         
@@ -231,5 +227,4 @@ extension LoginViewController: UITextFieldDelegate {
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         self.view.endEditing(true)
     }
-    
 }

@@ -8,6 +8,8 @@
 
 import Foundation
 
+
+fileprivate let queue = DispatchQueue(label: "com.tjuwork.cache")
 class WorkUser: Codable {
     
     static var shared = WorkUser()
@@ -31,9 +33,8 @@ class WorkUser: Codable {
     
     var entireUsersModel: EntireUsersModel?
     
-    
     func save() {
-        let queue = DispatchQueue(label: "com.tjuwork.cache")
+        //let queue = DispatchQueue(label: "com.tjuwork.cache")
         queue.async {
             Storage.store(self, in: .documents, as: "user.json")
         }
@@ -41,26 +42,35 @@ class WorkUser: Codable {
     
     func load(success: (() -> ())?, failure: (() -> ())?) {
         guard Storage.fileExists("user.json", in: .documents) else {
-            failure?()
+            DispatchQueue.main.async {
+                failure?()
+            }
             return
         }
-        let queue = DispatchQueue(label: "com.tjuwork.cache")
+        //let queue = DispatchQueue(label: "com.tjuwork.cache")
         queue.async {
             let user = Storage.retreive("user.json", from: .documents, as: WorkUser.self)
             if let user = user {
                 WorkUser.shared = user
-                success?()
+                DispatchQueue.main.async {
+                    success?()
+                }
             } else {
-                failure?()
+                DispatchQueue.main.async {
+                    failure?()
+                }
             }
         }
     }
     
     func delete() {
-        
-        
-        print(Storage.remove("user.json", from: .documents))
+        queue.async {
+            print(Storage.remove("user.json", from: .documents))
+        }
+//        print(Storage.remove("user.json", from: .documents))
+        let clientID = WorkUser.shared.clientID
         WorkUser.shared = WorkUser()
+        WorkUser.shared.clientID = clientID
     }
     
 //    EntireUsersHelper.getEntireUsersInLabels(success: { model in

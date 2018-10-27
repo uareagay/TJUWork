@@ -16,7 +16,6 @@ struct ScheduleHelper {
         NetworkManager.getInformation(url: "/calender/list", token: WorkUser.shared.token, success: { dic in
             if let status = dic["status"] as? Bool, status == true {
                 if let data = try? JSONSerialization.data(withJSONObject: dic, options: JSONSerialization.WritingOptions.init(rawValue: 0)), let model = try? ScheduleListsModel(data: data) {
-                    //SwiftMessages.showSuccessMessage(title: "获取日历列表成功")
                     success?(model)
                 } else {
                     SwiftMessages.showErrorMessage(title: "获取日历列表失败")

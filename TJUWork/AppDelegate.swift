@@ -15,6 +15,8 @@ let kGtAppId:String = "ZmFLD0KnsT6fwaWOWIt4a7"
 let kGtAppKey:String = "Y9nl0CDSSa5a04VGR1ZvE3"
 let kGtAppSecret:String = "fh8BbLUIMk5Bn09J2hoCF1"
 
+let semGlobal = DispatchSemaphore(value: 0)
+
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
@@ -38,43 +40,30 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         let mainVC = MainTanBarController()
         
-        //UIApplication.shared.statusBarStyle = .lightContent
-        
-//        if let remoteDic = launchOptions?[UIApplicationLaunchOptionsKey.remoteNotification] {
-//            mainVC.selectedIndex = 1
-//            AccountManager.getToken(username: WorkUser.shared.username, password: WorkUser.shared.password, success: { token in
-//                WorkUser.shared.token = token
-//                WorkUser.shared.save()
-//            }, failure: { error in
-//
-//            })
-//        } else {
-//            mainVC.selectedIndex = 0
-//        }
-        
         mainVC.selectedIndex = 0
         self.window?.rootViewController = mainVC
         
-        
         //WorkUser.shared.delete()
         WorkUser.shared.load(success: {
+            semGlobal.wait()
+            NotificationCenter.default.post(name: NotificationName.NotificationRefreshCalendar.name, object: nil)
+            NotificationCenter.default.post(name: NotificationName.NotificationRefreshInboxLists.name, object: nil)
             
-//            AccountManager.getToken(username: WorkUser.shared.username, password: WorkUser.shared.password, success: { token in
-//                WorkUser.shared.token = token
-//                WorkUser.shared.save()
-//                
-//                SwiftMessages.showSuccessMessage(title: "登录成功", body: "")
-//                
-//            }, failure: { errorMsg in
-////                self.window?.rootViewController = LoginViewController()
-////                SwiftMessages.showErrorMessage(title: "请重新登录", body: "")
-//                NotificationCenter.default.post(name: NotificationName.NotificationLoginFail.name, object: nil)
-//            })
+            AccountManager.getToken(username: WorkUser.shared.username, password: WorkUser.shared.password, success: { token in
+                WorkUser.shared.token = token
+                WorkUser.shared.save()
+            }, failure: { error in
+                if error is NetworkManager.NetworkNotExist {
+                    SwiftMessages.showErrorMessage(title: "您似乎已断开与互联网连接", body: "")
+                } else {
+                    SwiftMessages.showErrorMessage(title: "请重新登录", body: "")
+                }
+                self.window?.rootViewController?.present(LoginViewController(), animated: true, completion: nil)
+            })
         }, failure: {
-            //NotificationCenter.default.post(name: NotificationName.NotificationLoginFail.name, object: nil)
-            //self.window?.rootViewController!.present(LoginViewController(), animated: true, completion: nil)
+            SwiftMessages.showErrorMessage(title: "请输入密码", body: "")
+            self.window?.rootViewController?.present(LoginViewController(), animated: true, completion: nil)
         })
-        
         
         return true
     }
@@ -144,13 +133,11 @@ extension AppDelegate: GeTuiSdkDelegate {
         NSLog("\n>>>[GeTuiSdk RegisterClient]:%@\n\n", clientId);
         
         WorkUser.shared.clientID = clientId
-        
-        NetworkManager.postInformation(url: "/user/device", token: WorkUser.shared.token, parameters: ["cid": clientId], success: { dic in
-            
-        }, failure: { error in
-            
-        })
-        
+//        NetworkManager.postInformation(url: "/user/device", token: WorkUser.shared.token, parameters: ["cid": clientId], success: { dic in
+//
+//        }, failure: { error in
+//
+//        })
     }
     
     /** SDK遇到错误回调 */
@@ -176,9 +163,14 @@ extension AppDelegate: GeTuiSdkDelegate {
         
         NSLog("\n>>>[GeTuiSdk DidReceivePayload]:%@\n\n",msg);
         
+        
+        UIApplication.shared.applicationIconBadgeNumber = 0
+        
         if offLine == false {
             let rvc = UIAlertController(title: nil, message: "有一条新消息", preferredStyle: .alert)
-            let cancelAction = UIAlertAction(title: "稍后", style: .default, handler: nil)
+            let cancelAction = UIAlertAction(title: "稍后", style: .default) { action in
+                NotificationCenter.default.post(name: NotificationName.NotificationRefreshInboxLists.name, object: nil)
+            }
             let checkAction = UIAlertAction(title: "查看", style: .default) { action in
                 
                 self.jumpPage()

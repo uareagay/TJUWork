@@ -8,7 +8,7 @@
 
 import Foundation
 import Alamofire
-
+import SwiftMessages
 
 fileprivate let WORK_ROOT_URL = "https://work-alpha.twtstudio.com/api"
 
@@ -28,7 +28,14 @@ struct NetworkManager {
             case .success:
                 if let data = response.result.value {
                     if let dict = data as? [String:Any] {
-                        success?(dict)
+                        if let code = dict["code"] as? Int, (code >= 400001 && code <= 400006) {
+                            //SwiftMessages.showErrorMessage(title: "请重新登录")
+                            NotificationCenter.default.post(name: NotificationName.NotificationLoginFail.name, object: nil)
+                            let err = TokenIsFalse()
+                            failure?(err)
+                        } else {
+                            success?(dict)
+                        }
                     }
                 } else {
                     let error = NetworkNotExist(errorString)
@@ -42,7 +49,6 @@ struct NetworkManager {
     }
     
     static func postInformation(baseURL: String = WORK_ROOT_URL, url:String, token: String? = nil, parameters: [String:Any]? = nil, success: (([String:Any]) -> ())? = nil, failure: ((Error) -> ())? = nil) {
-        
         
         let fullURL = baseURL + url
         
@@ -81,7 +87,14 @@ struct NetworkManager {
                 upload.responseJSON(completionHandler: { response in
                     if let data = response.result.value {
                         if let dict = data as? [String:Any] {
-                            success?(dict)
+                            if let code = dict["code"] as? Int, (code >= 400001 && code <= 400006) {
+                                //SwiftMessages.showErrorMessage(title: "请重新登录")
+                                NotificationCenter.default.post(name: NotificationName.NotificationLoginFail.name, object: nil)
+                                let err = TokenIsFalse()
+                                failure?(err)
+                            } else {
+                                success?(dict)
+                            }
                         }
                     } else {
                         let error = NetworkNotExist(errorString)
@@ -108,5 +121,9 @@ struct NetworkManager {
         }
     }
     static let errorString: String = "您似乎已与网络断开连接"
+    
+    struct TokenIsFalse: Error {
+        var localizedDescription: String = "TokenIsFalse"
+    }
     
 }

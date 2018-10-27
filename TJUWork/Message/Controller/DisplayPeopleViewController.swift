@@ -82,14 +82,22 @@ extension DisplayPeopleViewController {
             return
         }
         
-        let uids = self.peopleArrs.map { $0.0 }
-        PersonalMessageHelper.forwardMessage(mids: self.mids, uids: uids, success: {
-            NotificationCenter.default.post(name: NotificationName.NotificationRefreshInboxLists.name, object: nil)
-            NotificationCenter.default.post(name: NotificationName.NotificationRefreshOutboxLists.name, object: nil)
-            self.navigationController?.popViewController(animated: true)
-        }, failure: {
-            
-        })
+        let alertVC = UIAlertController(title: "确认转发吗？", message: "", preferredStyle: .alert)
+        let cancelAction = UIAlertAction(title: "取消", style: .default)
+        let saveChangeAction = UIAlertAction(title: "确认", style: .default) { _ in
+            let uids = self.peopleArrs.map { $0.0 }
+            PersonalMessageHelper.forwardMessage(mids: self.mids, uids: uids, success: {
+                NotificationCenter.default.post(name: NotificationName.NotificationRefreshInboxLists.name, object: nil)
+                NotificationCenter.default.post(name: NotificationName.NotificationRefreshOutboxLists.name, object: nil)
+                self.navigationController?.popViewController(animated: true)
+            }, failure: {
+                
+            })
+        }
+        
+        alertVC.addAction(cancelAction)
+        alertVC.addAction(saveChangeAction)
+        self.present(alertVC, animated: true)
     }
     
     @objc func addPeople(_ sender: UIBarButtonItem) {
@@ -101,11 +109,6 @@ extension DisplayPeopleViewController {
 }
 
 extension DisplayPeopleViewController: UITableViewDelegate {
-    
-//    func tableView(_ tableView: UITableView, editingStyleForRowAt indexPath: IndexPath) -> UITableViewCellEditingStyle {
-//        return .delete
-//    }
-    
 
     func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
         return true
@@ -137,14 +140,11 @@ extension DisplayPeopleViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         var cell = tableView.dequeueReusableCell(withIdentifier: "CELLID")
         if cell == nil {
-            cell = UITableViewCell(style: .value1, reuseIdentifier: "CELLID")
+            cell = UITableViewCell(style: .default, reuseIdentifier: "CELLID")
         }
         
-        //cell?.textLabel?.text = self.displayUsersTuple[indexPath.row].1
-        
         cell?.textLabel?.text = self.peopleArrs[indexPath.row].1
-        cell?.detailTextLabel?.text = "学工部"
-        
+        //cell?.detailTextLabel?.text = "学工部"
         return cell!
     }
     

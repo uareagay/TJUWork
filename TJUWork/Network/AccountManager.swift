@@ -10,7 +10,6 @@ import Foundation
 
 
 struct AccountManager {
-    
     static func getToken(username: String, password: String, success: ((String) -> ())?, failure: ((Error) -> ())?) {
         let para: [String: String] = ["username": username, "password": password]
         
@@ -27,7 +26,6 @@ struct AccountManager {
     }
     
     static func logout(success: (() -> ())?, failure: ((Error) -> ())?) {
-        
         NetworkManager.getInformation(url: "/logout", token: WorkUser.shared.token, parameters: nil, success: { dic in
             if let status = dic["status"] as? Bool, status == true {
                 success?()
@@ -43,5 +41,4 @@ struct AccountManager {
     struct err: Error {
         var localizedDescription: String = ""
     }
-    
 }

@@ -9,9 +9,6 @@
 import UIKit
 import SnapKit
 
-protocol TreeTableViewDelegate: class {
-    
-}
 
 class TreeTableView: UITableView {
     
@@ -48,15 +45,34 @@ class TreeTableView: UITableView {
         
         node = TreeNode(name: "学工部", ID: 3, parentID: 1, depth: 1, isVisible: false, isExpand: false, isChild: false, isSelected: false, uid: "")
         modelDatas.append(node)
+        
+        node = TreeNode(name: "校团委", ID: 4, parentID: 1, depth: 1, isVisible: false, isExpand: false, isChild: false, isSelected: false, uid: "")
+        modelDatas.append(node)
+        
         //visibleModelDatas.append(node)
         
-        var id: Int = 4
+        var id: Int = 5
         
         for index in 0..<model.data.count {
             let label = model.data[index]
             if label.type == "0" {
                 let name = label.labelName
-                if name == "本科生教育科" || name == "本科生管理科" || name == "研究生教育管理科" || name == "心理健康教育中心" || name == "就业指导中心" || name == "学生资助管理中心" || name == "武装部" {
+                
+                node = TreeNode(name: label.labelName, ID: id, parentID: 0, depth: 1, isVisible: false, isExpand: false, isChild: false, isSelected: false, uid: "")
+                modelDatas.append(node)
+                let parID = id
+                id += 1
+                for i in 0..<label.users.count {
+                    let user = label.users[i]
+                    node = TreeNode(name: user.realName, ID: id, parentID: parID, depth: 2, isVisible: false, isExpand: false, isChild: true, isSelected: false, uid: user.uid)
+                    modelDatas.append(node)
+                    id += 1
+                }
+                
+            } else {
+                let name = label.labelName
+                //学院属于行政单位，但是把它独立出来
+                if name == "本科生教育科" || name == "本科生管理科" || name == "研究生教育管理科" || name == "心理健康教育中心" || name == "就业指导中心" || name == "学生资助管理中心" || name == "武装部" || name == "学工领导" || name == "园区中心" || name == "教学中心" || name == "学生档案室" {
                     node = TreeNode(name: label.labelName, ID: id, parentID: 3, depth: 2, isVisible: false, isExpand: false, isChild: false, isSelected: false, uid: "")
                     modelDatas.append(node)
                     let parID = id
@@ -67,22 +83,18 @@ class TreeTableView: UITableView {
                         modelDatas.append(node)
                         id += 1
                     }
-                } else {
-                    node = TreeNode(name: label.labelName, ID: id, parentID: 0, depth: 1, isVisible: false, isExpand: false, isChild: false, isSelected: false, uid: "")
+                } else if name == "组织部" || name == "宣传部" || name == "权益部" || name == "双创部" || name == "艺术教育中心" || name == "美育部" || name == "校团委书记" {
+                    node = TreeNode(name: label.labelName, ID: id, parentID: 4, depth: 2, isVisible: false, isExpand: false, isChild: false, isSelected: false, uid: "")
                     modelDatas.append(node)
                     let parID = id
                     id += 1
                     for i in 0..<label.users.count {
                         let user = label.users[i]
-                        node = TreeNode(name: user.realName, ID: id, parentID: parID, depth: 2, isVisible: false, isExpand: false, isChild: true, isSelected: false, uid: user.uid)
+                        node = TreeNode(name: user.realName, ID: id, parentID: parID, depth: 3, isVisible: false, isExpand: false, isChild: true, isSelected: false, uid: user.uid)
                         modelDatas.append(node)
                         id += 1
                     }
-                }
-            } else {
-                let name = label.labelName
-                //学院属于行政单位，但是把它独立出来
-                if name.hasSuffix("学院") || name.hasSuffix("学部") || name.hasSuffix("研究院") {
+                } else if name.hasSuffix("学院") || name.hasSuffix("学部") || name.hasSuffix("研究院") {
                     node = TreeNode(name: label.labelName, ID: id, parentID: 2, depth: 1, isVisible: false, isExpand: false, isChild: false, isSelected: false, uid: "")
                     modelDatas.append(node)
                     let parID = id
@@ -97,6 +109,14 @@ class TreeTableView: UITableView {
                     //let parID = id
                     let parID = 3
                     //id += 1
+                    for i in 0..<label.users.count {
+                        let user = label.users[i]
+                        node = TreeNode(name: user.realName, ID: id, parentID: parID, depth: 2, isVisible: false, isExpand: false, isChild: true, isSelected: false, uid: user.uid)
+                        modelDatas.append(node)
+                        id += 1
+                    }
+                } else if name == "校团委" {
+                    let parID = 4
                     for i in 0..<label.users.count {
                         let user = label.users[i]
                         node = TreeNode(name: user.realName, ID: id, parentID: parID, depth: 2, isVisible: false, isExpand: false, isChild: true, isSelected: false, uid: user.uid)

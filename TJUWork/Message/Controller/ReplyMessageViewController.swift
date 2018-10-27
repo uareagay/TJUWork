@@ -13,7 +13,7 @@ class ReplyMessageViewController: UIViewController {
     
     fileprivate var textView: UITextView = {
         let textView = UITextView()
-        textView.text = "编辑内容"
+        textView.text = ""
         textView.textColor = .lightGray
         textView.backgroundColor = .white
         textView.isUserInteractionEnabled = true
@@ -23,8 +23,9 @@ class ReplyMessageViewController: UIViewController {
         return textView
     }()
     
-    var HTMLString: String = "<p>编辑内容</p>" {
+    var HTMLString: String = "" {
         didSet {
+            //<p>编辑内容</p>
 //            if let attributedString = try? NSAttributedString(data: (HTMLString.data(using: .unicode))!, options: [NSAttributedString.DocumentReadingOptionKey.documentType : NSAttributedString.DocumentType.html], documentAttributes: nil) {
 //                self.textView.attributedText = attributedString
 //            }
@@ -90,14 +91,30 @@ extension ReplyMessageViewController: UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
         guard section == 2 else {
-            return 0.0
+//            return 0.0
+            if section == 1 {
+                return 20
+            } else {
+                return 0.0
+            }
         }
         return 55
     }
     
+    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        guard section == 2 else {
+            return nil
+        }
+        return "编辑内容"
+    }
+    
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         guard section == 1 else {
-            return UIView()
+            if section == 2 {
+                return nil
+            } else {
+                return UIView()
+            }
         }
         
         let view = UIView(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.size.width, height: 7.5))
@@ -113,7 +130,7 @@ extension ReplyMessageViewController: UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
         guard section == 2 else {
-            return nil
+            return UIView()
         }
         
         replyBtn.removeFromSuperview()
@@ -233,9 +250,9 @@ extension ReplyMessageViewController {
                 self.textView.isUserInteractionEnabled = true
             })
         }
+        
         alertVC.addAction(cancelAction)
         alertVC.addAction(saveChangeAction)
-        
         self.present(alertVC, animated: true)
         
     }

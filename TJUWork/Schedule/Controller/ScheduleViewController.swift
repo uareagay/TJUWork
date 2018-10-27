@@ -73,14 +73,14 @@ class ScheduleViewController: UIViewController {
             if isSelecting == true {
                 
                 self.calendar.isUserInteractionEnabled = false
-                self.tableView.mj_header = nil
+//                self.tableView.mj_header = nil
                 self.deleteBtn.alpha = 1.0
                 self.selectAllBtn.alpha = 1.0
                 
                 self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "完成", style: .plain, target: self, action: #selector(cancelEditStatus(_:)))
             } else {
                 self.calendar.isUserInteractionEnabled = true
-                self.tableView.mj_header = MJRefreshNormalHeader(refreshingTarget: self, refreshingAction: #selector(headerRefresh))
+//                self.tableView.mj_header = MJRefreshNormalHeader(refreshingTarget: self, refreshingAction: #selector(headerRefresh))
                 
                 self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addCalendar(_:)))
                 
@@ -156,21 +156,21 @@ class ScheduleViewController: UIViewController {
         
         chineseCalendar = Calendar(identifier: .chinese)
         
-        self.tableView.mj_header = MJRefreshNormalHeader(refreshingTarget: self, refreshingAction: #selector(headerRefresh))
+//        self.tableView.mj_header = MJRefreshNormalHeader(refreshingTarget: self, refreshingAction: #selector(headerRefresh))
         
-        AccountManager.getToken(username: WorkUser.shared.username, password: WorkUser.shared.password, success: { token in
-            WorkUser.shared.token = token
-            WorkUser.shared.save()
-            
-            self.headerRefresh()
-        }, failure: { error in
-            if error is NetworkManager.NetworkNotExist {
-                SwiftMessages.showErrorMessage(title: "您似乎已断开与互联网连接", body: "")
-            } else {
-                SwiftMessages.showErrorMessage(title: "请重新登录", body: "")
-            }
-            NotificationCenter.default.post(name: NotificationName.NotificationLoginFail.name, object: nil)
-        })
+//        AccountManager.getToken(username: WorkUser.shared.username, password: WorkUser.shared.password, success: { token in
+//            WorkUser.shared.token = token
+//            WorkUser.shared.save()
+//
+//            self.headerRefresh()
+//        }, failure: { error in
+//            if error is NetworkManager.NetworkNotExist {
+//                SwiftMessages.showErrorMessage(title: "您似乎已断开与互联网连接", body: "")
+//            } else {
+//                SwiftMessages.showErrorMessage(title: "请重新登录", body: "")
+//            }
+//            NotificationCenter.default.post(name: NotificationName.NotificationLoginFail.name, object: nil)
+//        })
         
         cancelBarButtonItem = UIBarButtonItem(title: "完成", style: .plain, target: self, action: #selector(cancelEditStatus(_:)))
         
@@ -186,10 +186,13 @@ class ScheduleViewController: UIViewController {
         selectAllBtn.addTarget(self, action: #selector(selectAllMessage(_:)), for: .touchUpInside)
         deleteBtn.addTarget(self, action: #selector(deleteMessage(_:)), for: .touchUpInside)
         
+        headerRefresh()
         requestEvents()
         
         NotificationCenter.default.addObserver(self, selector: #selector(presentLoginView), name: NotificationName.NotificationLoginFail.name, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(headerRefresh), name: NotificationName.NotificationRefreshCalendar.name, object: nil)
+        semGlobal.signal()
+        
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -204,14 +207,12 @@ class ScheduleViewController: UIViewController {
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         self.isSelecting = false
-        
-        self.tableView.mj_header.endRefreshing()
+//        self.tableView.mj_header.endRefreshing()
     }
     
 }
 
 extension ScheduleViewController {
-    
     @objc func addCalendar(_ sender: UIButton) {
         let addVC = AddScheduleViewController()
         self.navigationController?.pushViewController(addVC, animated: true)
@@ -247,16 +248,16 @@ extension ScheduleViewController {
             
             self.getSelectedData()
             
-            if self.tableView.mj_header.isRefreshing {
-                self.tableView.mj_header.endRefreshing()
-            }
+//            if self.tableView.mj_header.isRefreshing {
+//                self.tableView.mj_header.endRefreshing()
+//            }
             
             self.tableView.reloadData()
             self.calendar.reloadData()
         }, failure: {
-            if self.tableView.mj_header.isRefreshing {
-                self.tableView.mj_header.endRefreshing()
-            }
+//            if self.tableView.mj_header.isRefreshing {
+//                self.tableView.mj_header.endRefreshing()
+//            }
         })
     }
     
@@ -393,7 +394,7 @@ extension ScheduleViewController: UITableViewDelegate {
             view.addSubview(contentView)
             
             if section == 1 {
-                titleLabel.text = "当日事件"
+                titleLabel.text = "今日截止"
                 self.dateLabel.removeFromSuperview()
                 contentView.addSubview(dateLabel)
                 dateLabel.snp.makeConstraints { make in
@@ -401,7 +402,7 @@ extension ScheduleViewController: UITableViewDelegate {
                     make.width.equalTo(120)
                 }
             } else {
-                titleLabel.text = "提醒事项"
+                titleLabel.text = "即将截止 "
             }
             return view
         }

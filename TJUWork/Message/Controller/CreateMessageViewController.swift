@@ -133,8 +133,9 @@ class CreateMessageViewController: UIViewController {
         return btn
     }()
     
-    var HTMLString: String = "<p>编辑内容</p>" {
+    var HTMLString: String = "" {
         didSet {
+            //<p>编辑内容</p>
 //            if let attributedString = try? NSAttributedString(data: (HTMLString.data(using: .unicode))!, options: [NSAttributedString.DocumentReadingOptionKey.documentType : NSAttributedString.DocumentType.html], documentAttributes: nil) {
 //                self.textView.attributedText = attributedString
 //            }
@@ -145,7 +146,7 @@ class CreateMessageViewController: UIViewController {
     
     fileprivate var textView: UITextView = {
         let textView = UITextView()
-        textView.text = "编辑内容"
+        textView.text = ""
         textView.textColor = .lightGray
         textView.backgroundColor = .white
         textView.isUserInteractionEnabled = true
@@ -356,12 +357,22 @@ extension CreateMessageViewController: UITableViewDelegate {
     }
 
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        return UIView()
+        guard section == 1 else {
+            return UIView()
+        }
+        return nil
+    }
+    
+    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        guard section == 1 else {
+            return nil
+        }
+        return "编辑内容"
     }
 
     func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
         guard section == 1 else {
-            return 0.0
+            return 20
         }
         return 55
     }

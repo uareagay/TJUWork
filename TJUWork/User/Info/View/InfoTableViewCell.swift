@@ -10,7 +10,6 @@ import UIKit
 import SnapKit
 
 class InfoTableViewCell: UITableViewCell {
-    
     let nameLabel: UILabel = {
         let label = UILabel()
         label.text = "用户名："
@@ -59,10 +58,7 @@ class InfoTableViewCell: UITableViewCell {
             make.bottom.equalToSuperview()
             make.height.equalTo(0.5)
         }
-        
-        
     }
-    
     
     override var frame: CGRect {
         didSet {

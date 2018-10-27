@@ -184,20 +184,26 @@ extension SearchViewController: UITableViewDelegate {
             let detailVC: DetailMessageViewController
             let isReaded = data.isRead == "0" ? false : true
             if isResponse == 1 {
-                detailVC = DetailMessageViewController(mid: data.mid, isReply: false, messageType: .inbox, isReaded: isReaded)
+                detailVC = DetailMessageViewController(mid: data.mid, isReply: false, messageType: .inbox, isReaded: isReaded, isDisplayPeople: true)
             } else if isResponse == -1 {
                 detailVC = DetailMessageViewController(mid: data.mid, isReply: false, messageType: .inbox, isReaded: isReaded)
             } else if isResponse == 0 {
-                detailVC = DetailMessageViewController(mid: data.mid, isReply: true, messageType: .inbox, isReaded: isReaded)
+                detailVC = DetailMessageViewController(mid: data.mid, isReply: true, messageType: .inbox, isReaded: isReaded, isDisplayPeople: true)
             } else {
                 //不会执行
                 detailVC = DetailMessageViewController()
             }
+            //detailVC.hidesBottomBarWhenPushed = true
             self.navigationController?.pushViewController(detailVC, animated: true)
-            
         case .outbox:
             let data = self.outboxLists[indexPath.section]
-            let detailVC = DetailMessageViewController(mid: data.mid, isReply: false, messageType: .outbox, isReaded: true)
+            let detailVC: DetailMessageViewController
+            if data.type == "工作消息" {
+                detailVC = DetailMessageViewController(mid: data.mid, isReply: false, messageType: .outbox, isReaded: true, isDisplayPeople: true)
+            } else {
+                detailVC = DetailMessageViewController(mid: data.mid, isReply: false, messageType: .outbox, isReaded: true, isDisplayPeople: false)
+            }
+            //detailVC.hidesBottomBarWhenPushed = true
             self.navigationController?.pushViewController(detailVC, animated: true)
         }
     }

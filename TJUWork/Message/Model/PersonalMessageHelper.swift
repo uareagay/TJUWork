@@ -17,6 +17,9 @@ struct PersonalMessageHelper {
             if let status = dic["status"] as? Bool, status == true {
                 SwiftMessages.showSuccessMessage(title: "发送成功")
                 success?()
+            } else if let code = dic["code"] as? Int, code == 400001 {
+                NotificationCenter.default.post(name: NotificationName.NotificationLoginFail.name, object: nil)
+                failure?()
             } else {
                 SwiftMessages.showErrorMessage(title: "发送失败")
                 failure?()
@@ -133,7 +136,6 @@ struct PersonalMessageHelper {
         NetworkManager.getInformation(url: "/draft/web/list?page=\(page)", token: WorkUser.shared.token, success: { dic in
             if let status = dic["status"] as? Bool, status == true {
                 if let data = try? JSONSerialization.data(withJSONObject: dic, options: JSONSerialization.WritingOptions.init(rawValue: 0)), let model = try? DraftListModel(data: data) {
-                    //SwiftMessages.showSuccessMessage(title: "获取草稿列表成功")
                     success?(model)
                 } else {
                     SwiftMessages.showErrorMessage(title: "获取草稿列表失败")
@@ -157,7 +159,6 @@ struct PersonalMessageHelper {
         NetworkManager.getInformation(url: "/message/web/outbox?page=\(page)", token: WorkUser.shared.token, success: { dic in
             if let status = dic["status"] as? Bool, status == true {
                 if let data = try? JSONSerialization.data(withJSONObject: dic, options: JSONSerialization.WritingOptions.init(rawValue: 0)), let model = try? OutboxListModel(data: data) {
-                    //SwiftMessages.showSuccessMessage(title: "获取发件列表成功")
                     success?(model)
                 } else {
                     SwiftMessages.showErrorMessage(title: "获取发件列表失败")
@@ -181,7 +182,6 @@ struct PersonalMessageHelper {
         NetworkManager.getInformation(url: "/message/web/inbox?page=\(page)", token: WorkUser.shared.token, success: { dic in
             if let status = dic["status"] as? Bool, status == true {
                 if let data = try? JSONSerialization.data(withJSONObject: dic, options: JSONSerialization.WritingOptions.init(rawValue: 0)), let model = try? InboxListModel(data: data) {
-                    //SwiftMessages.showSuccessMessage(title: "获取收件列表成功")
                     success?(model)
                 } else {
                     SwiftMessages.showErrorMessage(title: "获取收件列表失败")
@@ -196,30 +196,6 @@ struct PersonalMessageHelper {
                 SwiftMessages.showErrorMessage(title: NetworkManager.errorString)
             } else {
                 SwiftMessages.showErrorMessage(title: "获取收件列表失败")
-            }
-            failure?()
-        })
-    }
-    
-    static func getCalendarList(success: ((WorkCalendarModel)->())?, failure: (()->())?) {
-        NetworkManager.getInformation(url: "/message/calender", token: WorkUser.shared.token, success: { dic in
-            if let status = dic["status"] as? Bool, status == true {
-                if let data = try? JSONSerialization.data(withJSONObject: dic, options: JSONSerialization.WritingOptions.init(rawValue: 0)), let model = try? WorkCalendarModel(data: data) {
-                    //SwiftMessages.showSuccessMessage(title: "获取日历列表成功")
-                    success?(model)
-                } else {
-                    SwiftMessages.showErrorMessage(title: "获取日历列表失败")
-                    failure?()
-                }
-            } else {
-                SwiftMessages.showErrorMessage(title: "获取日历列表失败")
-                failure?()
-            }
-        }, failure: { error in
-            if error is NetworkManager.NetworkNotExist {
-                SwiftMessages.showErrorMessage(title: NetworkManager.errorString)
-            } else {
-                SwiftMessages.showErrorMessage(title: "获取日历列表失败")
             }
             failure?()
         })
