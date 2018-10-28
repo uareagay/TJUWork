@@ -665,7 +665,6 @@ extension CreateMessageViewController: UIGestureRecognizerDelegate {
 }
 
 extension CreateMessageViewController {
-
     @objc func toolBarCancelAction(_ button: UIBarButtonItem) {
         self.view.endEditing(true)
         self.tableView.isUserInteractionEnabled = true

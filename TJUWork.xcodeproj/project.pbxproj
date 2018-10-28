@@ -139,6 +139,7 @@
 		DD43E310216FE65200AC573F /* ReadPeopleModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD43E30F216FE65200AC573F /* ReadPeopleModel.swift */; };
 		DD43E312216FE67000AC573F /* ResponsePeopleModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD43E311216FE67000AC573F /* ResponsePeopleModel.swift */; };
 		DD646759215F59CD00B0A0B8 /* SearchContactUsersViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD646758215F59CD00B0A0B8 /* SearchContactUsersViewController.swift */; };
+		DD6D311E2184799900F1453A /* PersonalInfoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD6D311D2184799900F1453A /* PersonalInfoViewController.swift */; };
 		DD706910215F6E7100D7BCE5 /* PhoneBook.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD70690F215F6E7100D7BCE5 /* PhoneBook.swift */; };
 		DD7627AD214F9D51005A3A97 /* DownloadViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD7627AC214F9D51005A3A97 /* DownloadViewController.swift */; };
 		DD775FB02175CAAC00B3F5CA /* SearchPeopleViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD775FAF2175CAAC00B3F5CA /* SearchPeopleViewController.swift */; };
@@ -355,6 +356,7 @@
 		DD43E311216FE67000AC573F /* ResponsePeopleModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResponsePeopleModel.swift; sourceTree = "<group>"; };
 		DD646758215F59CD00B0A0B8 /* SearchContactUsersViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchContactUsersViewController.swift; sourceTree = "<group>"; };
 		DD6598AC214D91480079E2CF /* TJUWork.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = TJUWork.entitlements; sourceTree = "<group>"; };
+		DD6D311D2184799900F1453A /* PersonalInfoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersonalInfoViewController.swift; sourceTree = "<group>"; };
 		DD70690F215F6E7100D7BCE5 /* PhoneBook.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhoneBook.swift; sourceTree = "<group>"; };
 		DD7627AC214F9D51005A3A97 /* DownloadViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DownloadViewController.swift; sourceTree = "<group>"; };
 		DD775FAF2175CAAC00B3F5CA /* SearchPeopleViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchPeopleViewController.swift; sourceTree = "<group>"; };
@@ -571,6 +573,7 @@
 			isa = PBXGroup;
 			children = (
 				DD0AA78320F9B9F40011F1EE /* SetInfoViewController.swift */,
+				DD6D311D2184799900F1453A /* PersonalInfoViewController.swift */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -1254,6 +1257,7 @@
 				DDF1EA5A2155572300A94B95 /* InboxSearchModel.swift in Sources */,
 				DDB9CE4B2106133400E63211 /* DetailMessageViewController.swift in Sources */,
 				DD82683A215E77BE00596022 /* PhoneTableViewCell.swift in Sources */,
+				DD6D311E2184799900F1453A /* PersonalInfoViewController.swift in Sources */,
 				DD31345E214A58B800A0990E /* OutboxListModel.swift in Sources */,
 				DDB9CE5A210D836300E63211 /* ContactTableViewCell.swift in Sources */,
 				DD796D2C21391D380042D058 /* CacheManager.swift in Sources */,

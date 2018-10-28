@@ -12,7 +12,7 @@ import SnapKit
 class InfoTableViewCell: UITableViewCell {
     let nameLabel: UILabel = {
         let label = UILabel()
-        label.text = "用户名："
+        label.text = ""
         label.textColor = UIColor(hex6: 0x8db6d4)
         label.textAlignment = .left
         label.font = UIFont.systemFont(ofSize: 15, weight: UIFont.Weight.regular)
@@ -22,7 +22,7 @@ class InfoTableViewCell: UITableViewCell {
     
     let infoLabel: UILabel = {
         let label = UILabel()
-        label.text = "User"
+        label.text = ""
         label.textColor = UIColor(hex6: 0x006cbe)
         label.textAlignment = .right
         label.font = UIFont.systemFont(ofSize: 15, weight: UIFont.Weight.regular)
@@ -46,7 +46,7 @@ class InfoTableViewCell: UITableViewCell {
         nameLabel.snp.makeConstraints { make in
             make.top.bottom.equalToSuperview().inset(5)
             make.left.equalToSuperview().inset(15)
-            make.width.equalTo(70)
+            make.width.equalTo(80)
         }
         infoLabel.snp.makeConstraints { make in
             make.top.bottom.equalToSuperview().inset(5)

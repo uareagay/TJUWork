@@ -25,7 +25,7 @@ class MainTanBarController: UITabBarController {
         two.tabBarItem.selectedImage = self.resizedTabBarItemImage(img: UIImage(named: "任务选中")!)
         two.tabBarItem.imageInsets = UIEdgeInsets(top: 6, left: 0, bottom: -6, right: 0)
         
-        let three = SetInfoViewController()
+        let three = PersonalInfoViewController()
         three.tabBarItem.image = self.resizedTabBarItemImage(img: UIImage(named: "人")!)
         three.tabBarItem.selectedImage = self.resizedTabBarItemImage(img: UIImage(named: "人选中")!)
         three.tabBarItem.imageInsets = UIEdgeInsets(top: 6, left: 0, bottom: -6, right: 0)

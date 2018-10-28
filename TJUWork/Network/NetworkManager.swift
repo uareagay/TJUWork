@@ -28,7 +28,7 @@ struct NetworkManager {
             case .success:
                 if let data = response.result.value {
                     if let dict = data as? [String:Any] {
-                        if let code = dict["code"] as? Int, (code >= 400001 && code <= 400006) {
+                        if let code = dict["code"] as? Int, (code >= 400001 && code <= 400005) {
                             //SwiftMessages.showErrorMessage(title: "请重新登录")
                             NotificationCenter.default.post(name: NotificationName.NotificationLoginFail.name, object: nil)
                             let err = TokenIsFalse()
@@ -87,7 +87,7 @@ struct NetworkManager {
                 upload.responseJSON(completionHandler: { response in
                     if let data = response.result.value {
                         if let dict = data as? [String:Any] {
-                            if let code = dict["code"] as? Int, (code >= 400001 && code <= 400006) {
+                            if let code = dict["code"] as? Int, (code >= 400001 && code <= 400005) {
                                 //SwiftMessages.showErrorMessage(title: "请重新登录")
                                 NotificationCenter.default.post(name: NotificationName.NotificationLoginFail.name, object: nil)
                                 let err = TokenIsFalse()
