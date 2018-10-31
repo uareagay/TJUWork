@@ -58,7 +58,7 @@ class CreateMessageViewController: UIViewController {
         return view
     }()
     
-    fileprivate let topLabel: UILabel = {
+    fileprivate let  topLabel: UILabel = {
         let label = UILabel()
         label.text = "选取收件人"
         label.textColor = UIColor(hex6: 0x00518e)

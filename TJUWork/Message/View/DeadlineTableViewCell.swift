@@ -10,7 +10,7 @@ import UIKit
 
 class DeadlineTableViewCell: UITableViewCell {
     
-    fileprivate let titleLabel: UILabel = {
+    let titleLabel: UILabel = {
         let label = UILabel()
         label.textAlignment = .left
         label.textColor = UIColor(hex6: 0x00518e)

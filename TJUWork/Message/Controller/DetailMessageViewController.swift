@@ -294,7 +294,6 @@ extension DetailMessageViewController {
 }
 
 extension DetailMessageViewController: UITableViewDelegate {
-    
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         guard self.isDisplayPeople else {
             switch section {
@@ -414,7 +413,6 @@ extension DetailMessageViewController: UITableViewDelegate {
             self.tableView.reloadData()
         }
     }
-    
 }
 
 extension DetailMessageViewController: UITableViewDataSource {
