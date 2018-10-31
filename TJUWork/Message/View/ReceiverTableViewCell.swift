@@ -53,7 +53,6 @@ class ReceiverTableViewCell: UITableViewCell {
         //layout.itemSize = CGSize(width: 60, height: 32)
         layout.footerReferenceSize = CGSize(width: 8, height: 10)
         
-        
         collectionView = UICollectionView(frame: self.frame, collectionViewLayout: layout)
         
         collectionView.showsVerticalScrollIndicator = false

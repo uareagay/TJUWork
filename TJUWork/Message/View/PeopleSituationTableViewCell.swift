@@ -10,7 +10,6 @@ import Foundation
 
 
 class PeopleSituationTableViewCell: UITableViewCell {
-    
     let nameLabel: UILabel = {
         let label = UILabel()
         label.textAlignment = .left
@@ -37,7 +36,6 @@ class PeopleSituationTableViewCell: UITableViewCell {
     override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         
-        
         contentView.addSubview(nameLabel)
         contentView.addSubview(flagLabel)
         contentView.addSubview(phoneBtn)
@@ -59,15 +57,11 @@ class PeopleSituationTableViewCell: UITableViewCell {
             make.width.equalTo(50)
             make.centerY.equalToSuperview()
         }
-        
-        
-        
     }
     
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
     
     override var frame: CGRect {
         didSet {
@@ -77,6 +71,4 @@ class PeopleSituationTableViewCell: UITableViewCell {
             super.frame = newFrame
         }
     }
-
-    
 }

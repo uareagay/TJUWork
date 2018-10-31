@@ -88,8 +88,9 @@ extension DisplayPeopleViewController {
             let uids = self.peopleArrs.map { $0.0 }
             PersonalMessageHelper.forwardMessage(mids: self.mids, uids: uids, success: {
                 NotificationCenter.default.post(name: NotificationName.NotificationRefreshInboxLists.name, object: nil)
-                NotificationCenter.default.post(name: NotificationName.NotificationRefreshOutboxLists.name, object: nil)
-                self.navigationController?.popViewController(animated: true)
+                NotificationCenter.default.post(name: NotificationName.NotificationRefreshCalendar.name, object: nil)
+                //self.navigationController?.popViewController(animated: true)
+                self.navigationController?.popToRootViewController(animated: true)
             }, failure: {
                 
             })

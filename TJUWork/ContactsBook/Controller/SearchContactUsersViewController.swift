@@ -8,9 +8,7 @@
 
 import UIKit
 
-
 class SearchContactUsersViewController: UIViewController {
-    
     fileprivate let searchBar: UISearchBar = {
         let searchBar = UISearchBar(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.size.width, height: 44))
         searchBar.tintColor = UIColor(hex6: 0x00518e)
@@ -22,7 +20,7 @@ class SearchContactUsersViewController: UIViewController {
     }()
     
     fileprivate var tableView: UITableView!
-    fileprivate var resultArrs: [ContactUsersData] = []
+    fileprivate var resultArrs: [(name: String, phone: String?, academy: String?)] = []
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -39,12 +37,9 @@ class SearchContactUsersViewController: UIViewController {
         searchBar.delegate = self
     }
     
-    
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         self.title = "搜索联系人"
-        //self.navigationController?.navigationItem.titleView = searchBar
-        
         self.navigationItem.setHidesBackButton(true, animated: true)
         self.navigationItem.titleView = searchBar
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "取消", style: .plain, target: self, action: #selector(cancelSearch(_:)))
@@ -52,7 +47,6 @@ class SearchContactUsersViewController: UIViewController {
 }
 
 extension SearchContactUsersViewController {
-    
     @objc func cancelSearch(_ sender:UIBarButtonItem) {
         self.navigationController?.popViewController(animated: true)
     }
@@ -75,11 +69,9 @@ extension SearchContactUsersViewController {
             UIApplication.shared.open(url)
         }
     }
-    
 }
 
 extension SearchContactUsersViewController: UISearchBarDelegate {
-    
     func searchBarTextDidEndEditing(_ searchBar: UISearchBar) {
         if let text = self.searchBar.text {
             searchMessage(text)
@@ -94,11 +86,9 @@ extension SearchContactUsersViewController: UISearchBarDelegate {
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
         searchMessage(searchText)
     }
-    
 }
 
 extension SearchContactUsersViewController: UITableViewDelegate {
-    
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         return UIView()
     }
@@ -118,14 +108,13 @@ extension SearchContactUsersViewController: UITableViewDelegate {
 }
 
 extension SearchContactUsersViewController: UITableViewDataSource {
-    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return self.resultArrs.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "PhoneTableViewCell") as! PhoneTableViewCell
-        cell.nameLabel.text = self.resultArrs[indexPath.row].realName
+        cell.nameLabel.text = self.resultArrs[indexPath.row].name
         cell.academyLabel.text = self.resultArrs[indexPath.row].academy
         
         //要改一下
@@ -140,5 +129,4 @@ extension SearchContactUsersViewController: UITableViewDataSource {
         cell.phoneBtn.addTarget(self, action: #selector(phoneTapped(_:)), for: .touchUpInside)
         return cell
     }
-    
 }

@@ -739,7 +739,6 @@ extension CreateMessageViewController {
             return
         }
         
-        
         guard type != nil else {
             let rvc = UIAlertController(title: nil, message: "请选择消息类别", preferredStyle: .alert)
             self.present(rvc, animated: true, completion: nil)
@@ -827,7 +826,7 @@ extension CreateMessageViewController {
         
         PersonalMessageHelper.sendMessage(dictionary: dic, success: {
             NotificationCenter.default.post(name: NotificationName.NotificationRefreshInboxLists.name, object: nil)
-            NotificationCenter.default.post(name: NotificationName.NotificationRefreshOutboxLists.name, object: nil)
+            //NotificationCenter.default.post(name: NotificationName.NotificationRefreshOutboxLists.name, object: nil)
             NotificationCenter.default.post(name: NotificationName.NotificationRefreshCalendar.name, object: nil)
             //            let messageVC = self.navigationController?.viewControllers[0] as! MessageViewController
             //            messageVC.tableView.mj_header.beginRefreshing()

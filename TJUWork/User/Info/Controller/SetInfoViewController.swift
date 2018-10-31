@@ -38,7 +38,6 @@ class SetInfoViewController: UIViewController {
         self.title = "编辑信息"
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "保存", style: .plain, target: self, action: #selector(editMessage(_:)))
     }
-    
 }
 
 extension SetInfoViewController {
@@ -65,7 +64,9 @@ extension SetInfoViewController {
             }
             
             if let cell = self.tableView.cellForRow(at: IndexPath(row: 1, section: 0)) as? SetInfoTableViewCell {
-                dic["email"] = cell.infoTextField.text
+                if cell.infoTextField.text != self.userInfoModel.data.email {
+                    dic["email"] = cell.infoTextField.text
+                }
             }
             
             if let cell = self.tableView.cellForRow(at: IndexPath(row: 2, section: 0)) as? SetInfoTableViewCell {

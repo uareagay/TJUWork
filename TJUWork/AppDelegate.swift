@@ -38,6 +38,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         self.registerRemoteNotification()
         
+        UITabBarItem.appearance().setTitleTextAttributes([NSAttributedString.Key.foregroundColor : UIColor(hex6: 0x00518e)], for: .selected)
         let mainVC = MainTanBarController()
         
         mainVC.selectedIndex = 0

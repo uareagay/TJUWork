@@ -140,6 +140,7 @@
 		DD43E312216FE67000AC573F /* ResponsePeopleModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD43E311216FE67000AC573F /* ResponsePeopleModel.swift */; };
 		DD646759215F59CD00B0A0B8 /* SearchContactUsersViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD646758215F59CD00B0A0B8 /* SearchContactUsersViewController.swift */; };
 		DD6D311E2184799900F1453A /* PersonalInfoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD6D311D2184799900F1453A /* PersonalInfoViewController.swift */; };
+		DD6D313B2189DEB400F1453A /* ConferenceViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD6D313A2189DEB400F1453A /* ConferenceViewController.swift */; };
 		DD706910215F6E7100D7BCE5 /* PhoneBook.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD70690F215F6E7100D7BCE5 /* PhoneBook.swift */; };
 		DD7627AD214F9D51005A3A97 /* DownloadViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD7627AC214F9D51005A3A97 /* DownloadViewController.swift */; };
 		DD775FB02175CAAC00B3F5CA /* SearchPeopleViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD775FAF2175CAAC00B3F5CA /* SearchPeopleViewController.swift */; };
@@ -176,6 +177,7 @@
 		DDB9CE662111AFF600E63211 /* ReceiverCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDB9CE652111AFF600E63211 /* ReceiverCollectionViewCell.swift */; };
 		DDB9CE682112FD7900E63211 /* AddReceiverCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDB9CE672112FD7900E63211 /* AddReceiverCollectionViewCell.swift */; };
 		DDBBEE9321019AB300244E40 /* ScheduleMessageTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDBBEE9221019AB300244E40 /* ScheduleMessageTableViewCell.swift */; };
+		DDEAD2AC2189E5FD000044E5 /* AddConferenceViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDEAD2AB2189E5FD000044E5 /* AddConferenceViewController.swift */; };
 		DDEFCF8F2171D6AA00B26A13 /* PeopleSituationTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDEFCF8E2171D6AA00B26A13 /* PeopleSituationTableViewCell.swift */; };
 		DDF1EA582153EF6500A94B95 /* SearchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDF1EA572153EF6500A94B95 /* SearchViewController.swift */; };
 		DDF1EA5A2155572300A94B95 /* InboxSearchModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDF1EA592155572300A94B95 /* InboxSearchModel.swift */; };
@@ -357,6 +359,7 @@
 		DD646758215F59CD00B0A0B8 /* SearchContactUsersViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchContactUsersViewController.swift; sourceTree = "<group>"; };
 		DD6598AC214D91480079E2CF /* TJUWork.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = TJUWork.entitlements; sourceTree = "<group>"; };
 		DD6D311D2184799900F1453A /* PersonalInfoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersonalInfoViewController.swift; sourceTree = "<group>"; };
+		DD6D313A2189DEB400F1453A /* ConferenceViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConferenceViewController.swift; sourceTree = "<group>"; };
 		DD70690F215F6E7100D7BCE5 /* PhoneBook.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhoneBook.swift; sourceTree = "<group>"; };
 		DD7627AC214F9D51005A3A97 /* DownloadViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DownloadViewController.swift; sourceTree = "<group>"; };
 		DD775FAF2175CAAC00B3F5CA /* SearchPeopleViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchPeopleViewController.swift; sourceTree = "<group>"; };
@@ -393,6 +396,7 @@
 		DDB9CE652111AFF600E63211 /* ReceiverCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReceiverCollectionViewCell.swift; sourceTree = "<group>"; };
 		DDB9CE672112FD7900E63211 /* AddReceiverCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddReceiverCollectionViewCell.swift; sourceTree = "<group>"; };
 		DDBBEE9221019AB300244E40 /* ScheduleMessageTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduleMessageTableViewCell.swift; sourceTree = "<group>"; };
+		DDEAD2AB2189E5FD000044E5 /* AddConferenceViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddConferenceViewController.swift; sourceTree = "<group>"; };
 		DDEFCF8E2171D6AA00B26A13 /* PeopleSituationTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PeopleSituationTableViewCell.swift; sourceTree = "<group>"; };
 		DDF1EA572153EF6500A94B95 /* SearchViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchViewController.swift; sourceTree = "<group>"; };
 		DDF1EA592155572300A94B95 /* InboxSearchModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InboxSearchModel.swift; sourceTree = "<group>"; };
@@ -470,6 +474,7 @@
 		DD0AA74220F8B6200011F1EE /* TJUWork */ = {
 			isa = PBXGroup;
 			children = (
+				DD6D31362189DE6800F1453A /* Conference */,
 				DD82682F215E63AF00596022 /* ContactsBook */,
 				DD6598AC214D91480079E2CF /* TJUWork.entitlements */,
 				DD03B5DC214D8B69007E2CB4 /* GtSdkLib */,
@@ -734,6 +739,39 @@
 				DD03B5D2214AC4DF007E2CB4 /* WorkCalendarModel.swift */,
 				DD0B762E215A6CB6009A392C /* ScheduleHelper.swift */,
 				DD0B7630215A6D49009A392C /* ScheduleListsModel.swift */,
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
+		DD6D31362189DE6800F1453A /* Conference */ = {
+			isa = PBXGroup;
+			children = (
+				DD6D31392189DE9900F1453A /* Model */,
+				DD6D31382189DE9300F1453A /* View */,
+				DD6D31372189DE8B00F1453A /* Controller */,
+			);
+			path = Conference;
+			sourceTree = "<group>";
+		};
+		DD6D31372189DE8B00F1453A /* Controller */ = {
+			isa = PBXGroup;
+			children = (
+				DD6D313A2189DEB400F1453A /* ConferenceViewController.swift */,
+				DDEAD2AB2189E5FD000044E5 /* AddConferenceViewController.swift */,
+			);
+			path = Controller;
+			sourceTree = "<group>";
+		};
+		DD6D31382189DE9300F1453A /* View */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
+		DD6D31392189DE9900F1453A /* Model */ = {
+			isa = PBXGroup;
+			children = (
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -1206,9 +1244,11 @@
 				DD1459112146CF510018BC07 /* RichTextViewController.swift in Sources */,
 				DD1459DB2146D4B50018BC07 /* CYRTextView.m in Sources */,
 				DD81CB3C21007BEB00EB5843 /* ScheduleViewController.swift in Sources */,
+				DDEAD2AC2189E5FD000044E5 /* AddConferenceViewController.swift in Sources */,
 				DD826834215E6AD600596022 /* ContactUsersModel.swift in Sources */,
 				DD03B5D5214B98D5007E2CB4 /* DetailMessageModel.swift in Sources */,
 				DD0B762F215A6CB6009A392C /* ScheduleHelper.swift in Sources */,
+				DD6D313B2189DEB400F1453A /* ConferenceViewController.swift in Sources */,
 				DDB9CE622110610800E63211 /* MessageCategoryTableViewCell.swift in Sources */,
 				DD81CB3620FB47AD00EB5843 /* MessageTableViewCell.swift in Sources */,
 				DD03B5D7214BCC2C007E2CB4 /* ReplyMessageViewController.swift in Sources */,
@@ -1375,7 +1415,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
@@ -1429,7 +1469,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
 				SWIFT_COMPILATION_MODE = wholemodule;
@@ -1453,7 +1493,7 @@
 					"$(PROJECT_DIR)/TJUWork/GtSdkLib",
 				);
 				INFOPLIST_FILE = TJUWork/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -1483,7 +1523,7 @@
 					"$(PROJECT_DIR)/TJUWork/GtSdkLib",
 				);
 				INFOPLIST_FILE = TJUWork/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

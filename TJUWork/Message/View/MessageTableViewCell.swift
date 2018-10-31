@@ -95,7 +95,8 @@ class MessageTableViewCell: UITableViewCell {
         nameLabel.snp.makeConstraints { make in
             make.bottom.equalToSuperview().inset(8)
             make.left.equalToSuperview().inset(15)
-            make.width.equalTo(100)
+//            make.width.equalTo(100)
+            make.right.equalTo(dateLabel.snp.left).offset(-10)
             make.height.equalTo(20)
         }
         

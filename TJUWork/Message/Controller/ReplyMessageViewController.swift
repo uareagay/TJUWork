@@ -10,7 +10,6 @@ import Foundation
 
 
 class ReplyMessageViewController: UIViewController {
-    
     fileprivate var textView: UITextView = {
         let textView = UITextView()
         textView.text = ""
@@ -77,11 +76,9 @@ class ReplyMessageViewController: UIViewController {
         
         replyBtn.addTarget(self, action: #selector(replyMessageAction(_:)), for: .touchUpInside)
     }
-    
 }
 
 extension ReplyMessageViewController: UITableViewDelegate {
-    
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         guard section == 1 else {
             return 10
@@ -204,7 +201,6 @@ extension ReplyMessageViewController: UITableViewDataSource {
 }
 
 extension ReplyMessageViewController: UITextViewDelegate {
-    
     func textViewShouldBeginEditing(_ textView: UITextView) -> Bool {
         let richTextVC = RichTextViewController(isReply: true)
         richTextVC.hidesBottomBarWhenPushed = true
@@ -214,12 +210,18 @@ extension ReplyMessageViewController: UITextViewDelegate {
         self.navigationController?.pushViewController(richTextVC, animated: true)
         return false
     }
-    
 }
 
 extension ReplyMessageViewController {
-    
     @objc func replyMessageAction(_ sender: UIButton) {
+        guard self.HTMLString != "" else {
+            let rvc = UIAlertController(title: nil, message: "回复内容不能为空", preferredStyle: .alert)
+            self.present(rvc, animated: true, completion: nil)
+            DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 1.5, execute: {
+                self.presentedViewController?.dismiss(animated: true, completion: nil)
+            })
+            return
+        }
         
         let alertVC = UIAlertController(title: "确认回复吗？", message: "", preferredStyle: .alert)
         let cancelAction = UIAlertAction(title: "取消", style: .default)
@@ -241,7 +243,7 @@ extension ReplyMessageViewController {
             
             PersonalMessageHelper.sendMessage(dictionary: dic, success: {
                 NotificationCenter.default.post(name: NotificationName.NotificationRefreshInboxLists.name, object: nil)
-                NotificationCenter.default.post(name: NotificationName.NotificationRefreshOutboxLists.name, object: nil)
+                //NotificationCenter.default.post(name: NotificationName.NotificationRefreshOutboxLists.name, object: nil)
                 NotificationCenter.default.post(name: NotificationName.NotificationRefreshCalendar.name, object: nil)
                 
                 self.navigationController?.popToRootViewController(animated: true)
@@ -254,9 +256,7 @@ extension ReplyMessageViewController {
         alertVC.addAction(cancelAction)
         alertVC.addAction(saveChangeAction)
         self.present(alertVC, animated: true)
-        
     }
-    
 }
 
 extension ReplyMessageViewController: RichTextTransmitProtocol {

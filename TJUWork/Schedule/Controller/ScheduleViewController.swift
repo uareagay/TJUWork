@@ -176,7 +176,7 @@ class ScheduleViewController: UIViewController {
         
         let longPress = UILongPressGestureRecognizer(target: self, action: #selector(longPressEditing(_:)))
         longPress.minimumPressDuration = 0.7
-        longPress.name = "LongPress"
+        //longPress.name = "LongPress"
         longPress.delegate = self
         longPress.delaysTouchesBegan = true
         tableView.addGestureRecognizer(longPress)
@@ -215,6 +215,7 @@ class ScheduleViewController: UIViewController {
 extension ScheduleViewController {
     @objc func addCalendar(_ sender: UIButton) {
         let addVC = AddScheduleViewController()
+        addVC.hidesBottomBarWhenPushed = true
         self.navigationController?.pushViewController(addVC, animated: true)
     }
     
@@ -473,6 +474,7 @@ extension ScheduleViewController: UITableViewDelegate {
             return
         case .string:
             let detailVC = DetailMessageViewController(mid: String(data.id), isReply: true, messageType: .inbox, isReaded: true)
+            detailVC.hidesBottomBarWhenPushed = true
             self.navigationController?.pushViewController(detailVC, animated: true)
         }
         

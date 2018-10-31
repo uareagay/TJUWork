@@ -8,7 +8,6 @@
 
 import Foundation
 
-
 enum NotificationName: String {
     
     case NotificationRefreshInboxLists
@@ -17,6 +16,7 @@ enum NotificationName: String {
     case NotificationRefreshCalendar
     case NotificationRefreshPersonalInfo
     case NotificationLoginFail
+    case NotificationRefreshConferenceLists
     
 }
 

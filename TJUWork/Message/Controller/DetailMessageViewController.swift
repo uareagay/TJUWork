@@ -179,12 +179,9 @@ class DetailMessageViewController: UIViewController {
             self.navigationItem.rightBarButtonItem = forwardAction
         }
     }
-   
-    
 }
 
 extension DetailMessageViewController {
-    
     @objc func forwardMessage(_ sender: UIBarButtonItem) {
         guard self.datailInformation != nil else {
             return
@@ -558,17 +555,32 @@ extension DetailMessageViewController: UITableViewDataSource {
                     cell.nameLabel.text = self.readArrs[index].name
                     cell.flagLabel.text = "已阅读"
                     cell.flagLabel.textColor = .gray
-                    cell.phoneBtn.tag = Int(self.readArrs[index].uid) ?? 0
+                    
+                    let uid = self.readArrs[index].uid
+                    if let _ = PhoneBook.shared.itemDic[uid] {
+                        cell.phoneBtn.isHidden = false
+                        cell.phoneBtn.tag = Int(uid)!
+                        cell.phoneBtn.addTarget(self, action: #selector(phoneTapped(_:)), for: .touchUpInside)
+                    } else {
+                        cell.phoneBtn.isHidden = true
+                    }
+                    //cell.phoneBtn.tag = Int(self.readArrs[index].uid) ?? 0
                 } else {
                     let index = indexPath.row - self.readArrs.count - 1
                     cell.nameLabel.text = self.unReadArrs[index].name
                     cell.flagLabel.text = "未阅读"
                     cell.flagLabel.textColor = .red
-                    cell.phoneBtn.tag = Int(self.unReadArrs[index].uid) ?? 0
+                    
+                    let uid = self.unReadArrs[index].uid
+                    if let _ = PhoneBook.shared.itemDic[uid] {
+                        cell.phoneBtn.isHidden = false
+                        cell.phoneBtn.tag = Int(uid)!
+                        cell.phoneBtn.addTarget(self, action: #selector(phoneTapped(_:)), for: .touchUpInside)
+                    } else {
+                        cell.phoneBtn.isHidden = true
+                    }
+                    //cell.phoneBtn.tag = Int(self.unReadArrs[index].uid) ?? 0
                 }
-                
-                cell.phoneBtn.addTarget(self, action: #selector(phoneTapped(_:)), for: .touchUpInside)
-                
                 cell.selectionStyle = .none
                 return cell
             }
@@ -649,15 +661,19 @@ extension DetailMessageViewController {
     }
     
     @objc func phoneTapped(_ sender: UIButton) {
-        for userData in PhoneBook.shared.items where userData.uid == String(sender.tag) {
-            if let phone = userData.phone {
-                if let url = URL(string: "telprompt://\(phone)") {
-                    UIApplication.shared.open(url)
-                }
+//        for userData in PhoneBook.shared.items where userData.uid == String(sender.tag) {
+//            if let phone = userData.phone {
+//                if let url = URL(string: "telprompt://\(phone)") {
+//                    UIApplication.shared.open(url)
+//                }
+//            }
+//            return
+//        }
+        if let phone = PhoneBook.shared.itemDic[String(sender.tag)] {
+            if let url = URL(string: "telprompt://\(phone)") {
+                UIApplication.shared.open(url)
             }
-            return
         }
-        
     }
     
 }

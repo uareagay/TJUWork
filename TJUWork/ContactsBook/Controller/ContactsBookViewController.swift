@@ -46,19 +46,19 @@ class ContactsBookViewController: UIViewController {
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .search, target: self, action: #selector(clickSearching(_:)))
         self.navigationController?.navigationBar.tintColor = .white
     }
-    
-    
 }
 
 extension ContactsBookViewController {
-    
     @objc func clickSearching(_ sender: UIButton) {
         let searchVC = SearchContactUsersViewController()
         self.navigationController?.pushViewController(searchVC, animated: true)
     }
     
     @objc func phoneTapped(_ sender: UIButton) {
-        guard let phone = PhoneBook.shared.items[sender.tag].phone else {
+//        guard let phone = PhoneBook.shared.items[sender.tag].phone else {
+//            return
+//        }
+        guard let phone = PhoneBook.shared.itemArrs[sender.tag].phone else {
             return
         }
 
@@ -76,16 +76,24 @@ extension ContactsBookViewController: UITableViewDelegate {
 extension ContactsBookViewController: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return PhoneBook.shared.items.count
+        //return PhoneBook.shared.items.count
+        return PhoneBook.shared.itemArrs.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "PhoneTableViewCell") as! PhoneTableViewCell
-        cell.nameLabel.text = PhoneBook.shared.items[indexPath.row].realName
-        cell.academyLabel.text = PhoneBook.shared.items[indexPath.row].academy
+        cell.nameLabel.text = PhoneBook.shared.itemArrs[indexPath.row].name
+        cell.academyLabel.text = PhoneBook.shared.itemArrs[indexPath.row].academy
         
         //要改一下
-        if let phone = PhoneBook.shared.items[indexPath.row].phone, phone.count == 11 {
+//        if let phone = PhoneBook.shared.items[indexPath.row].phone, phone.count == 11 {
+//            cell.isPhoned = true
+//            cell.phoneLabel.text = phone
+//        } else {
+//            cell.isPhoned = false
+//        }
+        
+        if let phone = PhoneBook.shared.itemArrs[indexPath.row].phone, phone.count == 11 {
             cell.isPhoned = true
             cell.phoneLabel.text = phone
         } else {

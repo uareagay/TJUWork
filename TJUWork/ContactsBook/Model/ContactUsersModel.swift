@@ -30,7 +30,7 @@ struct ContactUsersData: Codable {
         case gender, email, wechat, phone
         case payNumber = "pay_number"
         case academy
-         case officePhone = "office_phone"
+        case officePhone = "office_phone"
     }
 }
 

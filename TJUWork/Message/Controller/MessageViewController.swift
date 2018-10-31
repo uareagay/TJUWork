@@ -135,7 +135,7 @@ class MessageViewController: UIViewController {
         
         let longPress = UILongPressGestureRecognizer(target: self, action: #selector(longPressEditing(_:)))
         longPress.minimumPressDuration = 0.7
-        longPress.name = "LongPress"
+        //longPress.name = "LongPress"
         longPress.delegate = self
         longPress.delaysTouchesBegan = true
         tableView.addGestureRecognizer(longPress)
@@ -435,17 +435,30 @@ extension MessageViewController: UIGestureRecognizerDelegate {
 //        return true
 
         if self.menuBtn.isSelected == true {
-            if gestureRecognizer.name == "LongPress" {
+            if gestureRecognizer is UILongPressGestureRecognizer {
                 gestureRecognizer.setValue(3, forKey: "state")
                 return true
             }
             return true
         } else {
-            if gestureRecognizer.name == "LongPress" {
+            if gestureRecognizer is UILongPressGestureRecognizer {
                 return true
             }
             return false
         }
+        
+//        if self.menuBtn.isSelected == true {
+//            if gestureRecognizer.name == "LongPress" {
+//                gestureRecognizer.setValue(3, forKey: "state")
+//                return true
+//            }
+//            return true
+//        } else {
+//            if gestureRecognizer.name == "LongPress" {
+//                return true
+//            }
+//            return false
+//        }
         
     }
     
@@ -546,7 +559,8 @@ extension MessageViewController: UITableViewDataSource {
             cell.percentBtn.isHidden = true
             let data = self.inboxList[indexPath.section]
             cell.titleLabel.text = data.title
-            cell.nameLabel.text = data.type
+//            cell.nameLabel.text = data.type
+            cell.nameLabel.text = data.author
             let formatter = DateFormatter()
             formatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
             cell.dateLabel.text = formatter.string(from: data.from)
