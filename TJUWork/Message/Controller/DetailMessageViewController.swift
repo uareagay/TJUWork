@@ -9,7 +9,6 @@
 import UIKit
 import SnapKit
 
-
 fileprivate let WORK_FILE_ROOT_URL = "https://work-alpha.twtstudio.com"
 
 class DetailMessageViewController: UIViewController {
@@ -42,11 +41,12 @@ class DetailMessageViewController: UIViewController {
     }()
     
     fileprivate var datailInformation: DetailMessageModel!
-    fileprivate var mid: String?
-    fileprivate var isReply: Bool?
+    fileprivate var mid: String!
+    fileprivate var isReply: Bool!
     fileprivate var messageType: DownMenuView.MenuType?
     fileprivate var isReaded: Bool!
-    fileprivate var isDisplayPeople: Bool!
+    fileprivate var isWorkMessage: Bool!
+    fileprivate var isConference: Bool!
     
     fileprivate var readArrs: [ReadPeople] = []
     fileprivate var unReadArrs: [ReadPeople] = []
@@ -60,14 +60,14 @@ class DetailMessageViewController: UIViewController {
     
     fileprivate var entireUsersModel: EntireUsersModel!
     
-    convenience init(mid: String, isReply: Bool, messageType: DownMenuView.MenuType, isReaded: Bool, isDisplayPeople: Bool = false) {
+    convenience init(mid: String, isReply: Bool, messageType: DownMenuView.MenuType, isReaded: Bool, isDisplayPeople: Bool = false, isConference: Bool = false) {
         self.init()
         self.mid = mid
         self.isReply = isReply
         self.messageType = messageType
         self.isReaded = isReaded
-        self.isDisplayPeople = isDisplayPeople
-
+        self.isWorkMessage = isDisplayPeople
+        self.isConference = isConference
     }
     
     override func viewDidLoad() {
@@ -89,7 +89,7 @@ class DetailMessageViewController: UIViewController {
         deleteBtn.addTarget(self, action: #selector(deleteMessage(_:)), for: .touchUpInside)
         replyBtn.addTarget(self, action: #selector(replyMessage(_:)), for: .touchUpInside)
         
-        PersonalMessageHelper.getDetailMessage(mid: mid!, success: { model in
+        PersonalMessageHelper.getDetailMessage(mid: mid, success: { model in
             
             if self.isReaded == false {
                 NotificationCenter.default.post(name: NotificationName.NotificationRefreshInboxLists.name, object: nil)
@@ -120,11 +120,17 @@ class DetailMessageViewController: UIViewController {
             
         })
         
-        if self.isDisplayPeople == true {
+        EntireUsersHelper.getEntireUsersInLabels(success: { model in
+            self.entireUsersModel = model
+        }, failure: {
+            
+        })
+        
+        if self.isConference == true {
             let group = DispatchGroup()
             
             group.enter()
-            PersonalMessageHelper.getReadPeoples(mid: self.mid!, success: { model in
+            PersonalMessageHelper.getReadPeoples(mid: self.mid, success: { model in
                 self.readArrs = model.data.finished
                 self.unReadArrs = model.data.unfinished
                 let hasRead: Float = Float(model.data.hasRead)
@@ -137,7 +143,37 @@ class DetailMessageViewController: UIViewController {
             })
             
             group.enter()
-            PersonalMessageHelper.getResponsePeoples(mid: self.mid!, success: { model in
+            PhoneBook.shared.getPhoneNumber(success: {
+                group.leave()
+            }, failure: {
+                group.leave()
+            })
+            
+            group.notify(queue: DispatchQueue.main) {
+                self.tableView.reloadData()
+            }
+            
+            return
+        }
+        
+        if self.isWorkMessage == true {
+            let group = DispatchGroup()
+            
+            group.enter()
+            PersonalMessageHelper.getReadPeoples(mid: self.mid, success: { model in
+                self.readArrs = model.data.finished
+                self.unReadArrs = model.data.unfinished
+                let hasRead: Float = Float(model.data.hasRead)
+                let needRead: Float = Float(model.data.needRead)
+                self.readPercent = hasRead * 100 / needRead
+                
+                group.leave()
+            }, failure: {
+                group.leave()
+            })
+            
+            group.enter()
+            PersonalMessageHelper.getResponsePeoples(mid: self.mid, success: { model in
                 self.responseArrs = model.data.finished
                 self.unResponseArrs = model.data.unfinished
                 let hasResponded: Float = Float(model.data.hasResponded)
@@ -162,19 +198,13 @@ class DetailMessageViewController: UIViewController {
 
         }
         
-        EntireUsersHelper.getEntireUsersInLabels(success: { model in
-            self.entireUsersModel = model
-        }, failure: {
-            
-        })
-        
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         self.navigationController?.navigationBar.tintColor = .white
         
-        if self.messageType == .inbox {
+        if self.messageType == .inbox, self.isConference == false {
             let forwardAction = UIBarButtonItem(barButtonSystemItem: .reply, target: self, action: #selector(forwardMessage(_:)))
             self.navigationItem.rightBarButtonItem = forwardAction
         }
@@ -206,7 +236,7 @@ extension DetailMessageViewController {
                     self.deleteBtn.isEnabled = false
                     self.replyBtn.isEnabled = false
                     
-                    PersonalMessageHelper.deleteInbox(mid: [Int(self.mid!)!], success: {
+                    PersonalMessageHelper.deleteInbox(mid: [Int(self.mid)!], success: {
                         NotificationCenter.default.post(name: NotificationName.NotificationRefreshInboxLists.name, object: nil)
                         NotificationCenter.default.post(name: NotificationName.NotificationRefreshCalendar.name, object: nil)
                         
@@ -220,7 +250,7 @@ extension DetailMessageViewController {
                     self.deleteBtn.isEnabled = false
                     self.replyBtn.isEnabled = false
                     
-                    PersonalMessageHelper.deleteOutbox(mid: [Int(self.mid!)!], success: {
+                    PersonalMessageHelper.deleteOutbox(mid: [Int(self.mid)!], success: {
                         NotificationCenter.default.post(name: NotificationName.NotificationRefreshOutboxLists.name, object: nil)
                         NotificationCenter.default.post(name: NotificationName.NotificationRefreshCalendar.name, object: nil)
                         
@@ -273,7 +303,7 @@ extension DetailMessageViewController {
     
     @objc func replyMessage(_ sender: UIButton) {
         let replyName = self.datailInformation.data.responseBy == "0" ? "个人" : "标签"
-        let replyVC = ReplyMessageViewController(mid: self.mid!, titleText: self.datailInformation.data.title, replyName: replyName, sendUID: self.datailInformation.data.sendUid)
+        let replyVC = ReplyMessageViewController(mid: self.mid, titleText: self.datailInformation.data.title, replyName: replyName, sendUID: self.datailInformation.data.sendUid)
         self.navigationController?.pushViewController(replyVC, animated: true)
     }
     
@@ -295,7 +325,18 @@ extension DetailMessageViewController {
 
 extension DetailMessageViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        guard self.isDisplayPeople else {
+        if self.isConference == true {
+            switch section {
+            case 0, 4:
+                return 10
+            case 1...3:
+                return 7.5
+            default:
+                return 0.1
+            }
+        }
+        
+        guard self.isWorkMessage else {
             switch section {
             case 0, 3:
                 return 10
@@ -317,7 +358,15 @@ extension DetailMessageViewController: UITableViewDelegate {
     }
     
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        guard self.isDisplayPeople else {
+        if self.isConference == true {
+            if section == 0 || section == 4 {
+                return UIView()
+            } else {
+                return displayLineView()
+            }
+        }
+        
+        guard self.isWorkMessage else {
             if section == 1 || section == 2 {
                 return displayLineView()
             } else {
@@ -333,7 +382,15 @@ extension DetailMessageViewController: UITableViewDelegate {
     }
     
     func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
-        guard self.isDisplayPeople else {
+        if self.isConference == true {
+            if section == 4 {
+                return 55
+            } else {
+                return 0.0
+            }
+        }
+        
+        guard self.isWorkMessage else {
             if section == 3 {
                 return 55
             } else {
@@ -349,24 +406,33 @@ extension DetailMessageViewController: UITableViewDelegate {
     }
     
     func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
-        if !self.isDisplayPeople && section < 3 {
+        if self.isConference == true && section < 4 {
             return nil
         }
         
-        if self.isDisplayPeople && section < 5 {
+        if !self.isWorkMessage && section < 3 {
             return nil
+        }
+        
+        if self.isWorkMessage && section < 5 {
+            return nil
+        }
+        
+        
+        if self.isConference == true, self.messageType == .inbox {
+            return UIView()
         }
         
         deleteBtn.removeFromSuperview()
         replyBtn.removeFromSuperview()
         
-        guard let reply = self.isReply else {
-            return nil
-        }
+//        guard let reply = self.isReply else {
+//            return nil
+//        }
         
         let view = UIView(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.size.width, height: 55))
         view.backgroundColor = .clear
-        if reply == true {
+        if self.isReply == true {
             view.addSubview(deleteBtn)
             view.addSubview(replyBtn)
             deleteBtn.snp.makeConstraints { make in
@@ -401,7 +467,15 @@ extension DetailMessageViewController: UITableViewDelegate {
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        guard self.isDisplayPeople else {
+        if self.isConference == true {
+            if indexPath.section == 3 && indexPath.row == 0 {
+                self.isDisplayRead = !self.isDisplayRead
+                self.tableView.reloadData()
+            }
+            return
+        }
+        
+        guard self.isWorkMessage else {
             return
         }
         
@@ -416,32 +490,53 @@ extension DetailMessageViewController: UITableViewDelegate {
 }
 
 extension DetailMessageViewController: UITableViewDataSource {
-    
     func numberOfSections(in tableView: UITableView) -> Int {
-        guard self.isDisplayPeople else {
+        if self.isConference == true {
+            return 5
+        } else if self.isWorkMessage == true {
+            return 6
+        } else {
             return 4
         }
-        return 6
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         switch section {
+        case 0:
+            return self.isConference == true ? 2 : 1
         case 1:
-            return self.isDisplayPeople ? 5 : 4
+            if self.isConference == true {
+                return 5
+            } else if self.isWorkMessage == true {
+                return 5
+            } else {
+                return 4
+            }
+//            return self.isDisplayPeople ? 5 : 4
         case 2:
             return 1 + self.downloadedFiles.count
         case 3:
-            if self.isDisplayPeople {
+            if self.isConference == true {
+                return !self.isDisplayRead ? 1 : 1 + self.readArrs.count + self.unReadArrs.count
+            }
+            
+            if self.isWorkMessage {
                 return !self.isDisplayResponse ? 1 : 1 + self.responseArrs.count + self.unResponseArrs.count
             } else {
                 return 1
             }
         case 4:
-            if self.isDisplayPeople {
+            if self.isConference == true {
+                return 1
+            }
+            
+            if self.isWorkMessage {
                 return !self.isDisplayRead ? 1 : 1 + self.readArrs.count + self.unReadArrs.count
             } else {
                 return 1
             }
+        case 5:
+            return 1
         default:
             return 1
         }
@@ -457,7 +552,14 @@ extension DetailMessageViewController: UITableViewDataSource {
             let cell = tableView.dequeueReusableCell(withIdentifier: "SenderMultiLinesTableViewCell") as! SenderMultiLinesTableViewCell
             let paragraphStyle = NSMutableParagraphStyle()
             paragraphStyle.headIndent = 49
-            let str = "标题：" + self.datailInformation.data.title
+            
+            let str: String
+            if indexPath.row == 0 {
+                str = "标题：" + self.datailInformation.data.title
+            } else {
+                str = "地点：" + ((self.datailInformation.data.place) ?? "无")
+            }
+            
             let attStr = NSMutableAttributedString(string: str)
             attStr.addAttribute(.paragraphStyle, value: paragraphStyle, range: NSMakeRange(0, str.count))
             attStr.addAttribute(.foregroundColor, value: UIColor.lightGray , range: NSMakeRange(3, str.count-3))
@@ -483,7 +585,11 @@ extension DetailMessageViewController: UITableViewDataSource {
                 formatter.dateFormat = "YYYY-MM-dd   HH:mm:ss"
                 cell.contentLabel.text = formatter.string(from: self.datailInformation.data.from)
             case 4:
-                cell.titleLabel.text = "截止时间："
+                if self.isConference == true {
+                    cell.titleLabel.text = "开始时间："
+                } else {
+                    cell.titleLabel.text = "截止时间："
+                }
                 
                 if let deadline = self.datailInformation.data.to {
                     let formatter = DateFormatter()
@@ -518,7 +624,47 @@ extension DetailMessageViewController: UITableViewDataSource {
                 return UITableViewCell()
             }
         case 3:
-            guard self.isDisplayPeople else {
+            if self.isConference == true {
+                guard indexPath.row == 0 else {
+                    let cell = PeopleSituationTableViewCell()
+                    if indexPath.row <= self.readArrs.count {
+                        let index = indexPath.row - 1
+                        cell.nameLabel.text = self.readArrs[index].name
+                        cell.flagLabel.text = "已阅读"
+                        cell.flagLabel.textColor = .gray
+                        
+                        let uid = self.readArrs[index].uid
+                        if let _ = PhoneBook.shared.itemDic[uid] {
+                            cell.phoneBtn.isHidden = false
+                            cell.phoneBtn.tag = Int(uid)!
+                            cell.phoneBtn.addTarget(self, action: #selector(phoneTapped(_:)), for: .touchUpInside)
+                        } else {
+                            cell.phoneBtn.isHidden = true
+                        }
+                        //cell.phoneBtn.tag = Int(self.readArrs[index].uid) ?? 0
+                    } else {
+                        let index = indexPath.row - self.readArrs.count - 1
+                        cell.nameLabel.text = self.unReadArrs[index].name
+                        cell.flagLabel.text = "未阅读"
+                        cell.flagLabel.textColor = .red
+                        
+                        let uid = self.unReadArrs[index].uid
+                        if let _ = PhoneBook.shared.itemDic[uid] {
+                            cell.phoneBtn.isHidden = false
+                            cell.phoneBtn.tag = Int(uid)!
+                            cell.phoneBtn.addTarget(self, action: #selector(phoneTapped(_:)), for: .touchUpInside)
+                        } else {
+                            cell.phoneBtn.isHidden = true
+                        }
+                        //cell.phoneBtn.tag = Int(self.unReadArrs[index].uid) ?? 0
+                    }
+                    cell.selectionStyle = .none
+                    return cell
+                }
+                return getSituationTypeTableViewCell("阅读状态")
+            }
+            
+            guard self.isWorkMessage else {
                 return displayBodyContentsTableViewCell()
             }
             
@@ -542,7 +688,11 @@ extension DetailMessageViewController: UITableViewDataSource {
             
             return getSituationTypeTableViewCell("回复状态")
         case 4:
-            guard self.isDisplayPeople else {
+            if self.isConference == true {
+                return displayBodyContentsTableViewCell()
+            }
+            
+            guard self.isWorkMessage else {
                 return UITableViewCell()
             }
             
@@ -584,7 +734,7 @@ extension DetailMessageViewController: UITableViewDataSource {
             }
             return getSituationTypeTableViewCell("阅读状态")
         case 5:
-            guard self.isDisplayPeople else {
+            guard self.isWorkMessage else {
                 return UITableViewCell()
             }
             

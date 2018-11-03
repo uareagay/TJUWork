@@ -47,6 +47,7 @@ class ScheduleViewController: UIViewController {
     fileprivate var calendarLists: ScheduleListsModel!
     fileprivate var unSelectedList: [ScheduleListsData] = []
     fileprivate var selectedList: [ScheduleListsData] = []
+    fileprivate var conferenceList: [ScheduleListsData] = []
     fileprivate var messageDisplay: [Date] = []
     
     // MessageViewController Code
@@ -222,7 +223,7 @@ extension ScheduleViewController {
     @objc func longPressEditing(_ gesture: UILongPressGestureRecognizer) {
         if gesture.state == .began {
             let pressPoint = gesture.location(in: self.tableView)
-            if let indexPath = self.tableView.indexPathForRow(at: pressPoint), indexPath.section != 0 {
+            if let indexPath = self.tableView.indexPathForRow(at: pressPoint), indexPath.section != 0, indexPath.section != 3 {
                 isSelecting = true
                 if indexPath.section == 1 {
                     selectedArrs[0].append(indexPath.row)
@@ -344,11 +345,55 @@ extension ScheduleViewController {
         }
         let tomorrowDate = Date(timeInterval: 24*60*60, since: self.selectedDate)
         
-        self.selectedList = self.calendarLists.data.filter { self.selectedDate <= $0.to && tomorrowDate > $0.to }
+        self.selectedList = self.calendarLists.data.filter {
+            if self.selectedDate <= $0.to && tomorrowDate > $0.to {
+                switch $0.type {
+                case .string(let value):
+                    if value == "2" {
+                        return false
+                    } else {
+                        return true
+                    }
+                case .integer:
+                    return true
+                }
+            } else {
+                return false
+            }
+        }
         self.selectedList.sort { $0.to < $1.to }
         
-        self.unSelectedList = self.calendarLists.data.filter { self.selectedDate > $0.to || tomorrowDate <= $0.to }
+        self.unSelectedList = self.calendarLists.data.filter {
+            if self.selectedDate > $0.to || tomorrowDate <= $0.to {
+                switch $0.type {
+                case .string(let value):
+                    if value == "2" {
+                        return false
+                    } else {
+                        return true
+                    }
+                case .integer:
+                    return true
+                }
+            } else {
+                return false
+            }
+        }
         self.unSelectedList.sort { $0.to < $1.to }
+        
+        self.conferenceList = self.calendarLists.data.filter {
+            switch $0.type {
+            case .string(let value):
+                if value == "2" {
+                    return true
+                } else {
+                    return false
+                }
+            case .integer:
+                return false
+            }
+        }
+        self.conferenceList.sort { $0.to < $1.to }
     }
     
     func requestEvents() {
@@ -402,8 +447,10 @@ extension ScheduleViewController: UITableViewDelegate {
                     make.top.bottom.right.equalToSuperview().inset(15)
                     make.width.equalTo(120)
                 }
+            } else if section == 2 {
+                titleLabel.text = "即将截止"
             } else {
-                titleLabel.text = "即将截止 "
+                titleLabel.text = "我的会议"
             }
             return view
         }
@@ -463,29 +510,37 @@ extension ScheduleViewController: UITableViewDelegate {
         var data: ScheduleListsData
         if indexPath.section == 1 {
             data = self.selectedList[indexPath.row]
-        } else {
+        } else if indexPath.section == 2 {
             data = self.unSelectedList[indexPath.row]
+        } else {
+            data = self.conferenceList[indexPath.row]
         }
         
         // 0: integer 自创日程
         // 1: string 工作消息
+        // 2：string 会议消息
         switch data.type {
         case .integer:
             return
-        case .string:
-            let detailVC = DetailMessageViewController(mid: String(data.id), isReply: true, messageType: .inbox, isReaded: true)
-            detailVC.hidesBottomBarWhenPushed = true
-            self.navigationController?.pushViewController(detailVC, animated: true)
+        case .string(let value):
+            if value == "1" {
+                let detailVC = DetailMessageViewController(mid: String(data.id), isReply: true, messageType: .inbox, isReaded: true)
+                detailVC.hidesBottomBarWhenPushed = true
+                self.navigationController?.pushViewController(detailVC, animated: true)
+            } else if value == "2" {
+                let detailVC = DetailMessageViewController(mid: String(data.id), isReply: false, messageType: .inbox, isReaded: true, isDisplayPeople: false, isConference: true)
+                detailVC.hidesBottomBarWhenPushed = true
+                self.navigationController?.pushViewController(detailVC, animated: true)
+            }
         }
         
     }
-    
 }
 
 extension ScheduleViewController: UITableViewDataSource {
     
     func numberOfSections(in tableView: UITableView) -> Int {
-        return 3
+        return 4
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -496,6 +551,8 @@ extension ScheduleViewController: UITableViewDataSource {
             return self.selectedList.count
         case 2:
             return self.unSelectedList.count
+        case 3:
+            return self.conferenceList.count
         default:
             return 0
         }
@@ -508,8 +565,10 @@ extension ScheduleViewController: UITableViewDataSource {
         var data: ScheduleListsData
         if indexPath.section == 1 {
             data = self.selectedList[indexPath.row]
-        } else {
+        } else if indexPath.section == 2 {
             data = self.unSelectedList[indexPath.row]
+        } else {
+            data = self.conferenceList[indexPath.row]
         }
         
         cell.titleLabel.text = data.title
@@ -535,12 +594,14 @@ extension ScheduleViewController: UITableViewDataSource {
             } else {
                 cell.imgView.image = cell.unselectedImg
             }
-        } else {
+        } else if indexPath.section == 2 {
             if selectedArrs[1].contains(indexPath.row) {
                 cell.imgView.image = cell.selectedImg
             } else {
                 cell.imgView.image = cell.unselectedImg
             }
+        } else {
+            cell.imgView.alpha  = 0.0
         }
         
         return cell

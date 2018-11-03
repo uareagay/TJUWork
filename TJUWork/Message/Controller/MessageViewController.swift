@@ -499,6 +499,14 @@ extension MessageViewController: UITableViewDelegate {
             //1为已回复，0为未回复；-1为通知消息，可以回复，但是不必要回复
             let detailVC: DetailMessageViewController
             let isReaded = data.isRead == "0" ? false : true
+            
+            if data.type == "会议消息" {
+                detailVC = DetailMessageViewController(mid: data.mid, isReply: false, messageType: .inbox, isReaded: isReaded, isDisplayPeople: false, isConference: true)
+                detailVC.hidesBottomBarWhenPushed = true
+                self.navigationController?.pushViewController(detailVC, animated: true)
+                return
+            }
+            
             if isResponse == 1 {
                 //让他可以进行多次回复
 //                detailVC = DetailMessageViewController(mid: data.mid, isReply: false, messageType: .inbox, isReaded: isReaded)
@@ -516,6 +524,14 @@ extension MessageViewController: UITableViewDelegate {
         case .outbox:
             let data = self.outboxList[indexPath.section]
             let detailVC: DetailMessageViewController
+            
+            if data.type == "会议消息" {
+                detailVC = DetailMessageViewController(mid: data.mid, isReply: false, messageType: .outbox, isReaded: true, isDisplayPeople: false, isConference: true)
+                detailVC.hidesBottomBarWhenPushed = true
+                self.navigationController?.pushViewController(detailVC, animated: true)
+                return
+            }
+            
             if data.type == "工作消息" {
                 detailVC = DetailMessageViewController(mid: data.mid, isReply: false, messageType: .outbox, isReaded: true, isDisplayPeople: true)
             } else {

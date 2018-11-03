@@ -105,7 +105,7 @@ class PersonalInfoViewController: UIViewController {
         
         uploadImageBtn.addTarget(self, action: #selector(uploadImage(_:)), for: .touchUpInside)
         
-//        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow(_:)), name: .UIKeyboardWillShow, object: nil)
+//        NotificationCenter.default.addObserver(self, selector: #selector(GetUserInfo), name: .UIKeyboardWillShow, object: nil)
 //        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide(_:)), name: .UIKeyboardWillHide, object: nil)
         
 //        cancelBtn.addTarget(self, action: #selector(cancelChangement(_:)), for: .touchUpInside)

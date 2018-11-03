@@ -182,6 +182,8 @@
 		DDF1EA582153EF6500A94B95 /* SearchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDF1EA572153EF6500A94B95 /* SearchViewController.swift */; };
 		DDF1EA5A2155572300A94B95 /* InboxSearchModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDF1EA592155572300A94B95 /* InboxSearchModel.swift */; };
 		DDF1EA5C2155581C00A94B95 /* OutboxSearchModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDF1EA5B2155581C00A94B95 /* OutboxSearchModel.swift */; };
+		DDF24AC2218D96F60067F837 /* ConferenceListModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDF24AC1218D96F60067F837 /* ConferenceListModel.swift */; };
+		DDF24AC4218D980D0067F837 /* ConferenceHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDF24AC3218D980D0067F837 /* ConferenceHelper.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -401,6 +403,8 @@
 		DDF1EA572153EF6500A94B95 /* SearchViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchViewController.swift; sourceTree = "<group>"; };
 		DDF1EA592155572300A94B95 /* InboxSearchModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InboxSearchModel.swift; sourceTree = "<group>"; };
 		DDF1EA5B2155581C00A94B95 /* OutboxSearchModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OutboxSearchModel.swift; sourceTree = "<group>"; };
+		DDF24AC1218D96F60067F837 /* ConferenceListModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConferenceListModel.swift; sourceTree = "<group>"; };
+		DDF24AC3218D980D0067F837 /* ConferenceHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConferenceHelper.swift; sourceTree = "<group>"; };
 		DF2F999F23DD439911A81AC7 /* Pods-TJUWork.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TJUWork.debug.xcconfig"; path = "Pods/Target Support Files/Pods-TJUWork/Pods-TJUWork.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -772,6 +776,8 @@
 		DD6D31392189DE9900F1453A /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				DDF24AC1218D96F60067F837 /* ConferenceListModel.swift */,
+				DDF24AC3218D980D0067F837 /* ConferenceHelper.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -1248,6 +1254,7 @@
 				DD826834215E6AD600596022 /* ContactUsersModel.swift in Sources */,
 				DD03B5D5214B98D5007E2CB4 /* DetailMessageModel.swift in Sources */,
 				DD0B762F215A6CB6009A392C /* ScheduleHelper.swift in Sources */,
+				DDF24AC2218D96F60067F837 /* ConferenceListModel.swift in Sources */,
 				DD6D313B2189DEB400F1453A /* ConferenceViewController.swift in Sources */,
 				DDB9CE622110610800E63211 /* MessageCategoryTableViewCell.swift in Sources */,
 				DD81CB3620FB47AD00EB5843 /* MessageTableViewCell.swift in Sources */,
@@ -1273,6 +1280,7 @@
 				DD1459DD2146D4B50018BC07 /* HRColorCursor.m in Sources */,
 				DD03B5D1214A9FC3007E2CB4 /* InboxListModel.swift in Sources */,
 				DDB9CE542109EB7000E63211 /* TreeNode.swift in Sources */,
+				DDF24AC4218D980D0067F837 /* ConferenceHelper.swift in Sources */,
 				DDF1EA582153EF6500A94B95 /* SearchViewController.swift in Sources */,
 				DD7627AD214F9D51005A3A97 /* DownloadViewController.swift in Sources */,
 				DD31345C2148B9AE00A0990E /* DraftListModel.swift in Sources */,

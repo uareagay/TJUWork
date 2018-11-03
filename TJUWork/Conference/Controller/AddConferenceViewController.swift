@@ -92,6 +92,46 @@ class AddConferenceViewController: UIViewController {
         return textView
     }()
     
+    fileprivate var conferenceTitle: String {
+        if let cell = self.tableView.cellForRow(at: IndexPath(row: 0, section: 0)) as? TitleTableViewCell {
+            return cell.textField.text ?? ""
+        }
+        if let cell = self.tableView.dequeueReusableCell(withIdentifier: "TitleTableViewCell") as? TitleTableViewCell {
+            return cell.textField.text ?? ""
+        }
+        return ""
+    }
+    
+    fileprivate var conferencePlace: String {
+        if let cell = self.tableView.cellForRow(at: IndexPath(row: 0, section: 1)) as? TitleTableViewCell {
+            return cell.textField.text ?? ""
+        }
+        if let cell = self.tableView.dequeueReusableCell(withIdentifier: "TitleTableViewCell") as? TitleTableViewCell {
+            return cell.textField.text ?? ""
+        }
+        return ""
+    }
+    
+    fileprivate var selectedDatas: [String] {
+        if let cell = self.tableView.cellForRow(at: IndexPath(row: 0, section: 2)) as? ReceiverTableViewCell {
+            return cell.selectedDatas
+        }
+        if let cell = self.tableView.dequeueReusableCell(withIdentifier: "ReceiverTableViewCell") as? ReceiverTableViewCell {
+            return cell.selectedDatas
+        }
+        return []
+    }
+    
+    fileprivate var conferenceDeadline: String {
+        if let cell = self.tableView.cellForRow(at: IndexPath(row: 0, section: 3)) as? DeadlineTableViewCell {
+            return cell.dateLabel.text ?? ""
+        }
+        if let cell = self.tableView.dequeueReusableCell(withIdentifier: "DeadlineTableViewCell") as? DeadlineTableViewCell {
+            return cell.dateLabel.text ?? ""
+        }
+        return ""
+    }
+    
     fileprivate var entireUsersModel: EntireUsersModel!
     fileprivate var treeTableView: TreeTableView!
     weak var delegete: AddAndDeleteReceiverProtocol?
@@ -122,6 +162,9 @@ class AddConferenceViewController: UIViewController {
         
         self.view.addSubview(tableView)
         
+        self.textView.delegate = self
+        
+        self.view.backgroundColor = .white
         
         EntireUsersHelper.getEntireUsersInLabels(success: { model in
             self.entireUsersModel = model
@@ -129,12 +172,30 @@ class AddConferenceViewController: UIViewController {
         }, failure: {
             
         })
+       
         
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         self.title = "发起会议"
+        
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "发送", style: .plain, target: self, action: #selector(sendConferenceMessage(_:)))
+        
+        
+        topLabel.removeFromSuperview()
+        topLineView.removeFromSuperview()
+        
+        saveUsersBtn.removeFromSuperview()
+        cancelUsersBtn.removeFromSuperview()
+        popView.removeFromSuperview()
+        emptyView.removeFromSuperview()
+        
+        guard self.entireUsersModel != nil else {
+            return
+        }
+        treeTableView.removeFromSuperview()
+        treeTableView = TreeTableView(frame: self.view.bounds, style: .plain, self.entireUsersModel)
     }
 }
 
@@ -209,6 +270,17 @@ extension AddConferenceViewController: UITableViewDataSource {
         case 3:
             let cell = tableView.dequeueReusableCell(withIdentifier: "DeadlineTableViewCell") as! DeadlineTableViewCell
             cell.titleLabel.text = "开始时间："
+            
+            let toolBar = UIToolbar(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.size.width, height: 44))
+            let doneItem = UIBarButtonItem(title: "确定", style: .done, target: self, action: #selector(toolBarCancelAction(_:)))
+            let flexItem = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
+            toolBar.items = [flexItem, doneItem]
+            cell.dateLabel.inputAccessoryView = toolBar
+            
+            cell.dateLabel.limitAction = {
+                self.tableView.isUserInteractionEnabled = false
+            }
+            
             return cell
         case 4:
             let cell = UITableViewCell()
@@ -318,7 +390,119 @@ extension AddConferenceViewController: UIGestureRecognizerDelegate {
     }
 }
 
+extension AddConferenceViewController: UITextViewDelegate {
+    func textViewShouldEndEditing(_ textView: UITextView) -> Bool {
+        UIView.animate(withDuration: 0.3) {
+            self.tableView.frame.origin.y = 0
+        }
+        return true
+    }
+    
+    func textViewShouldBeginEditing(_ textView: UITextView) -> Bool {
+        UIView.animate(withDuration: 0.3) {
+            self.tableView.frame.origin.y -= 225
+        }
+        return true
+    }
+}
+
+extension AddConferenceViewController: UIScrollViewDelegate {
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        if scrollView is UITableView {
+            self.view.endEditing(true)
+        }
+    }
+}
+
 extension AddConferenceViewController {
+    @objc func sendConferenceMessage(_ sender: UIBarButtonItem) {
+        let alertVC = UIAlertController(title: "确认发送会议吗？", message: "", preferredStyle: .alert)
+        let cancelAction = UIAlertAction(title: "取消", style: .default)
+        let saveChangeAction = UIAlertAction(title: "发送", style: .default) { _ in
+            self.sendConferenceMessageLogic()
+        }
+        alertVC.addAction(cancelAction)
+        alertVC.addAction(saveChangeAction)
+        self.present(alertVC, animated: true)
+    }
+    
+    func sendConferenceMessageLogic() {
+        let title: String = self.conferenceTitle
+        let place: String = self.conferencePlace
+        let deadline: String = self.conferenceDeadline
+        let uidArrs: [String] = self.selectedDatas
+        
+        guard title != "" else {
+            let rvc = UIAlertController(title: nil, message: "请填写会议标题", preferredStyle: .alert)
+            self.present(rvc, animated: true, completion: nil)
+            DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 1.5, execute: {
+                self.presentedViewController?.dismiss(animated: true, completion: nil)
+            })
+            return
+        }
+        
+        guard title != "" else {
+            let rvc = UIAlertController(title: nil, message: "请填写会议标题", preferredStyle: .alert)
+            self.present(rvc, animated: true, completion: nil)
+            DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 1.5, execute: {
+                self.presentedViewController?.dismiss(animated: true, completion: nil)
+            })
+            return
+        }
+        
+        guard place != "" else {
+            let rvc = UIAlertController(title: nil, message: "请填写会议地点", preferredStyle: .alert)
+            self.present(rvc, animated: true, completion: nil)
+            DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 1.5, execute: {
+                self.presentedViewController?.dismiss(animated: true, completion: nil)
+            })
+            return
+        }
+        
+        guard uidArrs != [] else {
+            let rvc = UIAlertController(title: nil, message: "请选择收件人", preferredStyle: .alert)
+            self.present(rvc, animated: true, completion: nil)
+            DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 1.5, execute: {
+                self.presentedViewController?.dismiss(animated: true, completion: nil)
+            })
+            return
+        }
+        
+        guard self.textView.text != "" else {
+            let rvc = UIAlertController(title: nil, message: "请填写会议内容", preferredStyle: .alert)
+            self.present(rvc, animated: true, completion: nil)
+            DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 1.5, execute: {
+                self.presentedViewController?.dismiss(animated: true, completion: nil)
+            })
+            return
+        }
+        
+        var dic: [String : String] = ["title" : title, "to" : deadline, "text" : self.textView.text, "place" : place]
+
+        
+        for i in 0..<uidArrs.count {
+            dic["receivers[\(i)]"] = uidArrs[i]
+        }
+        
+        self.tableView.isUserInteractionEnabled = false
+        self.navigationItem.rightBarButtonItem?.isEnabled = false
+        
+        PersonalMessageHelper.sendConferenceMessage(dictionary: dic, success: {
+            NotificationCenter.default.post(name: NotificationName.NotificationRefreshCalendar.name, object: nil)
+            NotificationCenter.default.post(name: NotificationName.NotificationRefreshInboxLists.name, object: nil)
+            self.navigationController?.popToRootViewController(animated: true)
+        }, failure: {
+            self.tableView.isUserInteractionEnabled = true
+            self.navigationItem.rightBarButtonItem?.isEnabled = true
+        })
+        
+    }
+    
+    @objc func toolBarCancelAction(_ sender: UIBarButtonItem) {
+        self.view.endEditing(true)
+        self.tableView.isUserInteractionEnabled = true
+    }
+    
     @objc func saveUsersAction(_ sender: UIButton) {
         delegete?.addReceiverCell!(uids: self.treeTableView.selectedUsers)
         dismissTreeTableView(sender)
@@ -331,9 +515,13 @@ extension AddConferenceViewController {
     }
     
     @objc func searchPeople(_ sender: UIButton) {
+        guard self.entireUsersModel != nil else {
+            return
+        }
+        
         let searchVC = SearchPeopleViewController(self.entireUsersModel)
         //searchVC.delegate = self
-        let cell = self.tableView.cellForRow(at: IndexPath(row: 2, section: 0)) as! ReceiverTableViewCell
+        let cell = self.tableView.cellForRow(at: IndexPath(row: 0, section: 2)) as! ReceiverTableViewCell
         searchVC.delegate = cell
         self.navigationController?.pushViewController(searchVC, animated: true)
     }

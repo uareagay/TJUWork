@@ -18,6 +18,7 @@ struct DetailMessageModel: Codable {
 
 struct DetailMessageData: Codable {
     let mid, type, title, text: String
+    let place: String?
     let from: Date
     let to: Date?
     let author, sendUid: String
@@ -29,7 +30,7 @@ struct DetailMessageData: Codable {
     let respondedDelete: Int
     
     enum CodingKeys: String, CodingKey {
-        case mid, type, title, text, from, to, author
+        case mid, type, title, text, from, to, author, place
         case sendUid = "send_uid"
         case responseBy = "response_by"
         case file1, file2, file3, file4, file5, file6, unit

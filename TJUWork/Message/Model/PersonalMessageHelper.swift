@@ -13,13 +13,9 @@ struct PersonalMessageHelper {
     
     static func sendMessage(dictionary: [String:Any], success: (()->())?, failure: (()->())?) {
         NetworkManager.postInformation(url: "/message/send", token: WorkUser.shared.token, parameters: dictionary, success: { dic in
-            
             if let status = dic["status"] as? Bool, status == true {
                 SwiftMessages.showSuccessMessage(title: "发送成功")
                 success?()
-            } else if let code = dic["code"] as? Int, code == 400001 {
-                NotificationCenter.default.post(name: NotificationName.NotificationLoginFail.name, object: nil)
-                failure?()
             } else {
                 SwiftMessages.showErrorMessage(title: "发送失败")
                 failure?()
@@ -32,7 +28,6 @@ struct PersonalMessageHelper {
             }
             failure?()
         })
-        
     }
     
     static func saveDraft(dictionary: [String:Any], success: (()->())?, failure: (()->())?) {
@@ -355,6 +350,25 @@ struct PersonalMessageHelper {
             }
         }, failure: { error in
             SwiftMessages.showErrorMessage(title: "转发失败")
+            failure?()
+        })
+    }
+    
+    static func sendConferenceMessage(dictionary: [String:Any], success: (()->())?, failure: (()->())?) {
+        NetworkManager.postInformation(url: "/meeting/send", token: WorkUser.shared.token, parameters: dictionary, success: { dic in
+            if let status = dic["status"] as? Bool, status == true {
+                SwiftMessages.showSuccessMessage(title: "发送成功")
+                success?()
+            } else {
+                SwiftMessages.showErrorMessage(title: "发送失败")
+                failure?()
+            }
+        }, failure: { error in
+            if error is NetworkManager.NetworkNotExist {
+                SwiftMessages.showErrorMessage(title: NetworkManager.errorString)
+            } else {
+                SwiftMessages.showErrorMessage(title: "发送失败")
+            }
             failure?()
         })
     }
