@@ -17,11 +17,13 @@ struct InboxSearchModel: Codable {
 }
 
 struct InboxSearchData: Codable {
-    let mid, title, text, type: String
-    let author, responseTo: String
+    let mid: Int
+    let title, text, type: String
+    let author: String
+    let responseTo: Int
     let from: Date
     let to: Date?
-    let isRead: String
+    let isRead: Int
     let isResponse, respondedDeleted: Int
     
     enum CodingKeys: String, CodingKey {

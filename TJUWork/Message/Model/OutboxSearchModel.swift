@@ -17,7 +17,8 @@ struct OutboxSearchModel: Codable {
 }
 
 struct OutboxSearchData: Codable {
-    let mid, author, type, text: String
+    let mid, type: Int
+    let author, text: String
     let title: String
     let from: Date
     let to: Date?

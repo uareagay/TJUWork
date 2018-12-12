@@ -45,7 +45,7 @@ class SearchPeopleViewController: UIViewController {
             let label = model.data[index]
             for i in 0..<label.users.count {
                 let user = label.users[i]
-                dic[user.uid] = user.realName
+                dic[String(user.uid)] = user.realName
             }
         }
         for keyValue in dic {

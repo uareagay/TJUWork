@@ -51,6 +51,7 @@ class ContactsBookViewController: UIViewController {
 extension ContactsBookViewController {
     @objc func clickSearching(_ sender: UIButton) {
         let searchVC = SearchContactUsersViewController()
+        searchVC.hidesBottomBarWhenPushed = true
         self.navigationController?.pushViewController(searchVC, animated: true)
     }
     

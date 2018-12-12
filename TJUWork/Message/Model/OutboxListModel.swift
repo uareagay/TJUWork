@@ -21,7 +21,8 @@ struct OutboxData: Codable {
 }
 
 struct OutboxListData: Codable {
-    let mid, author, type, title: String
+    let mid: Int
+    let author, type, title: String
     let text: String
     let from: Date
     let to: Date?

@@ -490,6 +490,7 @@ extension AddConferenceViewController {
         PersonalMessageHelper.sendConferenceMessage(dictionary: dic, success: {
             NotificationCenter.default.post(name: NotificationName.NotificationRefreshCalendar.name, object: nil)
             NotificationCenter.default.post(name: NotificationName.NotificationRefreshInboxLists.name, object: nil)
+            NotificationCenter.default.post(name: NotificationName.NotificationRefreshConferenceLists.name, object: nil)
             self.navigationController?.popToRootViewController(animated: true)
         }, failure: {
             self.tableView.isUserInteractionEnabled = true
@@ -527,9 +528,6 @@ extension AddConferenceViewController {
     }
     
     func displayLineView() -> UIView {
-//        let view = UIView(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.size.width, height: 7.5))
-//        let contentView = UIView(frame: CGRect(x: 10, y: 0, width: UIScreen.main.bounds.size.width-20, height: 7.5))
-//        let lineView = UIView(frame: CGRect(x: 50+20, y: 3, width: UIScreen.main.bounds.size.width-20-50-20-15, height: 1.5))
         let view = UIView(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.size.width, height: 1.5))
         let contentView = UIView(frame: CGRect(x: 10, y: 0, width: UIScreen.main.bounds.size.width-20, height: 1.5))
         let lineView = UIView(frame: CGRect(x: 50+20, y: 0, width: UIScreen.main.bounds.size.width-20-50-20-15, height: 1.5))

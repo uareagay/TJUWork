@@ -10,7 +10,7 @@ import Foundation
 import Alamofire
 import SwiftMessages
 
-fileprivate let WORK_ROOT_URL = "https://work-alpha.twtstudio.com/api"
+fileprivate let WORK_ROOT_URL = "https://work.twtstudio.com/api"
 
 struct NetworkManager {
     
@@ -85,6 +85,7 @@ struct NetworkManager {
             switch response {
             case .success(let upload, _, _):
                 upload.responseJSON(completionHandler: { response in
+
                     if let data = response.result.value {
                         if let dict = data as? [String:Any] {
                             if let code = dict["code"] as? Int, (code >= 400001 && code <= 400005) {
@@ -98,6 +99,7 @@ struct NetworkManager {
                         }
                     } else {
                         let error = NetworkNotExist(errorString)
+                        
                         failure?(error)
                     }
                 })

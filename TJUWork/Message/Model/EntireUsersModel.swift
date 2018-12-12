@@ -16,7 +16,8 @@ struct EntireUsersModel: Codable {
 }
 
 struct EntireUsersData: Codable {
-    let labelID, labelName, type: String
+    let labelID, type: Int
+    let labelName: String
     let users: [User]
     
     enum CodingKeys: String, CodingKey {
@@ -27,7 +28,8 @@ struct EntireUsersData: Codable {
 }
 
 struct User: Codable {
-    let uid, realName: String
+    let uid: Int
+    let realName: String
     let email, wechat: String?
     let phone, payNumber: String?
     

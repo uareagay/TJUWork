@@ -11,7 +11,9 @@ import UIKit
 class MainTanBarController: UITabBarController {
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+
+        self.tabBar.isTranslucent = false
+
         let scheduleVC = ScheduleViewController()
         scheduleVC.tabBarItem.image = self.resizedTabBarItemImage(img: UIImage(named: "日历")!)
         scheduleVC.tabBarItem.selectedImage = self.resizedTabBarItemImage(img: UIImage(named: "日历选中")!)
@@ -22,7 +24,7 @@ class MainTanBarController: UITabBarController {
         messageVC.tabBarItem.image = self.resizedTabBarItemImage(img: UIImage(named: "任务")!)
         messageVC.tabBarItem.selectedImage = self.resizedTabBarItemImage(img: UIImage(named: "任务选中")!)
         messageVC.title = "消息"
-        //two.tabBarItem.imageInsets = UIEdgeInsets(top: 6, left: 0, bottom: -6, right: 0)
+        //messageVC.tabBarItem.imageInsets = UIEdgeInsets(top: 6, left: 0, bottom: -6, right: 0)
         
         let conferenceVC = ConferenceViewController()
         conferenceVC.tabBarItem.image = self.resizedTabBarItemImage(img: UIImage(named: "会议")!)

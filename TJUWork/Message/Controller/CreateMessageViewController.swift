@@ -186,19 +186,19 @@ class CreateMessageViewController: UIViewController {
         return []
     }
     
-    fileprivate var isCopyMessage: Bool {
-        if let cell = self.tableView.cellForRow(at: IndexPath(row: 3, section: 0)) as? CopyTableViewCell {
-            return cell.isCopy
-        }
-        if let cell = self.tableView.dequeueReusableCell(withIdentifier: "ReceiverTableViewCell") as? CopyTableViewCell {
-            return cell.isCopy
-        }
-        return false
-    }
-    
+//    fileprivate var isCopyMessage: Bool {
+//        if let cell = self.tableView.cellForRow(at: IndexPath(row: 3, section: 0)) as? CopyTableViewCell {
+//            return cell.isCopy
+//        }
+//        if let cell = self.tableView.dequeueReusableCell(withIdentifier: "ReceiverTableViewCell") as? CopyTableViewCell {
+//            return cell.isCopy
+//        }
+//        return false
+//    }
+
     fileprivate var messageType: Int? {
         //0位通知，1为工作
-        if let cell = self.tableView.cellForRow(at: IndexPath(row: 4, section: 0)) as? MessageCategoryTableViewCell {
+        if let cell = self.tableView.cellForRow(at: IndexPath(row: 3, section: 0)) as? MessageCategoryTableViewCell {
             if let status = cell.categoryStatus {
                 if status == .inform {
                     return 0
@@ -224,7 +224,7 @@ class CreateMessageViewController: UIViewController {
     }
     
     fileprivate var replyRequirement: ReplyRequirementTableViewCell.ReplyType? {
-        if let cell = self.tableView.cellForRow(at: IndexPath(row: 5, section: 0)) as? ReplyRequirementTableViewCell {
+        if let cell = self.tableView.cellForRow(at: IndexPath(row: 4, section: 0)) as? ReplyRequirementTableViewCell {
             return cell.typeStatus
         }
         if let cell = self.tableView.dequeueReusableCell(withIdentifier: "ReplyRequirementTableViewCell") as? ReplyRequirementTableViewCell {
@@ -234,7 +234,7 @@ class CreateMessageViewController: UIViewController {
     }
     
     fileprivate var messageDeadline: String {
-        if let cell = self.tableView.cellForRow(at: IndexPath(row: 6, section: 0)) as? DeadlineTableViewCell {
+        if let cell = self.tableView.cellForRow(at: IndexPath(row: 5, section: 0)) as? DeadlineTableViewCell {
             return cell.dateLabel.text ?? ""
         }
         if let cell = self.tableView.dequeueReusableCell(withIdentifier: "DeadlineTableViewCell") as? DeadlineTableViewCell {
@@ -276,7 +276,7 @@ class CreateMessageViewController: UIViewController {
         tableView.register(MessageCategoryTableViewCell.self, forCellReuseIdentifier: "MessageCategoryTableViewCell")
         tableView.register(ReplyRequirementTableViewCell.self, forCellReuseIdentifier: "ReplyRequirementTableViewCell")
         tableView.register(DeadlineTableViewCell.self, forCellReuseIdentifier: "DeadlineTableViewCell")
-        tableView.register(CopyTableViewCell.self, forCellReuseIdentifier: "CopyTableViewCell")
+//        tableView.register(CopyTableViewCell.self, forCellReuseIdentifier: "CopyTableViewCell")
         tableView.delegate = self
         tableView.dataSource = self
         self.view.addSubview(tableView)
@@ -426,9 +426,9 @@ extension CreateMessageViewController: UITableViewDataSource {
             return 1
         }
         if isReply == true {
-            return 7
+            return 6
         } else {
-            return 5
+            return 4
         }
     }
 
@@ -490,10 +490,10 @@ extension CreateMessageViewController: UITableViewDataSource {
             cell.delegate = self
             self.delegete = cell
             return cell
+//        case 3:
+//            let cell = tableView.dequeueReusableCell(withIdentifier: "CopyTableViewCell") as! CopyTableViewCell
+//            return cell
         case 3:
-            let cell = tableView.dequeueReusableCell(withIdentifier: "CopyTableViewCell") as! CopyTableViewCell
-            return cell
-        case 4:
             let cell = tableView.dequeueReusableCell(withIdentifier: "MessageCategoryTableViewCell") as! MessageCategoryTableViewCell
             cell.delegate = self
             if let type = self.draftType {
@@ -507,10 +507,10 @@ extension CreateMessageViewController: UITableViewDataSource {
                 }
             }
             return cell
-        case 5:
+        case 4:
             let cell = tableView.dequeueReusableCell(withIdentifier: "ReplyRequirementTableViewCell") as! ReplyRequirementTableViewCell
             return cell
-        case 6:
+        case 5:
             let cell = tableView.dequeueReusableCell(withIdentifier: "DeadlineTableViewCell") as! DeadlineTableViewCell
 
             let toolBar = UIToolbar(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.size.width, height: 44))
@@ -672,6 +672,8 @@ extension CreateMessageViewController {
 
     @objc func toolBarDoneAction(_ button: UIBarButtonItem) {
         self.view.endEditing(true)
+        self.tableView.isUserInteractionEnabled = true
+
         guard self.entireLabelsModel != nil else {
             return
         }
@@ -680,7 +682,6 @@ extension CreateMessageViewController {
         let cell = self.tableView.cellForRow(at: IndexPath(row: 1, section: 0)) as! MessageNameTableViewCell
         cell.collegeLabel.text = self.entireLabelsModel.data[index].name
         self.authorID = Int(self.entireLabelsModel.data[index].lid)!
-        self.tableView.isUserInteractionEnabled = true
     }
 
     @objc func pickerViewAppear(_ sender: UIButton) {
@@ -813,13 +814,13 @@ extension CreateMessageViewController {
             dic["receive_labels"] = []
         }
         
-        let isCopy = self.isCopyMessage
-        if isCopy == true {
-            dic["copy"] = "1"
-        } else {
-            dic["copy"] = "0"
-        }
-        
+//        let isCopy = self.isCopyMessage
+//        if isCopy == true {
+//            dic["copy"] = "1"
+//        } else {
+//            dic["copy"] = "0"
+//        }
+
         self.sendBtn.isEnabled = false
         self.storeDraftBtn.isEnabled = false
         self.tableView.isUserInteractionEnabled = false
@@ -886,8 +887,8 @@ extension CreateMessageViewController {
         for index in 0..<self.entireUsersModel.data.count {
             let lid = self.entireUsersModel.data[index].labelID
             for i in 0..<self.entireUsersModel.data[index].users.count {
-                if self.entireUsersModel.data[index].users[i].uid == uid {
-                    return lid
+                if String(self.entireUsersModel.data[index].users[i].uid) == uid {
+                    return String(lid)
                 }
             }
             

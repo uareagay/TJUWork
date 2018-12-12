@@ -11,7 +11,6 @@ import SwiftMessages
 
 
 struct ScheduleHelper {
-    
     static func getCalendarList(success: ((ScheduleListsModel)->())?, failure: (()->())?) {
         NetworkManager.getInformation(url: "/calender/list", token: WorkUser.shared.token, success: { dic in
             if let status = dic["status"] as? Bool, status == true {
@@ -65,7 +64,7 @@ struct ScheduleHelper {
         let formatter = DateFormatter()
         formatter.dateFormat = "YYYY/MM/dd   HH:mm"
         let from = formatter.string(from: Date())
-        print(from)
+//        print(from)
         let dic: [String:String] = ["title": title, "class_name": className, "to": to, "from": from]
         
         NetworkManager.postInformation(url: "/calender/create", token: WorkUser.shared.token, parameters: dic, success: { dic in
@@ -84,7 +83,5 @@ struct ScheduleHelper {
             failure?()
         })
     }
-    
-    
 }
 

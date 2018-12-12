@@ -89,6 +89,7 @@ class SearchViewController: UIViewController {
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         self.searchBar.resignFirstResponder()
+        self.tableView.reloadData()
     }
     
 }
@@ -127,7 +128,6 @@ extension SearchViewController {
     }
     
     func searchMessage(with keyword: String) {
-        print(keyword)
         guard keyword.count > 0 else {
             return
         }
@@ -136,7 +136,6 @@ extension SearchViewController {
         case .inbox:
             PersonalMessageHelper.searchInbox(content: keyword, success: { model in
                 self.inboxLists = model.data
-                print(self.inboxLists.count)
                 self.tableView.reloadData()
             }, failure: {
                 
@@ -144,15 +143,12 @@ extension SearchViewController {
         case .outbox:
             PersonalMessageHelper.searchOutbox(content: keyword, success: { model in
                 self.outboxLists = model.data
-                
                 self.tableView.reloadData()
             }, failure: {
                 
             })
         }
-        
     }
-    
 }
 
 extension SearchViewController: UITableViewDelegate {
@@ -182,32 +178,58 @@ extension SearchViewController: UITableViewDelegate {
             let isResponse = data.isResponse
             //1为已回复，0为未回复；-1为通知消息，可以回复，但是不必要回复
             let detailVC: DetailMessageViewController
-            let isReaded = data.isRead == "0" ? false : true
+            let isReaded = data.isRead == 0 ? false : true
+            
+            if data.type == "会议消息" {
+                detailVC = DetailMessageViewController(mid: String(data.mid), isReply: false, messageType: .inbox, isReaded: isReaded, isDisplayPeople: false, isConference: true)
+                detailVC.hidesBottomBarWhenPushed = true
+                self.navigationController?.pushViewController(detailVC, animated: true)
+                return
+            }
+            
             if isResponse == 1 {
-                detailVC = DetailMessageViewController(mid: data.mid, isReply: false, messageType: .inbox, isReaded: isReaded, isDisplayPeople: true)
+                detailVC = DetailMessageViewController(mid: String(data.mid), isReply: true, messageType: .inbox, isReaded: isReaded, isDisplayPeople: true)
             } else if isResponse == -1 {
-                detailVC = DetailMessageViewController(mid: data.mid, isReply: false, messageType: .inbox, isReaded: isReaded)
+                detailVC = DetailMessageViewController(mid: String(data.mid), isReply: false, messageType: .inbox, isReaded: isReaded)
             } else if isResponse == 0 {
-                detailVC = DetailMessageViewController(mid: data.mid, isReply: true, messageType: .inbox, isReaded: isReaded, isDisplayPeople: true)
+                detailVC = DetailMessageViewController(mid: String(data.mid), isReply: true, messageType: .inbox, isReaded: isReaded, isDisplayPeople: true)
             } else {
                 //不会执行
                 detailVC = DetailMessageViewController()
             }
-            //detailVC.hidesBottomBarWhenPushed = true
             self.navigationController?.pushViewController(detailVC, animated: true)
         case .outbox:
             let data = self.outboxLists[indexPath.section]
             let detailVC: DetailMessageViewController
-            if data.type == "工作消息" {
-                detailVC = DetailMessageViewController(mid: data.mid, isReply: false, messageType: .outbox, isReaded: true, isDisplayPeople: true)
+
+//            if data.type == 0 {
+//                cell.nameLabel.text = "通知消息"
+//            } else if data.type == 1 {
+//                cell.nameLabel.text = "工作消息"
+//            } else {
+//                cell.nameLabel.text = "会议消息"
+//            }
+
+            if data.type == 0 {
+                detailVC = DetailMessageViewController(mid: String(data.mid), isReply: false, messageType: .outbox, isReaded: true, isDisplayPeople: false)
+            } else if data.type == 1 {
+                detailVC = DetailMessageViewController(mid: String(data.mid), isReply: false, messageType: .outbox, isReaded: true, isDisplayPeople: true)
             } else {
-                detailVC = DetailMessageViewController(mid: data.mid, isReply: false, messageType: .outbox, isReaded: true, isDisplayPeople: false)
+                detailVC = DetailMessageViewController(mid: String(data.mid), isReply: false, messageType: .outbox, isReaded: true, isDisplayPeople: false, isConference: true)
             }
-            //detailVC.hidesBottomBarWhenPushed = true
+            detailVC.hidesBottomBarWhenPushed = true
             self.navigationController?.pushViewController(detailVC, animated: true)
+
+//            if data.type == 2 {
+//                detailVC = DetailMessageViewController(mid: String(data.mid), isReply: false, messageType: .outbox, isReaded: true, isDisplayPeople: false, isConference: true)
+//                detailVC.hidesBottomBarWhenPushed = true
+//                self.navigationController?.pushViewController(detailVC, animated: true)
+//                return
+//            }
+//
+//            self.navigationController?.pushViewController(detailVC, animated: true)
         }
     }
-    
 }
 
 extension SearchViewController: UITableViewDataSource {
@@ -225,20 +247,14 @@ extension SearchViewController: UITableViewDataSource {
         
         switch self.currentType {
         case .inbox:
-//            let data = self.inboxLists[indexPath.row]
-//            cell.titleLabel.text = data.title
-//            cell.nameLabel.text = data.type
-//            let formatter = DateFormatter()
-//            formatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
-//            cell.dateLabel.text = formatter.string(from: data.from)
             cell.percentBtn.isHidden = true
-            let data = self.inboxLists[indexPath.row]
+            let data = self.inboxLists[indexPath.section]
             cell.titleLabel.text = data.title
-            cell.nameLabel.text = data.type
+            cell.nameLabel.text = data.author
             let formatter = DateFormatter()
             formatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
             cell.dateLabel.text = formatter.string(from: data.from)
-            if data.isRead == "0" {
+            if data.isRead == 0 {
                 cell.titleLabel.textColor = UIColor(hex6: 0x00518e)
                 cell.dateLabel.textColor = UIColor(hex6: 0x00518e)
                 cell.lineView.backgroundColor = UIColor(hex6: 0x00518e)
@@ -250,23 +266,17 @@ extension SearchViewController: UITableViewDataSource {
                 cell.nameLabel.textColor = UIColor(hex6: 0x16982B)
             }
         case .outbox:
-//            let data = self.outboxLists[indexPath.row]
-//            cell.titleLabel.text = data.title
-//            cell.nameLabel.text = data.type == "0" ? "通知信息" : "工作信息"
-//            let formatter = DateFormatter()
-//            formatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
-//            cell.dateLabel.text = formatter.string(from: data.from)
-            let data = self.outboxLists[indexPath.row]
-            
-//            if let percent = data.percent {
-//                cell.percentBtn.isHidden = false
-//                cell.percentBtn.setTitle(percent, for: .normal)
-//            } else {
-//                cell.percentBtn.isHidden = true
-//            }
-            
+            let data = self.outboxLists[indexPath.section]
             cell.titleLabel.text = data.title
-            cell.nameLabel.text = data.type
+            
+            if data.type == 0 {
+                cell.nameLabel.text = "通知消息"
+            } else if data.type == 1 {
+                cell.nameLabel.text = "工作消息"
+            } else {
+                cell.nameLabel.text = "会议消息"
+            }
+            
             let formatter = DateFormatter()
             formatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
             cell.dateLabel.text = formatter.string(from: data.from)

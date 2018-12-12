@@ -97,6 +97,9 @@ class PersonalInfoViewController: UIViewController {
         
         self.view.backgroundColor = .gray
         self.view.addSubview(tableView)
+        tableView.snp.makeConstraints { make in
+            make.left.right.bottom.top.equalToSuperview()
+        }
         
         
 //        let tableViewGesture = UITapGestureRecognizer(target: self, action: #selector(receiveGesture(_:)))
@@ -115,8 +118,8 @@ class PersonalInfoViewController: UIViewController {
 //        self.tableView.mj_header = MJRefreshNormalHeader(refreshingTarget: self, refreshingAction: #selector(GetUserInfo))
         //        self.tableView.mj_header.beginRefreshing()
         
-        setupFooterView()
-        GetUserInfo()
+        self.setupFooterView()
+        self.GetUserInfo()
         NotificationCenter.default.addObserver(self, selector: #selector(GetUserInfo), name: NotificationName.NotificationRefreshPersonalInfo.name, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(presentLoginView), name: NotificationName.NotificationLoginFail.name, object: nil)
     }

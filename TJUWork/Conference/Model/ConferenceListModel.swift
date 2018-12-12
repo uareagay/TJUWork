@@ -16,8 +16,9 @@ struct ConferenceListModel: Codable {
 }
 
 struct ConferenceItem: Codable {
-    let title, sendUid, place, text: String
-    let author, mid: String
+    let title, place, text: String
+    let author: String
+    let mid, sendUid: Int
     let to: Date
     
     enum CodingKeys: String, CodingKey {

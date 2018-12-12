@@ -142,9 +142,12 @@ class MessageViewController: UIViewController {
         
         self.view.backgroundColor = .white
         self.view.addSubview(tableView)
+        tableView.snp.makeConstraints { make in
+            make.left.right.bottom.top.equalToSuperview()
+        }
         self.view.addSubview(deleteBtn)
         self.view.addSubview(selectAllBtn)
-       
+
         let rect = self.menuBtn.convert(self.menuBtn.bounds, to: self.view)
 //        menuView = DownMenuView(frame: CGRect(x: rect.origin.x, y: rect.origin.y+rect.size.height+5, width: rect.size.width, height: 0))
         menuView = DownMenuView(frame: CGRect(x: rect.origin.x-15, y: rect.origin.y+rect.size.height+5, width: rect.size.width+30, height: 0))
@@ -230,7 +233,7 @@ class MessageViewController: UIViewController {
             })
             return
         }
-        let mids = self.selectedArrs.map { self.inboxList[$0].mid }
+        let mids = self.selectedArrs.map { String(self.inboxList[$0].mid) }
 
         let searchPeopleVC = DisplayPeopleViewController(self.entireUsersModel, mids: mids)
         searchPeopleVC.hidesBottomBarWhenPushed = true
@@ -238,10 +241,10 @@ class MessageViewController: UIViewController {
     }
     
     @objc func markRead(_ sender: UIBarButtonItem) {
-        let mids: [String] = self.selectedArrs.map { self.inboxList[$0].mid }
+        let mids: [String] = self.selectedArrs.map { String(self.inboxList[$0].mid) }
         
         PersonalMessageHelper.markRead(mids: mids, success: {
-            self.selectedArrs.forEach { self.inboxList[$0].isRead = "1" }
+            self.selectedArrs.forEach { self.inboxList[$0].isRead = 1 }
             self.isSelecting = false
         } , failure: {
             self.isSelecting = false
@@ -249,10 +252,10 @@ class MessageViewController: UIViewController {
     }
     
     @objc func markUnRead(_ sender: UIBarButtonItem) {
-        let mids: [String] = self.selectedArrs.map { self.inboxList[$0].mid }
+        let mids: [String] = self.selectedArrs.map { String(self.inboxList[$0].mid) }
         
         PersonalMessageHelper.markUnRead(mids: mids, success: {
-            self.selectedArrs.forEach { self.inboxList[$0].isRead = "0" }
+            self.selectedArrs.forEach { self.inboxList[$0].isRead = 0 }
             self.isSelecting = false
         }, failure: {
             self.isSelecting = false
@@ -286,13 +289,18 @@ class MessageViewController: UIViewController {
         self.navigationController?.navigationBar.titleTextAttributes = [NSAttributedStringKey.foregroundColor: UIColor.white]
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .search, target: self, action: #selector(clickSearching(_:)))
         self.navigationController?.navigationBar.tintColor = .white
+        
+        if (self.tableView.mj_header.scrollViewOriginalInset.top > 0 && self.tableView.mj_header.state == MJRefreshState.idle) {
+            let oldContentInset = self.tableView.contentInset;
+            self.tableView.contentInset = UIEdgeInsets.init(top: 0, left: oldContentInset.left, bottom: oldContentInset.bottom, right: oldContentInset.right);
+        }
     }
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         self.navigationItem.rightBarButtonItem = nil
         self.isSelecting = false
-        self.tableView.mj_header.endRefreshing()
+        
         self.navigationController?.setToolbarHidden(true, animated: true)
     }
     
@@ -380,30 +388,55 @@ class MessageViewController: UIViewController {
             
             switch self.currentMenuType {
             case .inbox:
-                self.selectedArrs.forEach { arr.append(Int(self.inboxList[$0].mid)!) }
-                self.inboxList = self.inboxList.filter { !(arr.contains(Int($0.mid)!)) }
+//                self.selectedArrs.forEach {
+//                    if self.inboxList[$0].type == "会议消息" {
+//                        let rvc = UIAlertController(title: nil, message: "您无权删除会议消息", preferredStyle: .alert)
+//                        self.present(rvc, animated: true, completion: nil)
+//                        DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 1.5, execute: {
+//                            self.presentedViewController?.dismiss(animated: true, completion: nil)
+//                        })
+//                        return
+//                    }
+//                }
+                for i in 0..<self.selectedArrs.count {
+                    let index = self.selectedArrs[i]
+                    if self.inboxList[index].type == "会议消息" {
+                        let rvc = UIAlertController(title: nil, message: "您无权删除会议消息", preferredStyle: .alert)
+                        self.present(rvc, animated: true, completion: nil)
+                        DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 1.5, execute: {
+                            self.presentedViewController?.dismiss(animated: true, completion: nil)
+                        })
+                        return
+                    }
+                }
+                
+                
+                self.selectedArrs.forEach { arr.append(self.inboxList[$0].mid) }
+                self.inboxList = self.inboxList.filter { !(arr.contains($0.mid)) }
                 
                 self.isSelecting = false
                 PersonalMessageHelper.deleteInbox(mid: arr, success: {
                     NotificationCenter.default.post(name: NotificationName.NotificationRefreshCalendar.name, object: nil)
+                    NotificationCenter.default.post(name: NotificationName.NotificationRefreshConferenceLists.name, object: nil)
                     self.headerRefresh()
                 }, failure: {
                     
                 })
             case .outbox:
-                self.selectedArrs.forEach { arr.append(Int(self.outboxList[$0].mid)!) }
-                self.outboxList = self.outboxList.filter { !(arr.contains(Int($0.mid)!)) }
+                self.selectedArrs.forEach { arr.append(self.outboxList[$0].mid) }
+                self.outboxList = self.outboxList.filter { !(arr.contains($0.mid)) }
                 
                 self.isSelecting = false
                 PersonalMessageHelper.deleteOutbox(mid: arr, success: {
                     NotificationCenter.default.post(name: NotificationName.NotificationRefreshCalendar.name, object: nil)
+                    NotificationCenter.default.post(name: NotificationName.NotificationRefreshConferenceLists.name, object: nil)
                     self.headerRefresh()
                 }, failure: {
                     
                 })
             case .draft:
-                self.selectedArrs.forEach { arr.append(Int(self.draftList[$0].did)!) }
-                self.draftList = self.draftList.filter { !(arr.contains(Int($0.did)!)) }
+                self.selectedArrs.forEach { arr.append(self.draftList[$0].did) }
+                self.draftList = self.draftList.filter { !(arr.contains($0.did)) }
                 
                 self.isSelecting = false
                 PersonalMessageHelper.deleteDraft(did: arr, success: {
@@ -498,10 +531,10 @@ extension MessageViewController: UITableViewDelegate {
             let isResponse = data.isResponse
             //1为已回复，0为未回复；-1为通知消息，可以回复，但是不必要回复
             let detailVC: DetailMessageViewController
-            let isReaded = data.isRead == "0" ? false : true
+            let isReaded = data.isRead == 0 ? false : true
             
             if data.type == "会议消息" {
-                detailVC = DetailMessageViewController(mid: data.mid, isReply: false, messageType: .inbox, isReaded: isReaded, isDisplayPeople: false, isConference: true)
+                detailVC = DetailMessageViewController(mid: String(data.mid), isReply: false, messageType: .inbox, isReaded: isReaded, isDisplayPeople: false, isConference: true)
                 detailVC.hidesBottomBarWhenPushed = true
                 self.navigationController?.pushViewController(detailVC, animated: true)
                 return
@@ -510,11 +543,11 @@ extension MessageViewController: UITableViewDelegate {
             if isResponse == 1 {
                 //让他可以进行多次回复
 //                detailVC = DetailMessageViewController(mid: data.mid, isReply: false, messageType: .inbox, isReaded: isReaded)
-                detailVC = DetailMessageViewController(mid: data.mid, isReply: true, messageType: .inbox, isReaded: isReaded, isDisplayPeople: true)
+                detailVC = DetailMessageViewController(mid: String(data.mid), isReply: true, messageType: .inbox, isReaded: isReaded, isDisplayPeople: true)
             } else if isResponse == -1 {
-                detailVC = DetailMessageViewController(mid: data.mid, isReply: false, messageType: .inbox, isReaded: isReaded)
+                detailVC = DetailMessageViewController(mid: String(data.mid), isReply: false, messageType: .inbox, isReaded: isReaded)
             } else if isResponse == 0 {
-                detailVC = DetailMessageViewController(mid: data.mid, isReply: true, messageType: .inbox, isReaded: isReaded, isDisplayPeople: true)
+                detailVC = DetailMessageViewController(mid: String(data.mid), isReply: true, messageType: .inbox, isReaded: isReaded, isDisplayPeople: true)
             } else {
                 //不会执行
                 detailVC = DetailMessageViewController()
@@ -526,16 +559,16 @@ extension MessageViewController: UITableViewDelegate {
             let detailVC: DetailMessageViewController
             
             if data.type == "会议消息" {
-                detailVC = DetailMessageViewController(mid: data.mid, isReply: false, messageType: .outbox, isReaded: true, isDisplayPeople: false, isConference: true)
+                detailVC = DetailMessageViewController(mid: String(data.mid), isReply: false, messageType: .outbox, isReaded: true, isDisplayPeople: false, isConference: true)
                 detailVC.hidesBottomBarWhenPushed = true
                 self.navigationController?.pushViewController(detailVC, animated: true)
                 return
             }
             
             if data.type == "工作消息" {
-                detailVC = DetailMessageViewController(mid: data.mid, isReply: false, messageType: .outbox, isReaded: true, isDisplayPeople: true)
+                detailVC = DetailMessageViewController(mid: String(data.mid), isReply: false, messageType: .outbox, isReaded: true, isDisplayPeople: true)
             } else {
-                detailVC = DetailMessageViewController(mid: data.mid, isReply: false, messageType: .outbox, isReaded: true, isDisplayPeople: false)
+                detailVC = DetailMessageViewController(mid: String(data.mid), isReply: false, messageType: .outbox, isReaded: true, isDisplayPeople: false)
             }
             detailVC.hidesBottomBarWhenPushed = true
             self.navigationController?.pushViewController(detailVC, animated: true)
@@ -580,7 +613,7 @@ extension MessageViewController: UITableViewDataSource {
             let formatter = DateFormatter()
             formatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
             cell.dateLabel.text = formatter.string(from: data.from)
-            if data.isRead == "0" {
+            if data.isRead == 0 {
                 cell.titleLabel.textColor = UIColor(hex6: 0x00518e)
                 cell.dateLabel.textColor = UIColor(hex6: 0x00518e)
                 cell.lineView.backgroundColor = UIColor(hex6: 0x00518e)

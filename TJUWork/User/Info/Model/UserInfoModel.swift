@@ -40,7 +40,7 @@ struct UserInfoData: Codable {
 }
 
 struct Admin: Codable {
-    let lid: String
+    let lid: Int
     let name: String
 }
 

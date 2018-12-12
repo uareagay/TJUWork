@@ -21,10 +21,11 @@ struct InboxData: Codable {
 }
 
 struct InboxMessageModel: Codable {
-    let mid, author, type: String
-    let isResponse: Int
-    let responseTo, title, text: String
-    var isRead: String
+    let mid: Int
+    let author, type: String
+    let isResponse, responseTo: Int
+    let title, text: String
+    var isRead: Int
     let from: Date
     let to: Date?
     let respondedDelete: Int

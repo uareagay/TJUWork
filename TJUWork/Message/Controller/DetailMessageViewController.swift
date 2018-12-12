@@ -152,7 +152,6 @@ class DetailMessageViewController: UIViewController {
             group.notify(queue: DispatchQueue.main) {
                 self.tableView.reloadData()
             }
-            
             return
         }
         
@@ -220,7 +219,7 @@ extension DetailMessageViewController {
             return
         }
         
-        let searchPeopleVC = DisplayPeopleViewController(self.entireUsersModel, mids: [self.datailInformation.data.mid])
+        let searchPeopleVC = DisplayPeopleViewController(self.entireUsersModel, mids: [String(self.datailInformation.data.mid)])
         self.navigationController?.pushViewController(searchPeopleVC, animated: true)
     }
     
@@ -239,6 +238,7 @@ extension DetailMessageViewController {
                     PersonalMessageHelper.deleteInbox(mid: [Int(self.mid)!], success: {
                         NotificationCenter.default.post(name: NotificationName.NotificationRefreshInboxLists.name, object: nil)
                         NotificationCenter.default.post(name: NotificationName.NotificationRefreshCalendar.name, object: nil)
+                        NotificationCenter.default.post(name: NotificationName.NotificationRefreshConferenceLists.name, object: nil)
                         
                         self.navigationController?.popToRootViewController(animated: true)
                     }, failure: {
@@ -253,6 +253,7 @@ extension DetailMessageViewController {
                     PersonalMessageHelper.deleteOutbox(mid: [Int(self.mid)!], success: {
                         NotificationCenter.default.post(name: NotificationName.NotificationRefreshOutboxLists.name, object: nil)
                         NotificationCenter.default.post(name: NotificationName.NotificationRefreshCalendar.name, object: nil)
+                        NotificationCenter.default.post(name: NotificationName.NotificationRefreshConferenceLists.name, object: nil)
                         
                         self.navigationController?.popToRootViewController(animated: true)
                     }, failure: {
@@ -302,8 +303,8 @@ extension DetailMessageViewController {
     }
     
     @objc func replyMessage(_ sender: UIButton) {
-        let replyName = self.datailInformation.data.responseBy == "0" ? "个人" : "标签"
-        let replyVC = ReplyMessageViewController(mid: self.mid, titleText: self.datailInformation.data.title, replyName: replyName, sendUID: self.datailInformation.data.sendUid)
+        let replyName = self.datailInformation.data.responseBy == 0 ? "个人" : "标签"
+        let replyVC = ReplyMessageViewController(mid: self.mid, titleText: self.datailInformation.data.title, replyName: replyName, sendUID: String(self.datailInformation.data.sendUid))
         self.navigationController?.pushViewController(replyVC, animated: true)
     }
     
@@ -634,9 +635,9 @@ extension DetailMessageViewController: UITableViewDataSource {
                         cell.flagLabel.textColor = .gray
                         
                         let uid = self.readArrs[index].uid
-                        if let _ = PhoneBook.shared.itemDic[uid] {
+                        if let _ = PhoneBook.shared.itemDic[String(uid)] {
                             cell.phoneBtn.isHidden = false
-                            cell.phoneBtn.tag = Int(uid)!
+                            cell.phoneBtn.tag = uid
                             cell.phoneBtn.addTarget(self, action: #selector(phoneTapped(_:)), for: .touchUpInside)
                         } else {
                             cell.phoneBtn.isHidden = true
@@ -649,9 +650,9 @@ extension DetailMessageViewController: UITableViewDataSource {
                         cell.flagLabel.textColor = .red
                         
                         let uid = self.unReadArrs[index].uid
-                        if let _ = PhoneBook.shared.itemDic[uid] {
+                        if let _ = PhoneBook.shared.itemDic[String(uid)] {
                             cell.phoneBtn.isHidden = false
-                            cell.phoneBtn.tag = Int(uid)!
+                            cell.phoneBtn.tag = uid
                             cell.phoneBtn.addTarget(self, action: #selector(phoneTapped(_:)), for: .touchUpInside)
                         } else {
                             cell.phoneBtn.isHidden = true
@@ -705,9 +706,9 @@ extension DetailMessageViewController: UITableViewDataSource {
                     cell.flagLabel.textColor = .gray
                     
                     let uid = self.readArrs[index].uid
-                    if let _ = PhoneBook.shared.itemDic[uid] {
+                    if let _ = PhoneBook.shared.itemDic[String(uid)] {
                         cell.phoneBtn.isHidden = false
-                        cell.phoneBtn.tag = Int(uid)!
+                        cell.phoneBtn.tag = uid
                         cell.phoneBtn.addTarget(self, action: #selector(phoneTapped(_:)), for: .touchUpInside)
                     } else {
                         cell.phoneBtn.isHidden = true
@@ -720,9 +721,9 @@ extension DetailMessageViewController: UITableViewDataSource {
                     cell.flagLabel.textColor = .red
                     
                     let uid = self.unReadArrs[index].uid
-                    if let _ = PhoneBook.shared.itemDic[uid] {
+                    if let _ = PhoneBook.shared.itemDic[String(uid)] {
                         cell.phoneBtn.isHidden = false
-                        cell.phoneBtn.tag = Int(uid)!
+                        cell.phoneBtn.tag = uid
                         cell.phoneBtn.addTarget(self, action: #selector(phoneTapped(_:)), for: .touchUpInside)
                     } else {
                         cell.phoneBtn.isHidden = true
@@ -775,9 +776,9 @@ extension DetailMessageViewController {
         
         let btn = UIButton(type: .custom)
         if text == "回复状态" {
-            btn.setTitle(String(self.responsePercent)+" %", for: .normal)
+            btn.setTitle(String(format: "%.2f", self.responsePercent) + " %", for: .normal)
         } else {
-            btn.setTitle(String(self.readPercent)+" %", for: .normal)
+            btn.setTitle(String(format: "%.2f", self.readPercent) + " %", for: .normal)
         }
         
         btn.titleLabel?.font = UIFont.systemFont(ofSize: 12, weight: UIFont.Weight.regular)

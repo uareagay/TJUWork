@@ -55,7 +55,7 @@ class TreeTableView: UITableView {
         
         for index in 0..<model.data.count {
             let label = model.data[index]
-            if label.type == "0" {
+            if label.type == 0 {
                 let name = label.labelName
                 if name == "本科生教育科" || name == "本科生管理科" || name == "研究生教育管理科" || name == "心理健康教育中心" || name == "就业指导中心" || name == "学生资助管理中心" || name == "武装部" || name == "学工部长" || name == "园区中心" || name == "教学中心" || name == "学生档案室" {
                     node = TreeNode(name: label.labelName, ID: id, parentID: 3, depth: 2, isVisible: false, isExpand: false, isChild: false, isSelected: false, uid: "")
@@ -64,7 +64,7 @@ class TreeTableView: UITableView {
                     id += 1
                     for i in 0..<label.users.count {
                         let user = label.users[i]
-                        node = TreeNode(name: user.realName, ID: id, parentID: parID, depth: 3, isVisible: false, isExpand: false, isChild: true, isSelected: false, uid: user.uid)
+                        node = TreeNode(name: user.realName, ID: id, parentID: parID, depth: 3, isVisible: false, isExpand: false, isChild: true, isSelected: false, uid: String(user.uid))
                         modelDatas.append(node)
                         id += 1
                     }
@@ -75,7 +75,7 @@ class TreeTableView: UITableView {
                     id += 1
                     for i in 0..<label.users.count {
                         let user = label.users[i]
-                        node = TreeNode(name: user.realName, ID: id, parentID: parID, depth: 3, isVisible: false, isExpand: false, isChild: true, isSelected: false, uid: user.uid)
+                        node = TreeNode(name: user.realName, ID: id, parentID: parID, depth: 3, isVisible: false, isExpand: false, isChild: true, isSelected: false, uid: String(user.uid))
                         modelDatas.append(node)
                         id += 1
                     }
@@ -86,7 +86,7 @@ class TreeTableView: UITableView {
                     id += 1
                     for i in 0..<label.users.count {
                         let user = label.users[i]
-                        node = TreeNode(name: user.realName, ID: id, parentID: parID, depth: 2, isVisible: false, isExpand: false, isChild: true, isSelected: false, uid: user.uid)
+                        node = TreeNode(name: user.realName, ID: id, parentID: parID, depth: 2, isVisible: false, isExpand: false, isChild: true, isSelected: false, uid: String(user.uid))
                         modelDatas.append(node)
                         id += 1
                     }
@@ -101,7 +101,7 @@ class TreeTableView: UITableView {
                     id += 1
                     for i in 0..<label.users.count {
                         let user = label.users[i]
-                        node = TreeNode(name: user.realName, ID: id, parentID: parID, depth: 2, isVisible: false, isExpand: false, isChild: true, isSelected: false, uid: user.uid)
+                        node = TreeNode(name: user.realName, ID: id, parentID: parID, depth: 2, isVisible: false, isExpand: false, isChild: true, isSelected: false, uid: String(user.uid))
                         modelDatas.append(node)
                         id += 1
                     }
@@ -111,7 +111,7 @@ class TreeTableView: UITableView {
                     //id += 1
                     for i in 0..<label.users.count {
                         let user = label.users[i]
-                        node = TreeNode(name: user.realName, ID: id, parentID: parID, depth: 2, isVisible: false, isExpand: false, isChild: true, isSelected: false, uid: user.uid)
+                        node = TreeNode(name: user.realName, ID: id, parentID: parID, depth: 2, isVisible: false, isExpand: false, isChild: true, isSelected: false, uid: String(user.uid))
                         modelDatas.append(node)
                         id += 1
                     }
@@ -119,7 +119,7 @@ class TreeTableView: UITableView {
                     let parID = 4
                     for i in 0..<label.users.count {
                         let user = label.users[i]
-                        node = TreeNode(name: user.realName, ID: id, parentID: parID, depth: 2, isVisible: false, isExpand: false, isChild: true, isSelected: false, uid: user.uid)
+                        node = TreeNode(name: user.realName, ID: id, parentID: parID, depth: 2, isVisible: false, isExpand: false, isChild: true, isSelected: false, uid: String(user.uid))
                         modelDatas.append(node)
                         id += 1
                     }
@@ -130,7 +130,7 @@ class TreeTableView: UITableView {
                     id += 1
                     for i in 0..<label.users.count {
                         let user = label.users[i]
-                        node = TreeNode(name: user.realName, ID: id, parentID: parID, depth: 2, isVisible: false, isExpand: false, isChild: true, isSelected: false, uid: user.uid)
+                        node = TreeNode(name: user.realName, ID: id, parentID: parID, depth: 2, isVisible: false, isExpand: false, isChild: true, isSelected: false, uid: String(user.uid))
                         modelDatas.append(node)
                         id += 1
                     }

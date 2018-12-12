@@ -17,7 +17,8 @@ struct ContactUsersModel: Codable {
 }
 
 struct ContactUsersData: Codable {
-    let uid, realName: String
+    let uid: Int
+    let realName: String
     let gender, email: String?
     let wechat: String?
     let phone: String?

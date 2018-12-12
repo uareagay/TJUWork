@@ -179,6 +179,7 @@ class LoginViewController: UIViewController {
             NotificationCenter.default.post(name: NotificationName.NotificationRefreshPersonalInfo.name, object: nil)
             NotificationCenter.default.post(name: NotificationName.NotificationRefreshCalendar.name, object: nil)
             NotificationCenter.default.post(name: NotificationName.NotificationRefreshInboxLists.name, object: nil)
+            NotificationCenter.default.post(name: NotificationName.NotificationRefreshConferenceLists.name, object: nil)
 //            NotificationCenter.default.post(name: NotificationName.NotificationRefreshOutboxLists.name, object: nil)
 //            NotificationCenter.default.post(name: NotificationName.NotificationRefreshDraftLists.name, object: nil)
             if let clientID = WorkUser.shared.clientID {

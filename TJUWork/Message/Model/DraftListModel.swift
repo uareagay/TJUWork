@@ -21,7 +21,8 @@ struct DraftData: Codable {
 }
 
 struct DraftListData: Codable {
-    let did, title, type, text: String
+    let did: Int
+    let title, type, text: String
     let createdAt: String
     
     enum CodingKeys: String, CodingKey {

@@ -58,7 +58,7 @@ struct PersonalMessageHelper {
         }
         
         NetworkManager.postInformation(url: "/draft/delete", token: WorkUser.shared.token, parameters: dic, success: { dic in
-            print(dic)
+//            print(dic)
             if let status = dic["status"] as? Bool, status == true {
                 //SwiftMessages.showSuccessMessage(title: "删除草稿成功")
                 success?()
@@ -84,7 +84,7 @@ struct PersonalMessageHelper {
         }
         
         NetworkManager.postInformation(url: "/message/inbox/delete", token: WorkUser.shared.token, parameters: dic, success: { dic in
-            print(dic)
+//            print(dic)
             if let status = dic["status"] as? Bool, status == true {
                 //SwiftMessages.showSuccessMessage(title: "删除收件成功")
                 success?()
@@ -271,7 +271,7 @@ struct PersonalMessageHelper {
     
     static func getResponsePeoples(mid: String, success: ((ResponsePeopleModel)->())?, failure: (()->())?) {
         NetworkManager.getInformation(url: "/message/response/number", token: WorkUser.shared.token, parameters: ["mid": mid], success: { dic in
-            print(dic)
+//            print(dic)
             if let status = dic["status"] as? Bool, status == true {
                 if let data = try? JSONSerialization.data(withJSONObject: dic, options: JSONSerialization.WritingOptions.init(rawValue: 0)), let model = try? ResponsePeopleModel(data: data) {
                     //let nameArrs = model.data.finished.map { $0.name }

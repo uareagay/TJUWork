@@ -54,7 +54,7 @@ class PhoneBook {
             self.itemDic = [:]
             model.data.forEach {
                 if let phone = $0.phone, phone.count == 11 {
-                    self.itemDic[$0.uid] = $0.phone
+                    self.itemDic[String($0.uid)] = $0.phone
                 }
                 
                 self.itemArrs.append((name: $0.realName, phone: $0.phone, academy: $0.academy))

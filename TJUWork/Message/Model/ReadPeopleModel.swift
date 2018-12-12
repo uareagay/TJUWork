@@ -29,7 +29,8 @@ struct ReadPeopleData: Codable {
 }
 
 struct ReadPeople: Codable {
-    let name, uid: String
+    let name: String
+    let uid: Int
     let phone: String?
 }
 

@@ -131,6 +131,9 @@ class ScheduleViewController: UIViewController {
         tableView.showsVerticalScrollIndicator = false
         tableView.backgroundColor = UIColor(red: 0.937255, green: 0.937255, blue: 0.956863, alpha: 1.0)
         self.view.addSubview(tableView)
+        tableView.snp.makeConstraints { make in
+            make.left.right.bottom.top.equalToSuperview()
+        }
         
         calendar = FSCalendar(frame: CGRect(x: 10, y: 10, width: UIScreen.main.bounds.size.width-20, height: 370))
         calendar.delegate = self
@@ -664,9 +667,7 @@ extension ScheduleViewController: FSCalendarDataSource {
 }
 
 extension ScheduleViewController: UIGestureRecognizerDelegate {
-    
     func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldReceive touch: UITouch) -> Bool {
         return true
     }
-    
 }

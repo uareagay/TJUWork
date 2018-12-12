@@ -17,12 +17,14 @@ struct DetailMessageModel: Codable {
 }
 
 struct DetailMessageData: Codable {
-    let mid, type, title, text: String
+    let mid: Int
+    let type, title, text: String
     let place: String?
     let from: Date
     let to: Date?
-    let author, sendUid: String
-    let responseBy: String
+    let sendUid: Int
+    let author: String
+    let responseBy: Int
     let file1, file2, file3, file4: DownloadedFile?
     let file5, file6: DownloadedFile?
     let unit: String
@@ -49,7 +51,7 @@ struct DownloadedFile: Codable {
 }
 
 struct RespondToMessage: Codable {
-    let mid: String
+    let mid: Int
     let from: Date
     let title, text, author: String
 }

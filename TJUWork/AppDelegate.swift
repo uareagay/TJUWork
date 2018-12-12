@@ -49,6 +49,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             semGlobal.wait()
             NotificationCenter.default.post(name: NotificationName.NotificationRefreshCalendar.name, object: nil)
             NotificationCenter.default.post(name: NotificationName.NotificationRefreshInboxLists.name, object: nil)
+            NotificationCenter.default.post(name: NotificationName.NotificationRefreshConferenceLists.name, object: nil)
+            NotificationCenter.default.post(name: NotificationName.NotificationRefreshPersonalInfo.name, object: nil)
             
             AccountManager.getToken(username: WorkUser.shared.username, password: WorkUser.shared.password, success: { token in
                 WorkUser.shared.token = token
@@ -171,39 +173,20 @@ extension AppDelegate: GeTuiSdkDelegate {
             let rvc = UIAlertController(title: nil, message: "有一条新消息", preferredStyle: .alert)
             let cancelAction = UIAlertAction(title: "稍后", style: .default) { action in
                 NotificationCenter.default.post(name: NotificationName.NotificationRefreshInboxLists.name, object: nil)
+                NotificationCenter.default.post(name: NotificationName.NotificationRefreshCalendar.name, object: nil)
+                NotificationCenter.default.post(name: NotificationName.NotificationRefreshConferenceLists.name, object: nil)
+                
             }
             let checkAction = UIAlertAction(title: "查看", style: .default) { action in
-                
                 self.jumpPage()
-
-//                let json = try! JSONSerialization.jsonObject(with: payloadData, options: .mutableContainers) as? [String:Any]
-//                if let mid = json?["mid"] as? Int {
-//                    let detailVC = DetailMessageViewController(mid: String(mid), isReply: true, messageType: .inbox, isReaded: false)
-//                    //self.window?.rootViewController?.navigationController?.pushViewController(detailVC, animated: true)
-//                    if let mainTabVC = self.window?.rootViewController as? MainTanBarController, let navVC = mainTabVC.selectedViewController as? UINavigationController {
-//                        navVC.pushViewController(detailVC, animated: true)
-//                    }
-//                }
             }
 
             rvc.addAction(cancelAction)
             rvc.addAction(checkAction)
             self.window?.rootViewController?.present(rvc, animated: true, completion: nil)
-            
-           
         } else {
-//            let json = try! JSONSerialization.jsonObject(with: payloadData, options: .mutableContainers) as? [String:Any]
-//            if let mid = json?["mid"] as? Int {
-//                let detailVC = DetailMessageViewController(mid: String(mid), isReply: true, messageType: .inbox, isReaded: false)
-//                //self.window?.rootViewController?.navigationController?.pushViewController(detailVC, animated: true)
-//                if let mainTabVC = self.window?.rootViewController as? MainTanBarController, let navVC = mainTabVC.selectedViewController as? UINavigationController {
-//                    navVC.pushViewController(detailVC, animated: true)
-//                }
-//            }
             jumpPage()
         }
-        
-        
     }
     
 }

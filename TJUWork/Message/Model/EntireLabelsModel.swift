@@ -18,8 +18,8 @@ struct EntireLabelsModel: Codable {
 struct EntireLabelsData: Codable {
 //    let lid, name, createdUid, type: String
 //    let createdAt: String
-    let createdAt: String
-    let lid, name, aid: String
+    let createdAt, name: String
+    let lid, aid: String
     
     enum CodingKeys: String, CodingKey {
 //        case lid, name
